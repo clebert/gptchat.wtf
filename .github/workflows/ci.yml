@@ -1,0 +1,20 @@
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v3
+      with:
+        node-version-file: .node-version
+    - uses: bahmutov/npm-install@v1
+    - run: npm run ci
+    - env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_REGION: eu-central-1
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      if: ${{ github.ref == 'refs/heads/main' }}
+      run: npm run deploy -- --require-approval never
+name: CI
+on:
+  pull_request: {}
+  push: {}

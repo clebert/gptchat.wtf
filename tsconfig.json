@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "noEmit": true,
+    "resolveJsonModule": true
+  },
+  "exclude": [
+    "coverage",
+    "dist"
+  ],
+  "extends": [
+    "./tsconfig.base.json"
+  ],
+  "include": [
+    "**/*"
+  ],
+  "typeAcquisition": {
+    "enable": true,
+    "include": [
+      "monaco-editor"
+    ]
+  }
+}
