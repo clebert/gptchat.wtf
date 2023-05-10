@@ -30,6 +30,7 @@
     "@typescript-eslint/eslint-plugin": "^5.59.2",
     "@typescript-eslint/parser": "^5.59.2",
     "autoprefixer": "^10.4.14",
+    "aws-cdk": "^2.78.0",
     "aws-simple": "^18.0.1",
     "esbuild": "^0.17.18",
     "esbuild-style-plugin": "^1.6.2",
