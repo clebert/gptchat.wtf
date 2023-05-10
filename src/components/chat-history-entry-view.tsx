@@ -28,9 +28,9 @@ export function ChatHistoryEntryView({
   useEffect(() => {
     model.onDidChangeContent(
       debounce(() => {
-        chatHistoryStore.publish(
+        chatHistoryStore.set(
           chatHistoryStore
-            .getSnapshot()
+            .get()
             .map((otherEntry) =>
               otherEntry.id === entry.id
                 ? {...otherEntry, content: model.getValue()}
@@ -44,16 +44,16 @@ export function ChatHistoryEntryView({
   }, []);
 
   const deleteEntry = useCallback(() => {
-    chatHistoryStore.publish(
-      chatHistoryStore.getSnapshot().filter(({id}) => id !== entry.id),
+    chatHistoryStore.set(
+      chatHistoryStore.get().filter(({id}) => id !== entry.id),
     );
   }, [entry.id]);
 
   const setRole = useCallback(
     (newRole: ChatMessageRole) => {
-      chatHistoryStore.publish(
+      chatHistoryStore.set(
         chatHistoryStore
-          .getSnapshot()
+          .get()
           .map((otherMessage) =>
             otherMessage.id === entry.id
               ? {...otherMessage, role: newRole}

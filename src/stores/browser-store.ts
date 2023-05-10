@@ -1,34 +1,44 @@
-import type {TypeOf, ZodType} from 'zod';
+import type {MemoryStoreOptions} from './memory-store.js';
+import type {ZodType} from 'zod';
 
-import {JsonStore} from './json-store.js';
+import {MemoryStore} from './memory-store.js';
+import {deserializeJson} from '../utils/deserialize-json.js';
+import {serializeJson} from '../utils/serialize-json.js';
 
-export interface BrowserStoreOptions<TSchema extends ZodType> {
+export interface BrowserStoreOptions<TValue>
+  extends MemoryStoreOptions<TValue> {
   readonly key: string;
-  readonly defaultValue: TypeOf<TSchema>;
-  readonly schema: TSchema;
-  readonly storage?: Pick<Storage, 'getItem' | 'removeItem' | 'setItem'>;
+  readonly schema: ZodType<TValue>;
 }
 
-export class BrowserStore<TSchema extends ZodType> extends JsonStore<TSchema> {
+export class BrowserStore<
+  TValue extends boolean | number | string | object,
+> extends MemoryStore<TValue> {
   readonly #key: string;
-  readonly #storage: Pick<Storage, 'getItem' | 'removeItem' | 'setItem'>;
 
-  constructor(options: BrowserStoreOptions<TSchema>) {
-    super(options.defaultValue, options.schema);
+  constructor({key, schema, ...options}: BrowserStoreOptions<TValue>) {
+    super(options);
 
-    this.#key = options.key;
-    this.#storage = options.storage ?? localStorage;
-  }
+    this.#key = key;
 
-  protected get text(): string {
-    return this.#storage.getItem(this.#key) ?? ``;
-  }
+    const text = localStorage.getItem(key);
 
-  protected set text(text: string) {
     if (text) {
-      this.#storage.setItem(this.#key, text);
+      super.set(deserializeJson(text, schema));
+    }
+  }
+
+  override set(newValue: TValue | undefined): void {
+    const text = serializeJson(newValue);
+
+    if (text) {
+      localStorage.setItem(this.#key, text);
+
+      super.set(newValue);
     } else {
-      this.#storage.removeItem(this.#key);
+      localStorage.removeItem(this.#key);
+
+      super.set(undefined);
     }
   }
 }

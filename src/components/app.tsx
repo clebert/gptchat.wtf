@@ -10,7 +10,6 @@ import {AppContext} from '../contexts/app-context.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import {render} from 'preact';
-import {useSyncExternalStore} from 'preact/compat';
 import {useContext, useLayoutEffect} from 'preact/hooks';
 import 'tailwindcss/tailwind.css';
 
@@ -33,11 +32,7 @@ export function App(): JSX.Element {
   }, [darkMode]);
 
   const {chatHistoryStore} = useContext(AppContext);
-
-  const chatHistory = useSyncExternalStore(
-    chatHistoryStore.subscribe,
-    chatHistoryStore.getSnapshot,
-  );
+  const chatHistory = chatHistoryStore.useExternalState();
 
   return (
     <div class="2xl:container 2xl:mx-auto">

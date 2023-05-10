@@ -4,7 +4,6 @@ import {ChatCompletionCancelButton} from './chat-completion-cancel-button.js';
 import {Editor} from './editor.js';
 import {AppContext} from '../contexts/app-context.js';
 import * as monaco from 'monaco-editor';
-import {useSyncExternalStore} from 'preact/compat';
 import {useContext, useEffect, useMemo} from 'preact/hooks';
 
 export function ChatCompletionView(): JSX.Element {
@@ -13,11 +12,7 @@ export function ChatCompletionView(): JSX.Element {
   useEffect(() => () => model.dispose(), []);
 
   const {chatCompletionStore} = useContext(AppContext);
-
-  const chatCompletion = useSyncExternalStore(
-    chatCompletionStore.subscribe,
-    chatCompletionStore.getSnapshot,
-  );
+  const chatCompletion = chatCompletionStore.useExternalState();
 
   useEffect(() => {
     if (chatCompletion.status === `receiving`) {

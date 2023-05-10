@@ -10,7 +10,6 @@ import {createChatEventStream} from '../apis/create-chat-event-stream.js';
 import {AppContext} from '../contexts/app-context.js';
 import {Button} from '../core-components/button.js';
 import {Icon} from '../core-components/icon.js';
-import {useSyncExternalStore} from 'preact/compat';
 import {useCallback, useContext} from 'preact/hooks';
 
 export interface ChatCompletionSendButtonProps {
@@ -23,20 +22,9 @@ export function ChatCompletionSendButton({
   const {apiKeyStore, chatCompletionStore, chatHistoryStore, modelStore} =
     useContext(AppContext);
 
-  const apiKey = useSyncExternalStore(
-    apiKeyStore.subscribe,
-    apiKeyStore.getSnapshot,
-  );
-
-  const chatCompletion = useSyncExternalStore(
-    chatCompletionStore.subscribe,
-    chatCompletionStore.getSnapshot,
-  );
-
-  const chatHistory = useSyncExternalStore(
-    chatHistoryStore.subscribe,
-    chatHistoryStore.getSnapshot,
-  );
+  const apiKey = apiKeyStore.useExternalState();
+  const chatCompletion = chatCompletionStore.useExternalState();
+  const chatHistory = chatHistoryStore.useExternalState();
 
   const sendChat = useCallback(async () => {
     if (!isEnabled(apiKey, chatCompletion, chatHistory)) {
@@ -45,7 +33,7 @@ export function ChatCompletionSendButton({
 
     onBeforeSend?.();
 
-    chatCompletionStore.publish({status: `sending`});
+    chatCompletionStore.set({status: `sending`});
 
     try {
       const abortController = new AbortController();
@@ -53,8 +41,8 @@ export function ChatCompletionSendButton({
       const chatEventStream = await createChatEventStream(
         {
           apiKey,
-          model: modelStore.getSnapshot(),
-          messages: chatHistoryStore.getSnapshot() as any, // TODO
+          model: modelStore.get(),
+          messages: chatHistoryStore.get() as any, // TODO
         },
         abortController.signal,
       );
@@ -66,14 +54,14 @@ export function ChatCompletionSendButton({
       let content = ``;
 
       for await (const chatEvent of chatEventGenerator) {
-        if (chatCompletionStore.getSnapshot().status === `idle`) {
+        if (chatCompletionStore.get().status === `idle`) {
           abortController.abort();
 
           break;
         }
 
         if (`content` in chatEvent) {
-          chatCompletionStore.publish({
+          chatCompletionStore.set({
             status: `receiving`,
             contentDelta: chatEvent.content,
           });
@@ -84,21 +72,21 @@ export function ChatCompletionSendButton({
         }
       }
 
-      if (chatCompletionStore.getSnapshot().status !== `idle`) {
-        chatCompletionStore.publish({status: `idle`});
+      if (chatCompletionStore.get().status !== `idle`) {
+        chatCompletionStore.set({status: `idle`});
       }
 
-      chatHistoryStore.publish([
-        ...chatHistoryStore.getSnapshot(),
+      chatHistoryStore.set([
+        ...chatHistoryStore.get(),
         {id: crypto.randomUUID(), role: `assistant`, content},
       ]);
     } catch (error) {
-      chatCompletionStore.publish({status: `idle`});
+      chatCompletionStore.set({status: `idle`});
 
       const content = error instanceof Error ? error.message : `Unknown error.`;
 
-      chatHistoryStore.publish([
-        ...chatHistoryStore.getSnapshot(),
+      chatHistoryStore.set([
+        ...chatHistoryStore.get(),
         {id: crypto.randomUUID(), role: `assistant`, content},
       ]);
     }

@@ -8,7 +8,6 @@ import {AppContext} from '../contexts/app-context.js';
 import {Button} from '../core-components/button.js';
 import {Icon} from '../core-components/icon.js';
 import * as monaco from 'monaco-editor';
-import {useSyncExternalStore} from 'preact/compat';
 import {
   useCallback,
   useContext,
@@ -27,8 +26,8 @@ export function ChatHistoryNewEntryView(): JSX.Element {
 
   const addEntry = useCallback(() => {
     if (model.getValue()) {
-      chatHistoryStore.publish([
-        ...chatHistoryStore.getSnapshot(),
+      chatHistoryStore.set([
+        ...chatHistoryStore.get(),
         {id: crypto.randomUUID(), role, content: model.getValue()},
       ]);
 
@@ -37,10 +36,7 @@ export function ChatHistoryNewEntryView(): JSX.Element {
     }
   }, [role]);
 
-  const chatCompletion = useSyncExternalStore(
-    chatCompletionStore.subscribe,
-    chatCompletionStore.getSnapshot,
-  );
+  const chatCompletion = chatCompletionStore.useExternalState();
 
   return chatCompletion.status === `idle` ? (
     <div className="flex space-x-2">

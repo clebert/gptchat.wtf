@@ -3,7 +3,6 @@ import type {JSX} from 'preact';
 import {AppContext} from '../contexts/app-context.js';
 import {Button} from '../core-components/button.js';
 import {Icon} from '../core-components/icon.js';
-import {useSyncExternalStore} from 'preact/compat';
 import {useCallback, useContext} from 'preact/hooks';
 
 const titles = {auto: `System theme`, light: `Day theme`, dark: `Night theme`};
@@ -16,19 +15,15 @@ const iconTypes = {
 
 export function ColorSchemeButton(): JSX.Element {
   const {colorSchemeStore} = useContext(AppContext);
-
-  const colorScheme = useSyncExternalStore(
-    colorSchemeStore.subscribe,
-    colorSchemeStore.getSnapshot,
-  );
+  const colorScheme = colorSchemeStore.useExternalState();
 
   const toggleColorScheme = useCallback(() => {
     if (colorScheme === `auto`) {
-      colorSchemeStore.publish(`dark`);
+      colorSchemeStore.set(`dark`);
     } else if (colorScheme === `dark`) {
-      colorSchemeStore.publish(`light`);
+      colorSchemeStore.set(`light`);
     } else {
-      colorSchemeStore.publish(`auto`);
+      colorSchemeStore.set(`auto`);
     }
   }, [colorScheme]);
 
