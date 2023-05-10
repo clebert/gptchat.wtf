@@ -16,6 +16,7 @@
     "postdeploy": "aws-simple upload --yes && aws-simple redeploy --yes"
   },
   "dependencies": {
+    "lodash.debounce": "^4.0.8",
     "monaco-editor": "^0.38.0",
     "preact": "^10.13.2",
     "zod": "^3.21.4"

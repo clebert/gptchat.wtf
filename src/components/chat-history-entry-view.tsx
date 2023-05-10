@@ -7,6 +7,7 @@ import {RoleButton} from './role-button.js';
 import {AppContext} from '../contexts/app-context.js';
 import {Button} from '../core-components/button.js';
 import {Icon} from '../core-components/icon.js';
+import debounce from 'lodash.debounce';
 import * as monaco from 'monaco-editor';
 import {useCallback, useContext, useEffect, useMemo} from 'preact/hooks';
 
@@ -22,22 +23,24 @@ export function ChatHistoryEntryView({
     [],
   );
 
-  useEffect(() => () => model.dispose(), []);
-
   const {chatHistoryStore} = useContext(AppContext);
 
   useEffect(() => {
-    model.onDidChangeContent(() => {
-      chatHistoryStore.publish(
-        chatHistoryStore
-          .getSnapshot()
-          .map((otherEntry) =>
-            otherEntry.id === entry.id
-              ? {...otherEntry, content: model.getValue()}
-              : otherEntry,
-          ),
-      );
-    });
+    model.onDidChangeContent(
+      debounce(() => {
+        chatHistoryStore.publish(
+          chatHistoryStore
+            .getSnapshot()
+            .map((otherEntry) =>
+              otherEntry.id === entry.id
+                ? {...otherEntry, content: model.getValue()}
+                : otherEntry,
+            ),
+        );
+      }, 500),
+    );
+
+    return () => model.dispose();
   }, []);
 
   const deleteEntry = useCallback(() => {
