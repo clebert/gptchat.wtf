@@ -1,7 +1,7 @@
 import type {JSX} from 'preact';
 
+import {TextField} from './text-field.js';
 import {AppContext} from '../contexts/app-context.js';
-import {TextField} from '../core-components/text-field.js';
 import {useCallback, useContext} from 'preact/hooks';
 
 export function ApiKeyField(): JSX.Element {

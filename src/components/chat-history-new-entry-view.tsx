@@ -1,12 +1,12 @@
 import type {ChatMessageRole} from '../apis/create-chat-event-stream.js';
 import type {JSX} from 'preact';
 
+import {Button} from './button.js';
 import {ChatCompletionSendButton} from './chat-completion-send-button.js';
 import {Editor} from './editor.js';
+import {Icon} from './icon.js';
 import {RoleButton} from './role-button.js';
 import {AppContext} from '../contexts/app-context.js';
-import {Button} from '../core-components/button.js';
-import {Icon} from '../core-components/icon.js';
 import * as monaco from 'monaco-editor';
 import {
   useCallback,

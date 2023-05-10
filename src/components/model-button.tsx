@@ -1,7 +1,7 @@
 import type {JSX} from 'preact';
 
+import {Button} from './button.js';
 import {AppContext} from '../contexts/app-context.js';
-import {Button} from '../core-components/button.js';
 import {useCallback, useContext} from 'preact/hooks';
 
 const titles = {'gpt-4': `GPT-4`, 'gpt-3.5-turbo': `GPT-3.5 Turbo`};

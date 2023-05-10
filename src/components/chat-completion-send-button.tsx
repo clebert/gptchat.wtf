@@ -5,11 +5,11 @@ import type {
 } from '../contexts/app-context.js';
 import type {JSX} from 'preact';
 
+import {Button} from './button.js';
+import {Icon} from './icon.js';
 import {createChatEventGenerator} from '../apis/create-chat-event-generator.js';
 import {createChatEventStream} from '../apis/create-chat-event-stream.js';
 import {AppContext} from '../contexts/app-context.js';
-import {Button} from '../core-components/button.js';
-import {Icon} from '../core-components/icon.js';
 import {useCallback, useContext} from 'preact/hooks';
 
 export interface ChatCompletionSendButtonProps {

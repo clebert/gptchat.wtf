@@ -1,8 +1,8 @@
 import type {ChatMessageRole} from '../apis/create-chat-event-stream.js';
 import type {JSX} from 'preact';
 
-import {Button} from '../core-components/button.js';
-import {Icon} from '../core-components/icon.js';
+import {Button} from './button.js';
+import {Icon} from './icon.js';
 import {useCallback} from 'preact/hooks';
 
 export interface RoleButtonProps {
