@@ -2,6 +2,7 @@ import type {JSX} from 'preact';
 
 import {ChatCompletionCancelButton} from './chat-completion-cancel-button.js';
 import {Editor} from './editor.js';
+import {RoleIcon} from './role-icon.js';
 import {AppContext} from '../contexts/app-context.js';
 import * as monaco from 'monaco-editor';
 import {useContext, useEffect, useMemo} from 'preact/hooks';
@@ -43,6 +44,7 @@ export function ChatCompletionView(): JSX.Element {
     <div className="flex space-x-2">
       <div class="flex shrink-0 flex-col space-y-2">
         <ChatCompletionCancelButton />
+        <RoleIcon role="assistant" />
       </div>
       <div class="w-full overflow-hidden">
         <Editor model={model} autoScroll readOnly />

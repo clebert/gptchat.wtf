@@ -1,11 +1,10 @@
-import type {ChatMessageRole} from '../apis/create-chat-event-stream.js';
 import type {ChatHistoryEntry} from '../contexts/app-context.js';
 import type {JSX} from 'preact';
 
 import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
-import {RoleButton} from './role-button.js';
+import {RoleIcon} from './role-icon.js';
 import {AppContext} from '../contexts/app-context.js';
 import debounce from 'lodash.debounce';
 import * as monaco from 'monaco-editor';
@@ -49,29 +48,14 @@ export function ChatHistoryEntryView({
     );
   }, [entry.id]);
 
-  const setRole = useCallback(
-    (newRole: ChatMessageRole) => {
-      chatHistoryStore.set(
-        chatHistoryStore
-          .get()
-          .map((otherMessage) =>
-            otherMessage.id === entry.id
-              ? {...otherMessage, role: newRole}
-              : otherMessage,
-          ),
-      );
-    },
-    [entry.id],
-  );
-
   return (
     <div className="flex space-x-2">
       <div class="flex shrink-0 flex-col space-y-2">
-        <RoleButton role={entry.role} onToggle={setRole} />
-
         <Button title="Delete" onClick={deleteEntry}>
           <Icon type="trash" standalone></Icon>
         </Button>
+
+        <RoleIcon role={entry.role} />
       </div>
 
       <div class="w-full overflow-hidden">

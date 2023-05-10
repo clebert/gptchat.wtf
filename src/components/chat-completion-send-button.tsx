@@ -1,8 +1,4 @@
-import type {
-  ChatCompletion,
-  ChatHistory,
-  ChatHistoryEntry,
-} from '../contexts/app-context.js';
+import type {ChatMessage} from '../apis/create-chat-event-stream.js';
 import type {JSX} from 'preact';
 
 import {Button} from './button.js';
@@ -19,30 +15,49 @@ export interface ChatCompletionSendButtonProps {
 export function ChatCompletionSendButton({
   onBeforeSend,
 }: ChatCompletionSendButtonProps): JSX.Element {
-  const {apiKeyStore, chatCompletionStore, chatHistoryStore, modelStore} =
-    useContext(AppContext);
+  const {
+    apiKeyStore,
+    chatCompletionStore,
+    chatHistoryStore,
+    modelStore,
+    systemMessageContentStore,
+  } = useContext(AppContext);
 
   const apiKey = apiKeyStore.useExternalState();
   const chatCompletion = chatCompletionStore.useExternalState();
   const chatHistory = chatHistoryStore.useExternalState();
 
   const sendChat = useCallback(async () => {
-    if (!isEnabled(apiKey, chatCompletion, chatHistory)) {
+    if (!apiKey || chatCompletion.status !== `idle`) {
       return;
     }
 
     onBeforeSend?.();
 
-    chatCompletionStore.set({status: `sending`});
+    const [chatMessage, ...chatMessages] = chatHistoryStore.get();
+
+    if (!chatMessage) {
+      return;
+    }
+
+    const systemMessageContent = systemMessageContentStore.get();
+
+    const systemMessage: ChatMessage | undefined = systemMessageContent
+      ? {role: `system`, content: systemMessageContent}
+      : undefined;
 
     try {
       const abortController = new AbortController();
+
+      chatCompletionStore.set({status: `sending`});
 
       const chatEventStream = await createChatEventStream(
         {
           apiKey,
           model: modelStore.get(),
-          messages: chatHistoryStore.get() as any, // TODO
+          messages: systemMessage
+            ? [systemMessage, chatMessage, ...chatMessages]
+            : [chatMessage, ...chatMessages],
         },
         abortController.signal,
       );
@@ -95,20 +110,10 @@ export function ChatCompletionSendButton({
   return (
     <Button
       title="Send chat completion"
-      disabled={!isEnabled(apiKey, chatCompletion, chatHistory)}
+      disabled={!apiKey || chatCompletion.status !== `idle`}
       onClick={sendChat}
     >
       <Icon type="paperAirplane" standalone />
     </Button>
-  );
-}
-
-function isEnabled(
-  apiKey: string,
-  chatCompletion: ChatCompletion,
-  chatHistory: ChatHistory,
-): chatHistory is readonly [ChatHistoryEntry, ...ChatHistoryEntry[]] {
-  return Boolean(
-    apiKey && chatCompletion.status === `idle` && chatHistory.length > 0,
   );
 }

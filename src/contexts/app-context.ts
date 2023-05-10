@@ -1,4 +1,4 @@
-import type {ChatMessage, Model} from '../apis/create-chat-event-stream.js';
+import type {Model} from '../apis/create-chat-event-stream.js';
 
 import {BrowserStore} from '../stores/browser-store.js';
 import {MemoryStore} from '../stores/memory-store.js';
@@ -17,6 +17,7 @@ export interface App {
   readonly chatHistoryStore: Store<ChatHistory>;
   readonly colorSchemeStore: Store<ColorScheme>;
   readonly modelStore: Store<Model>;
+  readonly systemMessageContentStore: Store<string>;
 }
 
 export type ChatCompletion =
@@ -25,35 +26,13 @@ export type ChatCompletion =
 
 export type ChatHistory = readonly ChatHistoryEntry[];
 
-export interface ChatHistoryEntry extends ChatMessage {
+export interface ChatHistoryEntry {
   readonly id: string;
+  readonly role: 'user' | 'assistant';
+  readonly content: string;
 }
 
 export type ColorScheme = 'auto' | 'light' | 'dark';
-
-const chatHistorySchema = array(
-  object({
-    id: string().uuid(),
-    role: union([literal(`system`), literal(`user`), literal(`assistant`)]),
-    content: string(),
-  }),
-);
-
-const defaultChatHistory: ChatHistory = [
-  {
-    id: crypto.randomUUID(),
-    role: `system`,
-    content: `Provide answers in Markdown format and English language. Keep responses short, precise, and at an expert level.`,
-  },
-];
-
-const colorSchemeSchema = union([
-  literal(`auto`),
-  literal(`light`),
-  literal(`dark`),
-]);
-
-const modelSchema = union([literal(`gpt-4`), literal(`gpt-3.5-turbo`)]);
 
 export const AppContext = createContext<App>({
   apiKeyStore: new BrowserStore({
@@ -66,17 +45,28 @@ export const AppContext = createContext<App>({
   }),
   chatHistoryStore: new BrowserStore({
     key: `chatHistory`,
-    schema: chatHistorySchema,
-    defaultValue: defaultChatHistory,
+    schema: array(
+      object({
+        id: string().uuid(),
+        role: literal(`user`).or(literal(`assistant`)),
+        content: string(),
+      }),
+    ),
+    defaultValue: [],
   }),
   colorSchemeStore: new BrowserStore({
     key: `colorScheme`,
-    schema: colorSchemeSchema,
+    schema: union([literal(`auto`), literal(`light`), literal(`dark`)]),
     defaultValue: `auto`,
   }),
   modelStore: new BrowserStore({
     key: `model`,
-    schema: modelSchema,
+    schema: union([literal(`gpt-4`), literal(`gpt-3.5-turbo`)]),
     defaultValue: `gpt-4`,
+  }),
+  systemMessageContentStore: new BrowserStore({
+    key: `systemMessageContent`,
+    schema: string(),
+    defaultValue: `Provide answers in Markdown format and English language. Keep responses short, precise, and at an expert level.`,
   }),
 });

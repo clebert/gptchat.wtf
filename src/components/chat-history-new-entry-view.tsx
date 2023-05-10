@@ -1,40 +1,31 @@
-import type {ChatMessageRole} from '../apis/create-chat-event-stream.js';
 import type {JSX} from 'preact';
 
 import {Button} from './button.js';
 import {ChatCompletionSendButton} from './chat-completion-send-button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
-import {RoleButton} from './role-button.js';
+import {RoleIcon} from './role-icon.js';
 import {AppContext} from '../contexts/app-context.js';
 import * as monaco from 'monaco-editor';
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'preact/hooks';
+import {useCallback, useContext, useEffect, useMemo} from 'preact/hooks';
 
 export function ChatHistoryNewEntryView(): JSX.Element {
   const model = useMemo(() => monaco.editor.createModel(``, `markdown`), []);
 
   useEffect(() => () => model.dispose(), []);
 
-  const [role, setRole] = useState<ChatMessageRole>(`user`);
   const {chatCompletionStore, chatHistoryStore} = useContext(AppContext);
 
   const addEntry = useCallback(() => {
     if (model.getValue()) {
       chatHistoryStore.set([
         ...chatHistoryStore.get(),
-        {id: crypto.randomUUID(), role, content: model.getValue()},
+        {id: crypto.randomUUID(), role: `user`, content: model.getValue()},
       ]);
 
       model.setValue(``);
-      setRole(`user`);
     }
-  }, [role]);
+  }, []);
 
   const chatCompletion = chatCompletionStore.useExternalState();
 
@@ -47,7 +38,7 @@ export function ChatHistoryNewEntryView(): JSX.Element {
           <Icon type="plus" standalone></Icon>
         </Button>
 
-        <RoleButton role={role} onToggle={setRole} />
+        <RoleIcon role="user" />
       </div>
 
       <div class="w-full overflow-hidden">

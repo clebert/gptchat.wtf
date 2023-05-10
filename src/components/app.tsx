@@ -6,6 +6,7 @@ import {ChatHistoryEntryView} from './chat-history-entry-view.js';
 import {ChatHistoryNewEntryView} from './chat-history-new-entry-view.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
 import {ModelButton} from './model-button.js';
+import {SystemMessageView} from './system-message-view.js';
 import {AppContext} from '../contexts/app-context.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
@@ -42,6 +43,8 @@ export function App(): JSX.Element {
           <ModelButton />
           <ApiKeyField />
         </div>
+
+        <SystemMessageView />
 
         {chatHistory.map((entry) => (
           <ChatHistoryEntryView key={entry.id} entry={entry} />
