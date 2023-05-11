@@ -10,6 +10,7 @@ export interface ButtonProps {
   type?: 'button' | 'submit';
   title: string;
   disabled?: boolean;
+  inverted?: boolean;
 
   onClick?(): void;
 }
@@ -20,6 +21,7 @@ export function Button({
   type = `button`,
   title,
   disabled,
+  inverted,
   onClick,
 }: ButtonProps): JSX.Element {
   const styles = useContext(StylesContext);
@@ -31,11 +33,14 @@ export function Button({
         className,
         `flex select-none items-center whitespace-nowrap px-2`,
         !enabled && `cursor-default opacity-25`,
-        styles.text,
-        styles.background,
-        styles.border,
-        enabled && styles.textActive,
-        enabled && styles.backgroundActive,
+        inverted ? styles.textInverted : styles.text,
+        inverted ? styles.backgroundInverted : styles.background,
+        inverted ? styles.borderTransparent : styles.border,
+        enabled && (inverted ? styles.textInvertedActive : styles.textActive),
+        enabled &&
+          (inverted
+            ? styles.backgroundInvertedActive
+            : styles.backgroundActive),
         enabled && styles.focus,
       )}
       type={type}

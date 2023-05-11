@@ -111,6 +111,7 @@ export function ChatCompletionSendButton({
     <Button
       title="Send chat completion"
       disabled={!apiKey || chatCompletion.status !== `idle`}
+      inverted
       onClick={sendChat}
     >
       <Icon type="paperAirplane" standalone />
