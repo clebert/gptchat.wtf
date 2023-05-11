@@ -67,6 +67,6 @@ export const AppContext = createContext<App>({
   systemMessageContentStore: new BrowserStore({
     key: `systemMessageContent`,
     schema: string(),
-    defaultValue: `Provide answers in Markdown format and English language. Keep responses short, precise, and at an expert level.`,
+    defaultValue: `Please provide responses in *Markdown format* and English language.`,
   }),
 });

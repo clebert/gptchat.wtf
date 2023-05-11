@@ -59,7 +59,7 @@ export function ChatHistoryEntryView({
       </div>
 
       <div class="w-full overflow-hidden">
-        <Editor model={model} />
+        <Editor class="h-40" model={model} />
       </div>
     </div>
   );

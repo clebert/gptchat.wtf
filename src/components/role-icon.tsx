@@ -24,9 +24,10 @@ export function RoleIcon({role}: RoleIconProps): JSX.Element {
   return (
     <div
       class={join(
-        `flex select-none items-center border-hidden px-2`,
+        `flex select-none items-center px-2`,
         styles.text,
         styles.background,
+        styles.borderTransparent,
       )}
       title={titles[role]}
     >

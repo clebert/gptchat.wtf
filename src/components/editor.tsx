@@ -7,12 +7,14 @@ import * as monaco from 'monaco-editor';
 import {useContext, useEffect, useRef} from 'preact/hooks';
 
 export interface EditorProps {
+  class?: string;
   model: monaco.editor.ITextModel | null;
   autoScroll?: boolean;
   readOnly?: boolean;
 }
 
 export function Editor({
+  class: className,
   model,
   autoScroll,
   readOnly,
@@ -68,7 +70,7 @@ export function Editor({
   return (
     <div
       ref={containerRef}
-      className={join(`h-40`, styles.border, styles.focusWithin)}
+      className={join(className, styles.border, styles.focusWithin)}
     ></div>
   );
 }

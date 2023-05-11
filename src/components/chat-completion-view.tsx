@@ -40,6 +40,12 @@ export function ChatCompletionView(): JSX.Element {
     }
   }, [chatCompletion]);
 
+  useEffect(() => {
+    if (chatCompletion.status === `receiving`) {
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+  }, [chatCompletion.status]);
+
   return chatCompletion.status !== `idle` ? (
     <div className="flex space-x-2">
       <div class="flex shrink-0 flex-col space-y-2">
@@ -47,7 +53,7 @@ export function ChatCompletionView(): JSX.Element {
         <RoleIcon role="assistant" />
       </div>
       <div class="w-full overflow-hidden">
-        <Editor model={model} autoScroll readOnly />
+        <Editor class="h-40" model={model} autoScroll readOnly />
       </div>
     </div>
   ) : (
