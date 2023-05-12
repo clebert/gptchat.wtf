@@ -27,6 +27,7 @@ export function Editor({
   useEffect(() => {
     editorRef.current = monaco.editor.create(containerRef.current!, {
       contextmenu: false,
+      fontSize: 16,
       lineNumbers: `off`,
       minimap: {enabled: false},
       readOnly,
