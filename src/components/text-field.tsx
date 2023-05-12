@@ -1,71 +1,66 @@
 import type {JSX} from 'preact';
+import type {ForwardedRef} from 'preact/compat';
 
 import {StylesContext} from '../contexts/styles-context.js';
 import {join} from '../utils/join.js';
-import {useCallback, useContext, useEffect, useRef} from 'preact/hooks';
+import {forwardRef} from 'preact/compat';
+import {useCallback, useContext} from 'preact/hooks';
 
 export interface TextFieldProps {
   class?: string;
-  type?: `text` | 'password';
   value: string;
   placeholder?: string;
-  autoFocus?: boolean;
   disabled?: boolean;
   required?: boolean;
 
   onInput(value: string): void;
 }
 
-export function TextField({
-  class: className,
-  type = `text`,
-  value,
-  placeholder,
-  autoFocus,
-  disabled,
-  required,
-  onInput,
-}: TextFieldProps): JSX.Element {
-  const inputRef = useRef<HTMLInputElement>(null);
+export const TextField = forwardRef(
+  (
+    {
+      class: className,
+      value,
+      placeholder,
+      disabled,
+      required,
+      onInput,
+    }: TextFieldProps,
+    ref: ForwardedRef<HTMLInputElement>,
+  ): JSX.Element => {
+    const handleInput = useCallback(
+      (event: Event) => {
+        event.preventDefault();
+        onInput((event.target as HTMLInputElement).value);
+      },
+      [onInput],
+    );
 
-  useEffect(() => {
-    if (autoFocus) {
-      inputRef.current?.focus();
-    }
-  }, []);
+    const styles = useContext(StylesContext);
 
-  const handleInput = useCallback(
-    (event: Event) => {
-      event.preventDefault();
-      onInput((event.target as HTMLInputElement).value);
-    },
-    [onInput],
-  );
-
-  const styles = useContext(StylesContext);
-
-  return (
-    <input
-      ref={inputRef}
-      class={join(
-        className,
-        `w-full appearance-none rounded-none px-2`,
-        disabled && `opacity-25`,
-        styles.text,
-        styles.textPlaceholder,
-        styles.background,
-        styles.border,
-        !disabled && styles.focus,
-      )}
-      type={type}
-      value={value}
-      placeholder={placeholder}
-      autocomplete="off"
-      autocorrect="off"
-      disabled={disabled}
-      required={required}
-      spellcheck={false}
-      onInput={handleInput}
-    />
-  );
-}
+    return (
+      <input
+        ref={ref}
+        class={join(
+          className,
+          `w-full appearance-none rounded-none px-2`,
+          disabled && `opacity-25`,
+          styles.text,
+          styles.textPlaceholder,
+          styles.background,
+          styles.border,
+          !disabled && styles.focus,
+        )}
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        autocomplete="off"
+        autocorrect="off"
+        disabled={disabled}
+        required={required}
+        spellcheck={false}
+        onInput={handleInput}
+      />
+    );
+  },
+);

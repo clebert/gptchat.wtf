@@ -1,6 +1,6 @@
 import type {JSX} from 'preact';
 
-import {ApiKeyField} from './api-key-field.js';
+import {ApiKeyView} from './api-key-view.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
 import {CompletionView} from './completion-view.js';
 import {MessageView} from './message-view.js';
@@ -41,7 +41,7 @@ export function App(): JSX.Element {
         <div className="flex space-x-2">
           <ColorSchemeButton />
           <ModelButton />
-          <ApiKeyField />
+          <ApiKeyView />
         </div>
 
         {messageIds.map((id) => (

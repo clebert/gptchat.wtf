@@ -6,7 +6,7 @@ import {AppContext} from '../contexts/app-context.js';
 import {useToggleColorSchemeCallback} from '../hooks/use-toggle-color-scheme-callback.js';
 import {useContext} from 'preact/hooks';
 
-const titles = {auto: `System theme`, light: `Day theme`, dark: `Night theme`};
+const titles = {auto: `System Theme`, light: `Day Theme`, dark: `Night Theme`};
 
 const iconTypes = {
   auto: `computerDesktop`,
