@@ -50,16 +50,16 @@ export function CompletionView(): JSX.Element {
 
   return (
     <div className="flex space-x-2">
+      <div class="w-full overflow-hidden">
+        <Editor class="h-40" model={model} autoScroll readOnly />
+      </div>
+
       <div class="flex shrink-0 flex-col space-y-2">
         <Button title="Cancel Chat Completion" onClick={cancelCompletion}>
           <Icon type="xMark" standalone />
         </Button>
 
         <MessageRoleIcon role="assistant" />
-      </div>
-
-      <div class="w-full overflow-hidden">
-        <Editor class="h-40" model={model} autoScroll readOnly />
       </div>
     </div>
   );

@@ -24,16 +24,16 @@ export function MessageView({id}: MessageViewProps): JSX.Element {
 
   return (
     <div className="flex space-x-2">
+      <div class="w-full overflow-hidden">
+        <Editor class="h-40" model={model} />
+      </div>
+
       <div class="flex shrink-0 flex-col space-y-2">
         <Button title="Delete Chat Message" onClick={handleDeleteMessageClick}>
           <Icon type="trash" standalone></Icon>
         </Button>
 
         {role && <MessageRoleIcon role={role} />}
-      </div>
-
-      <div class="w-full overflow-hidden">
-        <Editor class="h-40" model={model} />
       </div>
     </div>
   );

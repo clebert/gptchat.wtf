@@ -39,9 +39,9 @@ export function App(): JSX.Element {
     <div class="2xl:container 2xl:mx-auto">
       <div class="m-2 flex flex-col space-y-2">
         <div className="flex space-x-2">
-          <ColorSchemeButton />
           <ModelButton />
           <ApiKeyView />
+          <ColorSchemeButton />
         </div>
 
         {messageIds.map((id) => (

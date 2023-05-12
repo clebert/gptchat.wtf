@@ -38,6 +38,10 @@ export function NewMessageView(): JSX.Element {
 
   return (
     <div className="flex space-x-2">
+      <div class="w-full overflow-hidden">
+        <Editor class="h-40" model={model} />
+      </div>
+
       <div class="flex shrink-0 flex-col space-y-2">
         <Button
           title="Request Chat Completion"
@@ -52,10 +56,6 @@ export function NewMessageView(): JSX.Element {
         </Button>
 
         <MessageRoleIcon role="user" />
-      </div>
-
-      <div class="w-full overflow-hidden">
-        <Editor class="h-40" model={model} />
       </div>
     </div>
   );
