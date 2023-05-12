@@ -1,5 +1,6 @@
 import type {JSX} from 'preact';
 
+import './editor.css';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import {join} from '../utils/join.js';
