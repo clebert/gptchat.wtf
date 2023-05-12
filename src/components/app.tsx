@@ -1,12 +1,11 @@
 import type {JSX} from 'preact';
 
 import {ApiKeyField} from './api-key-field.js';
-import {ChatCompletionView} from './chat-completion-view.js';
-import {ChatHistoryEntryView} from './chat-history-entry-view.js';
-import {ChatHistoryNewEntryView} from './chat-history-new-entry-view.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
+import {CompletionView} from './completion-view.js';
+import {MessageView} from './message-view.js';
 import {ModelButton} from './model-button.js';
-import {SystemMessageView} from './system-message-view.js';
+import {NewMessageView} from './new-message-view.js';
 import {AppContext} from '../contexts/app-context.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
@@ -32,8 +31,9 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const {chatHistoryStore} = useContext(AppContext);
-  const chatHistory = chatHistoryStore.useExternalState();
+  const {completionStore, conversationStore} = useContext(AppContext);
+  const completion = completionStore.use();
+  const {messageIds} = conversationStore.use();
 
   return (
     <div class="2xl:container 2xl:mx-auto">
@@ -44,14 +44,11 @@ export function App(): JSX.Element {
           <ApiKeyField />
         </div>
 
-        <SystemMessageView />
-
-        {chatHistory.map((entry) => (
-          <ChatHistoryEntryView key={entry.id} entry={entry} />
+        {messageIds.map((id) => (
+          <MessageView key={id} id={id} />
         ))}
 
-        <ChatCompletionView />
-        <ChatHistoryNewEntryView />
+        {completion.status === `idle` ? <NewMessageView /> : <CompletionView />}
       </div>
     </div>
   );

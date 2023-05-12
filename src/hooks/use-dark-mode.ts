@@ -5,7 +5,7 @@ const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
 
 export function useDarkMode(): boolean {
   const {colorSchemeStore} = useContext(AppContext);
-  const colorScheme = colorSchemeStore.useExternalState();
+  const colorScheme = colorSchemeStore.use();
   const [prefersDark, setPrefersDark] = useState(mediaQuery.matches);
 
   useEffect(() => {

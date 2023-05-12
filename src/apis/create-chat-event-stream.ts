@@ -1,17 +1,13 @@
 export interface ChatCompletionRequest {
   readonly apiKey: string;
-  readonly model: Model;
+  readonly model: 'gpt-4' | 'gpt-3.5-turbo';
   readonly messages: readonly [ChatMessage, ...ChatMessage[]];
 }
 
-export type Model = 'gpt-4' | 'gpt-3.5-turbo';
-
 export interface ChatMessage {
-  readonly role: ChatMessageRole;
+  readonly role: 'system' | 'user' | 'assistant';
   readonly content: string;
 }
-
-export type ChatMessageRole = 'system' | 'user' | 'assistant';
 
 export async function createChatEventStream(
   request: ChatCompletionRequest,

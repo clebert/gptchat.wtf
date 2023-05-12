@@ -6,7 +6,7 @@ import {useCallback, useContext} from 'preact/hooks';
 
 export function ApiKeyField(): JSX.Element {
   const {apiKeyStore} = useContext(AppContext);
-  const apiKey = apiKeyStore.useExternalState();
+  const apiKey = apiKeyStore.use();
 
   const setApiKey = useCallback((value: string) => {
     apiKeyStore.set(value);

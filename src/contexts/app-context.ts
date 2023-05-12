@@ -1,72 +1,57 @@
-import type {Model} from '../apis/create-chat-event-stream.js';
+import type {ColorScheme} from '../stores/create-color-scheme-store.js';
+import type {Completion} from '../stores/create-completion-store.js';
+import type {Conversation} from '../stores/create-conversation-store.js';
+import type {Message} from '../stores/create-message-store.js';
+import type {Model} from '../stores/create-model-store.js';
+import type {Store} from '../stores/store.js';
 
-import {BrowserStore} from '../stores/browser-store.js';
-import {MemoryStore} from '../stores/memory-store.js';
+import {createApiKeyStore} from '../stores/create-api-key-store.js';
+import {createColorSchemeStore} from '../stores/create-color-scheme-store.js';
+import {createCompletionStore} from '../stores/create-completion-store.js';
+import {createConversationStore} from '../stores/create-conversation-store.js';
+import {createMessageStore} from '../stores/create-message-store.js';
+import {createModelStore} from '../stores/create-model-store.js';
 import {createContext} from 'preact';
-import {array, literal, object, string, union} from 'zod';
-
-export interface Store<TValue> {
-  get(): TValue;
-  set(newValue: TValue | undefined): void;
-  useExternalState(): TValue;
-}
 
 export interface App {
   readonly apiKeyStore: Store<string>;
-  readonly chatCompletionStore: Store<ChatCompletion>;
-  readonly chatHistoryStore: Store<ChatHistory>;
   readonly colorSchemeStore: Store<ColorScheme>;
+  readonly completionStore: Store<Completion>;
+  readonly conversationStore: Store<Conversation>;
   readonly modelStore: Store<Model>;
-  readonly systemMessageContentStore: Store<string>;
+
+  getMessageStore(id: string): Store<Message>;
+  disposeMessageStore(id: string): void;
 }
 
-export type ChatCompletion =
-  | {readonly status: 'idle' | 'sending'}
-  | {readonly status: 'receiving'; readonly contentDelta: string};
-
-export type ChatHistory = readonly ChatHistoryEntry[];
-
-export interface ChatHistoryEntry {
-  readonly id: string;
-  readonly role: 'user' | 'assistant';
-  readonly content: string;
-}
-
-export type ColorScheme = 'auto' | 'light' | 'dark';
+const messageStores = new Map<string, Store<Message>>();
 
 export const AppContext = createContext<App>({
-  apiKeyStore: new BrowserStore({
-    key: `apiKey`,
-    schema: string(),
-    defaultValue: ``,
-  }),
-  chatCompletionStore: new MemoryStore<ChatCompletion>({
-    defaultValue: {status: `idle`},
-  }),
-  chatHistoryStore: new BrowserStore({
-    key: `chatHistory`,
-    schema: array(
-      object({
-        id: string().uuid(),
-        role: literal(`user`).or(literal(`assistant`)),
-        content: string(),
-      }),
-    ),
-    defaultValue: [],
-  }),
-  colorSchemeStore: new BrowserStore({
-    key: `colorScheme`,
-    schema: union([literal(`auto`), literal(`light`), literal(`dark`)]),
-    defaultValue: `auto`,
-  }),
-  modelStore: new BrowserStore({
-    key: `model`,
-    schema: union([literal(`gpt-4`), literal(`gpt-3.5-turbo`)]),
-    defaultValue: `gpt-4`,
-  }),
-  systemMessageContentStore: new BrowserStore({
-    key: `systemMessageContent`,
-    schema: string(),
-    defaultValue: `Please provide responses in *Markdown format* and English language.`,
-  }),
+  apiKeyStore: createApiKeyStore(),
+  colorSchemeStore: createColorSchemeStore(),
+  completionStore: createCompletionStore(),
+  conversationStore: createConversationStore(),
+  modelStore: createModelStore(),
+
+  getMessageStore(id: string): Store<Message> {
+    let messageStore = messageStores.get(id);
+
+    if (!messageStore) {
+      messageStore = createMessageStore(id);
+
+      messageStores.set(id, messageStore);
+    }
+
+    return messageStore;
+  },
+
+  disposeMessageStore(id: string): void {
+    const messageStore = messageStores.get(id);
+
+    if (messageStore) {
+      messageStores.delete(id);
+      messageStore.get().model.dispose();
+      messageStore.dispose();
+    }
+  },
 });

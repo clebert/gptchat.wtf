@@ -1,22 +1,28 @@
 import type {JSX} from 'preact';
 
-import {ChatCompletionCancelButton} from './chat-completion-cancel-button.js';
+import {Button} from './button.js';
 import {Editor} from './editor.js';
-import {RoleIcon} from './role-icon.js';
+import {Icon} from './icon.js';
+import {MessageRoleIcon} from './message-role-icon.js';
 import {AppContext} from '../contexts/app-context.js';
+import {useCancelCompletionCallback} from '../hooks/use-cancel-completion-callback.js';
 import * as monaco from 'monaco-editor';
 import {useContext, useEffect, useMemo} from 'preact/hooks';
 
-export function ChatCompletionView(): JSX.Element {
+export function CompletionView(): JSX.Element {
   const model = useMemo(() => monaco.editor.createModel(``, `markdown`), []);
 
-  useEffect(() => () => model.dispose(), []);
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
 
-  const {chatCompletionStore} = useContext(AppContext);
-  const chatCompletion = chatCompletionStore.useExternalState();
+    return () => model.dispose();
+  }, []);
+
+  const {completionStore} = useContext(AppContext);
+  const completion = completionStore.use();
 
   useEffect(() => {
-    if (chatCompletion.status === `receiving`) {
+    if (completion.status === `receiving`) {
       const lastLineNumber = model.getLineCount();
       const lastLineColumn = model.getLineMaxColumn(lastLineNumber);
 
@@ -30,7 +36,7 @@ export function ChatCompletionView(): JSX.Element {
               endLineNumber: lastLineNumber,
               endColumn: lastLineColumn,
             },
-            text: chatCompletion.contentDelta,
+            text: completion.contentDelta,
           },
         ],
         () => null,
@@ -38,25 +44,23 @@ export function ChatCompletionView(): JSX.Element {
     } else {
       model.setValue(``);
     }
-  }, [chatCompletion]);
+  }, [completion]);
 
-  useEffect(() => {
-    if (chatCompletion.status === `receiving`) {
-      window.scrollTo(0, document.body.scrollHeight);
-    }
-  }, [chatCompletion.status]);
+  const cancelCompletion = useCancelCompletionCallback();
 
-  return chatCompletion.status !== `idle` ? (
+  return (
     <div className="flex space-x-2">
       <div class="flex shrink-0 flex-col space-y-2">
-        <ChatCompletionCancelButton />
-        <RoleIcon role="assistant" />
+        <Button title="Cancel Chat Completion" onClick={cancelCompletion}>
+          <Icon type="xMark" standalone />
+        </Button>
+
+        <MessageRoleIcon role="assistant" />
       </div>
+
       <div class="w-full overflow-hidden">
         <Editor class="h-40" model={model} autoScroll readOnly />
       </div>
     </div>
-  ) : (
-    <></>
   );
 }
