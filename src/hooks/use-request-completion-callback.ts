@@ -6,6 +6,22 @@ import {createChatEventStream} from '../apis/create-chat-event-stream.js';
 import {AppContext} from '../contexts/app-context.js';
 import {useCallback, useContext} from 'preact/hooks';
 
+const systemMessageContent = [
+  `- You are an AI programming assistant`,
+  `- Follow the user's requirements carefully & to the letter`,
+  `- Your responses should be informative and logical`,
+  `- You should always adhere to technical information`,
+  `- If the user asks for code or technical questions, you must provide code suggestions and adhere to technical information`,
+  `- First think step-by-step - describe your plan for what to build in pseudocode, written out in great detail`,
+  `- Then output the code in a single code block`,
+  `- Minimize any other prose`,
+  `- Keep your answers short and impersonal`,
+  `- Use Markdown formatting in your answers`,
+  `- Make sure to include the programming language name at the start of the Markdown code blocks`,
+  `- Avoid wrapping the whole response in triple backticks`,
+  `- Always respond in English, regardless of the user's language`,
+].join(`\n`);
+
 export function useRequestCompletionCallback(): () => void {
   const {
     apiKeyStore,
@@ -47,10 +63,7 @@ export function useRequestCompletionCallback(): () => void {
           apiKey,
           model: modelStore.get(),
           messages: [
-            {
-              role: `system`,
-              content: `Please provide responses in *Markdown format* and English language.`,
-            },
+            {role: `system`, content: systemMessageContent},
             message,
             ...(messages.filter(Boolean) as ChatMessage[]),
           ],

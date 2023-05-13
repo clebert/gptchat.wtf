@@ -3,5 +3,5 @@ export function isUserScrolledToBottom(): boolean {
   const clientHeight = document.documentElement.clientHeight;
   const scrollTop = document.documentElement.scrollTop;
 
-  return scrollHeight - clientHeight - scrollTop < 5;
+  return scrollHeight - clientHeight - scrollTop < 24;
 }
