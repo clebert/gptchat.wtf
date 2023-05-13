@@ -6,6 +6,7 @@ import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
 import {AppContext} from '../contexts/app-context.js';
 import {useCancelCompletionCallback} from '../hooks/use-cancel-completion-callback.js';
+import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
 import * as monaco from 'monaco-editor';
 import {useContext, useEffect, useMemo} from 'preact/hooks';
 
@@ -23,6 +24,7 @@ export function CompletionView(): JSX.Element {
 
   useEffect(() => {
     if (completion.status === `receiving`) {
+      const userScrolledToBottom = isUserScrolledToBottom();
       const lastLineNumber = model.getLineCount();
       const lastLineColumn = model.getLineMaxColumn(lastLineNumber);
 
@@ -41,6 +43,10 @@ export function CompletionView(): JSX.Element {
         ],
         () => null,
       );
+
+      if (userScrolledToBottom) {
+        window.scrollTo(0, document.body.scrollHeight);
+      }
     } else {
       model.setValue(``);
     }
@@ -51,7 +57,7 @@ export function CompletionView(): JSX.Element {
   return (
     <div className="flex space-x-2">
       <div class="w-full overflow-hidden">
-        <Editor class="h-40" model={model} autoScroll readOnly />
+        <Editor model={model} readOnly />
       </div>
 
       <div class="flex shrink-0 flex-col space-y-2">

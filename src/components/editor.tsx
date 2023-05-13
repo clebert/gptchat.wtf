@@ -5,24 +5,36 @@ import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import {join} from '../utils/join.js';
 import * as monaco from 'monaco-editor';
-import {useContext, useEffect, useRef} from 'preact/hooks';
+import {useCallback, useContext, useEffect, useRef} from 'preact/hooks';
 
 export interface EditorProps {
   class?: string;
   model: monaco.editor.ITextModel | null;
-  autoScroll?: boolean;
   readOnly?: boolean;
 }
 
 export function Editor({
   class: className,
   model,
-  autoScroll,
   readOnly,
 }: EditorProps): JSX.Element {
   const styles = useContext(StylesContext);
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+
+  const resize = useCallback(() => {
+    const lineHeight = editorRef.current!.getOption(
+      monaco.editor.EditorOption.lineHeight,
+    );
+
+    const contentHeigth = Math.max(
+      lineHeight * 5,
+      editorRef.current!.getContentHeight(),
+    );
+
+    containerRef.current!.style.height = `${contentHeigth + 2}px`;
+    editorRef.current!.layout();
+  }, []);
 
   useEffect(() => {
     editorRef.current = monaco.editor.create(containerRef.current!, {
@@ -33,34 +45,31 @@ export function Editor({
       readOnly,
       scrollBeyondLastLine: false,
       wordWrap: `on`,
+      scrollbar: {
+        vertical: `hidden`,
+        horizontal: `hidden`,
+        handleMouseWheel: false,
+      },
     });
 
-    const onResize = () => editorRef.current!.layout();
-
-    window.addEventListener(`resize`, onResize);
+    window.addEventListener(`resize`, resize);
 
     return () => {
-      window.removeEventListener(`resize`, onResize);
+      window.removeEventListener(`resize`, resize);
       editorRef.current!.dispose();
     };
   }, []);
 
   useEffect(() => {
     editorRef.current!.setModel(model);
+    resize();
 
-    const disposable = autoScroll
-      ? model?.onDidChangeContent(() => {
-          editorRef.current!.revealLine(
-            model.getLineCount(),
-            monaco.editor.ScrollType.Immediate,
-          );
-        })
-      : undefined;
+    const disposable = model?.onDidChangeContent(resize);
 
     return () => {
       disposable?.dispose();
     };
-  }, [model, autoScroll]);
+  }, [model]);
 
   const darkMode = useDarkMode();
 
