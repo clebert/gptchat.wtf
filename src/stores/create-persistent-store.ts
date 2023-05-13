@@ -10,7 +10,11 @@ export function createPersistentStore<TValue>(
 ): Store<TValue> {
   const storageItem = createStorageItem(key, schema);
 
-  const store = new Store(storageItem.value ?? initialValue);
+  const store = new Store(storageItem.value ?? initialValue, {
+    onDispose: () => {
+      storageItem.value = undefined;
+    },
+  });
 
   store.subscribe(() => {
     storageItem.value = store.get();

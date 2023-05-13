@@ -1,13 +1,16 @@
 import type {JSX} from 'preact';
 
 import {ApiKeyView} from './api-key-view.js';
+import {Button} from './button.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
 import {CompletionView} from './completion-view.js';
+import {Icon} from './icon.js';
 import {MessageView} from './message-view.js';
 import {ModelButton} from './model-button.js';
 import {NewMessageView} from './new-message-view.js';
 import {AppContext} from '../contexts/app-context.js';
 import {StylesContext} from '../contexts/styles-context.js';
+import {useClearDataCallback} from '../hooks/use-clear-data-callback.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import {render} from 'preact';
 import {useContext, useLayoutEffect} from 'preact/hooks';
@@ -34,14 +37,21 @@ export function App(): JSX.Element {
   const {completionStore, conversationStore} = useContext(AppContext);
   const completion = completionStore.use();
   const {messageIds} = conversationStore.use();
+  const clearData = useClearDataCallback();
 
   return (
     <div class="2xl:container 2xl:mx-auto">
       <div class="m-2 flex flex-col space-y-2">
-        <div className="flex space-x-2">
-          <ModelButton />
-          <ApiKeyView />
-          <ColorSchemeButton />
+        <div className="flex justify-between space-x-2">
+          <div class="flex grow space-x-2">
+            <ModelButton />
+            <ColorSchemeButton />
+            <ApiKeyView />
+          </div>
+
+          <Button title="Clear data" onClick={clearData}>
+            <Icon type="arrowLeftOnRectangle" standalone />
+          </Button>
         </div>
 
         {messageIds.map((id) => (

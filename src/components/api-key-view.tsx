@@ -51,6 +51,10 @@ export function ApiKeyView(): JSX.Element {
 
   const apiKey = apiKeyStore.use();
 
+  if (!apiKey) {
+    setShowApiKey(true);
+  }
+
   return showApiKey ? (
     <TextField
       ref={apiKeyFieldRef}

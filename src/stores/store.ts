@@ -1,9 +1,16 @@
 import {useSyncExternalStore} from 'preact/compat';
 
+export interface StoreOptions {
+  onDispose?(): void;
+}
+
 export class Store<const TValue> {
+  readonly #onDispose?: () => void;
+
   #value: TValue;
 
-  constructor(initialValue: TValue, readonly is: typeof Object.is = Object.is) {
+  constructor(initialValue: TValue, options?: StoreOptions) {
+    this.#onDispose = options?.onDispose;
     this.#value = initialValue;
   }
 
@@ -14,7 +21,7 @@ export class Store<const TValue> {
   readonly #listeners = new Set<() => void>();
 
   set(newValue: TValue): void {
-    if (!this.is(newValue, this.#value)) {
+    if (!Object.is(newValue, this.#value)) {
       this.#value = newValue;
 
       this.notify();
@@ -46,5 +53,6 @@ export class Store<const TValue> {
 
   dispose(): void {
     this.#listeners.clear();
+    this.#onDispose?.();
   }
 }

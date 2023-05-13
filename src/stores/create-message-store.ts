@@ -20,7 +20,15 @@ export function createMessageStore(id: string): Store<Message> {
 
   const {role, content} = storageItem.value ?? {content: ``};
   const model = monaco.editor.createModel(content, `markdown`);
-  const store = new Store({role, model});
+
+  const store = new Store(
+    {role, model},
+    {
+      onDispose: () => {
+        storageItem.value = undefined;
+      },
+    },
+  );
 
   model.onDidChangeContent(() => store.notify());
 
