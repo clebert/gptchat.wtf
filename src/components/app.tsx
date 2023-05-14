@@ -1,6 +1,7 @@
 import type {JSX} from 'preact';
 
 import {ApiKeyView} from './api-key-view.js';
+import {AssistantModeButton} from './assistant-mode-button.js';
 import {Button} from './button.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
 import {CompletionView} from './completion-view.js';
@@ -45,6 +46,7 @@ export function App(): JSX.Element {
         <div className="flex justify-between space-x-2">
           <div class="flex grow space-x-2">
             <ModelButton />
+            <AssistantModeButton />
             <ColorSchemeButton />
             <ApiKeyView />
           </div>
