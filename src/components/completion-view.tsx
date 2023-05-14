@@ -59,7 +59,7 @@ export function CompletionView(): JSX.Element {
   return (
     <div className="flex space-x-2">
       <div class="w-full overflow-hidden">
-        <Editor model={model} autoFocus readOnly />
+        <Editor model={model} readOnly />
       </div>
 
       <div class="flex shrink-0 flex-col space-y-2">

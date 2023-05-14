@@ -12,7 +12,6 @@ import {useContext, useEffect, useRef} from 'preact/hooks';
 export interface EditorProps {
   class?: string;
   model: monaco.editor.ITextModel;
-  autoFocus?: boolean;
   autoScroll?: boolean;
   readOnly?: boolean;
 }
@@ -20,7 +19,6 @@ export interface EditorProps {
 export function Editor({
   class: className,
   model,
-  autoFocus,
   autoScroll,
   readOnly,
 }: EditorProps): JSX.Element {
@@ -59,10 +57,6 @@ export function Editor({
     editor.onDidChangeModelContent(() => {
       resizeEditor(editor);
     });
-
-    if (autoFocus) {
-      editor.focus();
-    }
 
     const abortController = new AbortController();
 

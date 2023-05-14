@@ -4,11 +4,10 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
-import {AppContext} from '../contexts/app-context.js';
 import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
 import {useRequestCompletionCallback} from '../hooks/use-request-completion-callback.js';
 import * as monaco from 'monaco-editor';
-import {useCallback, useContext, useEffect, useMemo} from 'preact/hooks';
+import {useCallback, useEffect, useMemo} from 'preact/hooks';
 
 export function NewMessageView(): JSX.Element {
   const model = useMemo(() => monaco.editor.createModel(``, `markdown`), []);
@@ -37,13 +36,10 @@ export function NewMessageView(): JSX.Element {
     requestCompletion();
   }, [handleAddMessageClick, requestCompletion]);
 
-  const {apiKeyStore} = useContext(AppContext);
-  const apiKey = apiKeyStore.use();
-
   return (
     <div className="flex space-x-2">
       <div class="w-full overflow-hidden">
-        <Editor model={model} autoFocus={apiKey.length > 0} autoScroll />
+        <Editor model={model} autoScroll />
       </div>
 
       <div class="flex shrink-0 flex-col space-y-2">
