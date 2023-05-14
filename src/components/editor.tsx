@@ -4,72 +4,81 @@ import './editor.css';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import {join} from '../utils/join.js';
+import {resizeEditor} from '../utils/resize-editor.js';
+import {scrollToCursor} from '../utils/scroll-to-cursor.js';
 import * as monaco from 'monaco-editor';
-import {useCallback, useContext, useEffect, useRef} from 'preact/hooks';
+import {useContext, useEffect, useRef} from 'preact/hooks';
 
 export interface EditorProps {
   class?: string;
-  model: monaco.editor.ITextModel | null;
+  model: monaco.editor.ITextModel;
+  autoFocus?: boolean;
+  autoScroll?: boolean;
   readOnly?: boolean;
 }
 
 export function Editor({
   class: className,
   model,
+  autoFocus,
+  autoScroll,
   readOnly,
 }: EditorProps): JSX.Element {
   const styles = useContext(StylesContext);
   const containerRef = useRef<HTMLDivElement>(null);
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
 
-  const resize = useCallback(() => {
-    const lineHeight = editorRef.current!.getOption(
-      monaco.editor.EditorOption.lineHeight,
-    );
-
-    const contentHeigth = Math.max(
-      lineHeight * 5,
-      editorRef.current!.getContentHeight(),
-    );
-
-    containerRef.current!.style.height = `${contentHeigth + 2}px`;
-    editorRef.current!.layout();
-  }, []);
-
   useEffect(() => {
-    editorRef.current = monaco.editor.create(containerRef.current!, {
-      contextmenu: false,
-      fontSize: 16,
-      lineNumbers: `off`,
-      minimap: {enabled: false},
-      readOnly,
-      scrollBeyondLastLine: false,
-      wordWrap: `on`,
-      scrollbar: {
-        vertical: `hidden`,
-        horizontal: `hidden`,
-        handleMouseWheel: false,
+    const editor = (editorRef.current = monaco.editor.create(
+      containerRef.current!,
+      {
+        contextmenu: false,
+        fontSize: 16,
+        lineNumbers: `off`,
+        minimap: {enabled: false},
+        model,
+        readOnly,
+        scrollBeyondLastLine: false,
+        wordWrap: `on`,
+        scrollbar: {
+          vertical: `hidden`,
+          horizontal: `hidden`,
+          handleMouseWheel: false,
+        },
       },
+    ));
+
+    resizeEditor(editor);
+
+    editor.onDidChangeCursorPosition(() => {
+      if (autoScroll && editor.hasTextFocus()) {
+        scrollToCursor(editor);
+      }
     });
 
-    window.addEventListener(`resize`, resize);
+    editor.onDidChangeModelContent(() => {
+      resizeEditor(editor);
+    });
+
+    if (autoFocus) {
+      editor.focus();
+    }
+
+    const abortController = new AbortController();
+
+    window.addEventListener(
+      `resize`,
+      () => {
+        resizeEditor(editor);
+      },
+      {signal: abortController.signal},
+    );
 
     return () => {
-      window.removeEventListener(`resize`, resize);
-      editorRef.current!.dispose();
+      abortController.abort();
+      editor.dispose();
     };
   }, []);
-
-  useEffect(() => {
-    editorRef.current!.setModel(model);
-    resize();
-
-    const disposable = model?.onDidChangeContent(resize);
-
-    return () => {
-      disposable?.dispose();
-    };
-  }, [model]);
 
   const darkMode = useDarkMode();
 

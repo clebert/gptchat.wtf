@@ -14,9 +14,11 @@ export function CompletionView(): JSX.Element {
   const model = useMemo(() => monaco.editor.createModel(``, `markdown`), []);
 
   useEffect(() => {
-    window.scrollTo(0, document.body.scrollHeight);
+    window.scrollTo(0, document.documentElement.scrollHeight);
 
-    return () => model.dispose();
+    return () => {
+      model.dispose();
+    };
   }, []);
 
   const {completionStore} = useContext(AppContext);
@@ -45,7 +47,7 @@ export function CompletionView(): JSX.Element {
       );
 
       if (userScrolledToBottom) {
-        window.scrollTo(0, document.body.scrollHeight);
+        window.scrollTo(0, document.documentElement.scrollHeight);
       }
     } else {
       model.setValue(``);
@@ -57,7 +59,7 @@ export function CompletionView(): JSX.Element {
   return (
     <div className="flex space-x-2">
       <div class="w-full overflow-hidden">
-        <Editor model={model} readOnly />
+        <Editor model={model} autoFocus readOnly />
       </div>
 
       <div class="flex shrink-0 flex-col space-y-2">
