@@ -1,6 +1,5 @@
-import type {JSX} from 'preact';
-
 import {join} from '../utils/join.js';
+import * as React from 'react';
 
 export interface IconProps {
   type: keyof typeof pathByType;
@@ -26,9 +25,11 @@ const pathByType = {
 
 export function Icon({type, standalone}: IconProps): JSX.Element {
   return (
-    <div class={join(`inline-flex h-6 items-center`, !standalone && `mr-1`)}>
+    <div
+      className={join(`inline-flex h-6 items-center`, !standalone && `mr-1`)}
+    >
       <svg
-        class="h-4 w-4 stroke-current stroke-1"
+        className="h-4 w-4 stroke-current stroke-1"
         viewBox="0 0 24 24"
         fill="none"
         stroke-linecap="round"

@@ -1,13 +1,9 @@
-import type {JSX} from 'preact';
-import type {ForwardedRef} from 'preact/compat';
-
 import {StylesContext} from '../contexts/styles-context.js';
 import {join} from '../utils/join.js';
-import {forwardRef} from 'preact/compat';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export interface TextFieldProps {
-  class?: string;
+  className?: string;
   value: string;
   placeholder?: string;
   disabled?: boolean;
@@ -16,32 +12,34 @@ export interface TextFieldProps {
   onInput(value: string): void;
 }
 
-export const TextField = forwardRef(
+export const TextField = React.forwardRef(
   (
     {
-      class: className,
+      className,
       value,
       placeholder,
       disabled,
       required,
       onInput,
     }: TextFieldProps,
-    ref: ForwardedRef<HTMLInputElement>,
+    ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
-    const handleInput = useCallback(
-      (event: Event) => {
+    const handleInput = React.useCallback<
+      React.FormEventHandler<HTMLInputElement>
+    >(
+      (event) => {
         event.preventDefault();
-        onInput((event.target as HTMLInputElement).value);
+        onInput(event.currentTarget.value);
       },
       [onInput],
     );
 
-    const styles = useContext(StylesContext);
+    const styles = React.useContext(StylesContext);
 
     return (
       <input
         ref={ref}
-        class={join(
+        className={join(
           className,
           `w-full appearance-none rounded-none px-2`,
           disabled && `opacity-25`,
@@ -54,11 +52,11 @@ export const TextField = forwardRef(
         type="text"
         value={value}
         placeholder={placeholder}
-        autocomplete="off"
-        autocorrect="off"
+        autoComplete="off"
+        autoCorrect="off"
         disabled={disabled}
         required={required}
-        spellcheck={false}
+        spellCheck={false}
         onInput={handleInput}
       />
     );

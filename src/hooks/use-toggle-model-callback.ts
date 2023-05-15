@@ -1,10 +1,10 @@
 import {AppContext} from '../contexts/app-context.js';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export function useToggleModelCallback(): () => void {
-  const {modelStore} = useContext(AppContext);
+  const {modelStore} = React.useContext(AppContext);
 
-  return useCallback(() => {
+  return React.useCallback(() => {
     if (modelStore.get() === `gpt-4`) {
       modelStore.set(`gpt-3.5-turbo`);
     } else {

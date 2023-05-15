@@ -1,10 +1,8 @@
-import type {JSX} from 'preact';
-
 import {Button} from './button.js';
 import {Icon} from './icon.js';
 import {AppContext} from '../contexts/app-context.js';
 import {useToggleAssistantModeCallback} from '../hooks/use-toggle-assistant-mode-callback.js';
-import {useContext} from 'preact/hooks';
+import * as React from 'react';
 
 const titles = {
   general: `General Assistant`,
@@ -18,12 +16,12 @@ const iconTypes = {
 
 export function AssistantModeButton(): JSX.Element {
   const toggleAssistantMode = useToggleAssistantModeCallback();
-  const {assistantModeStore} = useContext(AppContext);
+  const {assistantModeStore} = React.useContext(AppContext);
   const mode = assistantModeStore.use();
 
   return (
     <Button
-      class="border-dashed"
+      className="border-dashed"
       title={titles[mode]}
       onClick={toggleAssistantMode}
     >

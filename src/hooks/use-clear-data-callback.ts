@@ -1,11 +1,11 @@
 import {AppContext} from '../contexts/app-context.js';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export function useClearDataCallback(): any {
   const {apiKeyStore, conversationStore, disposeMessageStore} =
-    useContext(AppContext);
+    React.useContext(AppContext);
 
-  return useCallback(() => {
+  return React.useCallback(() => {
     apiKeyStore.set(``);
 
     const {messageIds} = conversationStore.get();

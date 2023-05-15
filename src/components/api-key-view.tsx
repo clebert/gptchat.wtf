@@ -1,35 +1,27 @@
-import type {JSX} from 'preact';
-
 import {Button} from './button.js';
 import {Icon} from './icon.js';
 import {TextField} from './text-field.js';
 import {AppContext} from '../contexts/app-context.js';
-import {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'preact/hooks';
+import * as React from 'react';
 
 export function ApiKeyView(): JSX.Element {
-  const {apiKeyStore} = useContext(AppContext);
+  const {apiKeyStore} = React.useContext(AppContext);
 
-  const setApiKey = useCallback((value: string) => {
+  const setApiKey = React.useCallback((value: string) => {
     apiKeyStore.set(value);
   }, []);
 
-  const [showApiKey, setShowApiKey] = useState(
+  const [showApiKey, setShowApiKey] = React.useState(
     () => apiKeyStore.get().length === 0,
   );
 
-  const handleShowApiKeyClick = useCallback(() => {
+  const handleShowApiKeyClick = React.useCallback(() => {
     setShowApiKey(true);
   }, []);
 
-  const apiKeyFieldRef = useRef<HTMLInputElement>(null);
+  const apiKeyFieldRef = React.useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const apiKeyField = apiKeyFieldRef.current;
 
     if (!showApiKey || !apiKeyField) {

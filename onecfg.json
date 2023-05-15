@@ -7,7 +7,6 @@
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-ignore-dist.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-node.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-node-github.json",
-    "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-preact.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-prettier.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-swc.json",
     "https://raw.githubusercontent.com/clebert/onecfg-lib/main/lib/onecfg-typescript.json",

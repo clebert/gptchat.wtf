@@ -4,7 +4,7 @@ import {useAddMessageCallback} from './use-add-message-callback.js';
 import {createChatEventGenerator} from '../apis/create-chat-event-generator.js';
 import {createChatEventStream} from '../apis/create-chat-event-stream.js';
 import {AppContext} from '../contexts/app-context.js';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 const generalSystemMessageContent = [
   `- You are an AI assistant`,
@@ -36,11 +36,11 @@ export function useRequestCompletionCallback(): () => void {
     conversationStore,
     modelStore,
     getMessageStore,
-  } = useContext(AppContext);
+  } = React.useContext(AppContext);
 
   const addMessage = useAddMessageCallback();
 
-  return useCallback(async () => {
+  return React.useCallback(async () => {
     const apiKey = apiKeyStore.get();
 
     if (!apiKey || completionStore.get().status !== `idle`) {

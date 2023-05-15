@@ -13,7 +13,7 @@ import {createCompletionStore} from '../stores/create-completion-store.js';
 import {createConversationStore} from '../stores/create-conversation-store.js';
 import {createMessageStore} from '../stores/create-message-store.js';
 import {createModelStore} from '../stores/create-model-store.js';
-import {createContext} from 'preact';
+import * as React from 'react';
 
 export interface App {
   readonly apiKeyStore: Store<string>;
@@ -29,7 +29,7 @@ export interface App {
 
 const messageStores = new Map<string, Store<Message>>();
 
-export const AppContext = createContext<App>({
+export const AppContext = React.createContext<App>({
   apiKeyStore: createApiKeyStore(),
   assistantModeStore: createAssistantModeStore(),
   colorSchemeStore: createColorSchemeStore(),

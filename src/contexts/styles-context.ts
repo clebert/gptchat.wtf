@@ -1,4 +1,4 @@
-import {createContext} from 'preact';
+import * as React from 'react';
 
 export interface Styles {
   readonly text: string;
@@ -16,7 +16,7 @@ export interface Styles {
   readonly focusWithin: string;
 }
 
-export const StylesContext = createContext<Styles>({
+export const StylesContext = React.createContext<Styles>({
   text: `text-black dark:text-white`,
   textActive: `active:text-white dark:active:text-black`,
   textInverted: `text-white dark:text-black`,

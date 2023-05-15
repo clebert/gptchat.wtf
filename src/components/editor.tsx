@@ -1,5 +1,3 @@
-import type {JSX} from 'preact';
-
 import './editor.css';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
@@ -7,26 +5,26 @@ import {join} from '../utils/join.js';
 import {resizeEditor} from '../utils/resize-editor.js';
 import {scrollToCursor} from '../utils/scroll-to-cursor.js';
 import * as monaco from 'monaco-editor';
-import {useContext, useEffect, useRef} from 'preact/hooks';
+import * as React from 'react';
 
 export interface EditorProps {
-  class?: string;
+  className?: string;
   model: monaco.editor.ITextModel;
   autoScroll?: boolean;
   readOnly?: boolean;
 }
 
 export function Editor({
-  class: className,
+  className,
   model,
   autoScroll,
   readOnly,
 }: EditorProps): JSX.Element {
-  const styles = useContext(StylesContext);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const editorRef = useRef<monaco.editor.IStandaloneCodeEditor>();
+  const styles = React.useContext(StylesContext);
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const editor = (editorRef.current = monaco.editor.create(
       containerRef.current!,
       {
@@ -76,7 +74,7 @@ export function Editor({
 
   const darkMode = useDarkMode();
 
-  useEffect(() => {
+  React.useEffect(() => {
     // @ts-ignore
     editorRef.current!._themeService.setTheme(darkMode ? `vs-dark` : `vs`);
   }, [darkMode]);

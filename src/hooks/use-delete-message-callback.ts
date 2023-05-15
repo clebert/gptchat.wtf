@@ -1,10 +1,10 @@
 import {AppContext} from '../contexts/app-context.js';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export function useDeleteMessageCallback(): (id: string) => void {
-  const {conversationStore, disposeMessageStore} = useContext(AppContext);
+  const {conversationStore, disposeMessageStore} = React.useContext(AppContext);
 
-  return useCallback((id) => {
+  return React.useCallback((id) => {
     const conversation = conversationStore.get();
 
     conversationStore.set({

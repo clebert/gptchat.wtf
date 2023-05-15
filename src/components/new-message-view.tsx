@@ -1,5 +1,3 @@
-import type {JSX} from 'preact';
-
 import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
@@ -7,12 +5,15 @@ import {MessageRoleIcon} from './message-role-icon.js';
 import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
 import {useRequestCompletionCallback} from '../hooks/use-request-completion-callback.js';
 import * as monaco from 'monaco-editor';
-import {useCallback, useEffect, useMemo} from 'preact/hooks';
+import * as React from 'react';
 
 export function NewMessageView(): JSX.Element {
-  const model = useMemo(() => monaco.editor.createModel(``, `markdown`), []);
+  const model = React.useMemo(
+    () => monaco.editor.createModel(``, `markdown`),
+    [],
+  );
 
-  useEffect(() => {
+  React.useEffect(() => {
     return () => {
       model.dispose();
     };
@@ -20,7 +21,7 @@ export function NewMessageView(): JSX.Element {
 
   const addMessage = useAddMessageCallback();
 
-  const handleAddMessageClick = useCallback(() => {
+  const handleAddMessageClick = React.useCallback(() => {
     const content = model.getValue();
 
     if (content) {
@@ -31,18 +32,18 @@ export function NewMessageView(): JSX.Element {
 
   const requestCompletion = useRequestCompletionCallback();
 
-  const handleRequestCompletionClick = useCallback(() => {
+  const handleRequestCompletionClick = React.useCallback(() => {
     handleAddMessageClick();
     requestCompletion();
   }, [handleAddMessageClick, requestCompletion]);
 
   return (
     <div className="flex space-x-2">
-      <div class="w-full overflow-hidden">
+      <div className="w-full overflow-hidden">
         <Editor model={model} autoScroll />
       </div>
 
-      <div class="flex shrink-0 flex-col space-y-2">
+      <div className="flex shrink-0 flex-col space-y-2">
         <Button
           title="Request Chat Completion"
           inverted

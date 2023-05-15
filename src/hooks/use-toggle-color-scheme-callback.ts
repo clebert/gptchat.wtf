@@ -1,10 +1,10 @@
 import {AppContext} from '../contexts/app-context.js';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export function useToggleColorSchemeCallback(): () => void {
-  const {colorSchemeStore} = useContext(AppContext);
+  const {colorSchemeStore} = React.useContext(AppContext);
 
-  return useCallback(() => {
+  return React.useCallback(() => {
     switch (colorSchemeStore.get()) {
       case `auto`: {
         colorSchemeStore.set(`dark`);

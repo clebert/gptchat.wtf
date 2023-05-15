@@ -1,10 +1,10 @@
 import {AppContext} from '../contexts/app-context.js';
-import {useCallback, useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export function useCancelCompletionCallback(): () => void {
-  const {completionStore} = useContext(AppContext);
+  const {completionStore} = React.useContext(AppContext);
 
-  return useCallback(() => {
+  return React.useCallback(() => {
     completionStore.set({status: `idle`});
   }, []);
 }

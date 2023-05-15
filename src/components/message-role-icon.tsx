@@ -1,9 +1,7 @@
-import type {JSX} from 'preact';
-
 import {Icon} from './icon.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {join} from '../utils/join.js';
-import {useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export interface MessageRoleIconProps {
   role: 'user' | 'assistant';
@@ -17,11 +15,11 @@ const iconTypes = {
 } as const;
 
 export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
-  const styles = useContext(StylesContext);
+  const styles = React.useContext(StylesContext);
 
   return (
     <div
-      class={join(
+      className={join(
         `flex select-none items-center px-2`,
         styles.text,
         styles.background,

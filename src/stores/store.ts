@@ -1,4 +1,4 @@
-import {useSyncExternalStore} from 'preact/compat';
+import * as React from 'react';
 
 export interface StoreOptions {
   onDispose?(): void;
@@ -29,7 +29,7 @@ export class Store<const TValue> {
   }
 
   use(): TValue {
-    return useSyncExternalStore(
+    return React.useSyncExternalStore(
       (listener) => this.subscribe(listener),
       () => this.get(),
     );

@@ -1,10 +1,8 @@
-import type {JSX} from 'preact';
-
 import {Button} from './button.js';
 import {Icon} from './icon.js';
 import {AppContext} from '../contexts/app-context.js';
 import {useToggleColorSchemeCallback} from '../hooks/use-toggle-color-scheme-callback.js';
-import {useContext} from 'preact/hooks';
+import * as React from 'react';
 
 const titles = {auto: `System Theme`, light: `Day Theme`, dark: `Night Theme`};
 
@@ -16,12 +14,12 @@ const iconTypes = {
 
 export function ColorSchemeButton(): JSX.Element {
   const toggleColorScheme = useToggleColorSchemeCallback();
-  const {colorSchemeStore} = useContext(AppContext);
+  const {colorSchemeStore} = React.useContext(AppContext);
   const colorScheme = colorSchemeStore.use();
 
   return (
     <Button
-      class="border-dashed"
+      className="border-dashed"
       title={titles[colorScheme]}
       onClick={toggleColorScheme}
     >

@@ -1,12 +1,10 @@
-import type {ComponentChildren, JSX} from 'preact';
-
 import {StylesContext} from '../contexts/styles-context.js';
 import {join} from '../utils/join.js';
-import {useContext} from 'preact/hooks';
+import * as React from 'react';
 
 export interface ButtonProps {
-  children: ComponentChildren;
-  class?: string;
+  children: React.ReactNode;
+  className?: string;
   type?: 'button' | 'submit';
   title: string;
   disabled?: boolean;
@@ -17,19 +15,19 @@ export interface ButtonProps {
 
 export function Button({
   children,
-  class: className,
+  className,
   type = `button`,
   title,
   disabled,
   inverted,
   onClick,
 }: ButtonProps): JSX.Element {
-  const styles = useContext(StylesContext);
+  const styles = React.useContext(StylesContext);
   const enabled = disabled === undefined ? onClick !== undefined : !disabled;
 
   return (
     <button
-      class={join(
+      className={join(
         className,
         `flex select-none items-center whitespace-nowrap px-2`,
         !enabled && `cursor-default opacity-25`,

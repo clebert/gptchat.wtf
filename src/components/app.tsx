@@ -1,5 +1,3 @@
-import type {JSX} from 'preact';
-
 import {ApiKeyView} from './api-key-view.js';
 import {AssistantModeButton} from './assistant-mode-button.js';
 import {Button} from './button.js';
@@ -13,21 +11,21 @@ import {AppContext} from '../contexts/app-context.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useClearDataCallback} from '../hooks/use-clear-data-callback.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
-import {render} from 'preact';
-import {useContext, useLayoutEffect} from 'preact/hooks';
+import * as React from 'react';
+import {render} from 'react-dom';
 import 'tailwindcss/tailwind.css';
 
 export function App(): JSX.Element {
   const darkMode = useDarkMode();
-  const styles = useContext(StylesContext);
+  const styles = React.useContext(StylesContext);
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     document
       .querySelector(`body`)
       ?.classList.add(...styles.background.split(` `));
   }, [styles]);
 
-  useLayoutEffect(() => {
+  React.useLayoutEffect(() => {
     if (darkMode) {
       document.documentElement.classList.add(`dark`);
     } else {
@@ -35,16 +33,16 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const {completionStore, conversationStore} = useContext(AppContext);
+  const {completionStore, conversationStore} = React.useContext(AppContext);
   const completion = completionStore.use();
   const {messageIds} = conversationStore.use();
   const clearData = useClearDataCallback();
 
   return (
-    <div class="2xl:container 2xl:mx-auto">
-      <div class="m-2 flex flex-col space-y-2">
+    <div className="2xl:container 2xl:mx-auto">
+      <div className="m-2 flex flex-col space-y-2">
         <div className="flex justify-between space-x-2">
-          <div class="flex grow space-x-2">
+          <div className="flex grow space-x-2">
             <ModelButton />
             <AssistantModeButton />
             <ColorSchemeButton />
