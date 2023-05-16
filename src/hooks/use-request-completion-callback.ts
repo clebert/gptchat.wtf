@@ -109,16 +109,20 @@ export function useRequestCompletionCallback(): () => void {
         }
       }
 
-      completionStore.set({status: `idle`});
+      if (completionStore.get().status !== `idle`) {
+        completionStore.set({status: `idle`});
+      }
 
       addMessage(`assistant`, completionContent);
     } catch (error) {
-      completionStore.set({status: `idle`});
+      if (completionStore.get().status !== `idle`) {
+        completionStore.set({status: `idle`});
 
-      addMessage(
-        `assistant`,
-        error instanceof Error ? error.message : `Unknown error.`,
-      );
+        addMessage(
+          `assistant`,
+          error instanceof Error ? error.message : `Unknown error.`,
+        );
+      }
     }
   }, [addMessage]);
 }
