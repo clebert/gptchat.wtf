@@ -43,7 +43,7 @@ export function ApiKeyView(): JSX.Element {
 
   const apiKey = apiKeyStore.use();
 
-  if (!apiKey) {
+  if (!showApiKey && !apiKey) {
     setShowApiKey(true);
   }
 
