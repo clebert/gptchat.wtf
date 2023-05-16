@@ -50,8 +50,6 @@ export function CompletionView(): JSX.Element {
       if (userScrolledToBottom) {
         window.scrollTo(0, document.documentElement.scrollHeight);
       }
-    } else {
-      model.setValue(``);
     }
   }, [completion]);
 

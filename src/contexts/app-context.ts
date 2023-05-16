@@ -23,8 +23,8 @@ export interface App {
   readonly conversationStore: Store<Conversation>;
   readonly modelStore: Store<Model>;
 
-  getMessageStore(id: string): Store<Message>;
-  disposeMessageStore(id: string): void;
+  getMessageStore(messageId: string): Store<Message>;
+  disposeMessageStore(messageId: string): void;
 }
 
 const messageStores = new Map<string, Store<Message>>();
@@ -37,23 +37,23 @@ export const AppContext = React.createContext<App>({
   conversationStore: createConversationStore(),
   modelStore: createModelStore(),
 
-  getMessageStore(id: string): Store<Message> {
-    let messageStore = messageStores.get(id);
+  getMessageStore(messageId: string): Store<Message> {
+    let messageStore = messageStores.get(messageId);
 
     if (!messageStore) {
-      messageStore = createMessageStore(id);
+      messageStore = createMessageStore(messageId);
 
-      messageStores.set(id, messageStore);
+      messageStores.set(messageId, messageStore);
     }
 
     return messageStore;
   },
 
-  disposeMessageStore(id: string): void {
-    const messageStore = messageStores.get(id);
+  disposeMessageStore(messageId: string): void {
+    const messageStore = messageStores.get(messageId);
 
     if (messageStore) {
-      messageStores.delete(id);
+      messageStores.delete(messageId);
       messageStore.get().model.dispose();
       messageStore.dispose();
     }

@@ -1,4 +1,5 @@
 import type {ChatMessage} from '../apis/create-chat-event-stream.js';
+import type {Completion} from '../stores/create-completion-store.js';
 
 import {useAddMessageCallback} from './use-add-message-callback.js';
 import {createChatEventGenerator} from '../apis/create-chat-event-generator.js';
@@ -49,8 +50,8 @@ export function useRequestCompletionCallback(): () => void {
 
     const [message, ...messages] = conversationStore
       .get()
-      .messageIds.map((id): ChatMessage | undefined => {
-        const {role, model} = getMessageStore(id).get();
+      .messageIds.map((messageId): ChatMessage | undefined => {
+        const {role, model} = getMessageStore(messageId).get();
         const content = model.getValue();
 
         return role && content ? {role, content} : undefined;
@@ -61,8 +62,9 @@ export function useRequestCompletionCallback(): () => void {
     }
 
     const abortController = new AbortController();
+    const completionId = crypto.randomUUID();
 
-    completionStore.set({status: `sending`});
+    completionStore.set({status: `sending`, id: completionId});
 
     try {
       const chatEventStream = await createChatEventStream(
@@ -89,9 +91,12 @@ export function useRequestCompletionCallback(): () => void {
       );
 
       let completionContent = ``;
+      let completion: Completion;
 
       for await (const chatEvent of chatEventGenerator) {
-        if (completionStore.get().status === `idle`) {
+        completion = completionStore.get();
+
+        if (completion.status === `idle` || completion.id !== completionId) {
           abortController.abort();
 
           break;
@@ -100,6 +105,7 @@ export function useRequestCompletionCallback(): () => void {
         if (`content` in chatEvent) {
           completionStore.set({
             status: `receiving`,
+            id: completionId,
             contentDelta: chatEvent.content,
           });
 
@@ -109,18 +115,22 @@ export function useRequestCompletionCallback(): () => void {
         }
       }
 
-      if (completionStore.get().status !== `idle`) {
+      completion = completionStore.get();
+
+      if (completion.status !== `idle` && completion.id === completionId) {
         completionStore.set({status: `idle`});
       }
 
-      addMessage(`assistant`, completionContent);
+      addMessage(`assistant`, completionContent ?? `No content`);
     } catch (error) {
-      if (completionStore.get().status !== `idle`) {
+      const completion = completionStore.get();
+
+      if (completion.status !== `idle` && completion.id === completionId) {
         completionStore.set({status: `idle`});
 
         addMessage(
           `assistant`,
-          error instanceof Error ? error.message : `Unknown error.`,
+          error instanceof Error ? error.message : `Unknown error`,
         );
       }
     }

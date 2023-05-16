@@ -9,9 +9,9 @@ export interface Message {
   readonly model: monaco.editor.ITextModel;
 }
 
-export function createMessageStore(id: string): Store<Message> {
+export function createMessageStore(messageId: string): Store<Message> {
   const storageItem = createStorageItem(
-    `store:message:${id}`,
+    `store:message:${messageId}`,
     object({
       role: literal(`user`).or(literal(`assistant`)),
       content: string(),

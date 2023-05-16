@@ -52,8 +52,8 @@ export function App(): JSX.Element {
           </Button>
         </div>
 
-        {messageIds.map((id) => (
-          <MessageView key={id} id={id} />
+        {messageIds.map((messageId) => (
+          <MessageView key={messageId} messageId={messageId} />
         ))}
 
         {completion.status === `idle` ? <NewMessageView /> : <CompletionView />}

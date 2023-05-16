@@ -7,18 +7,18 @@ import {useDeleteMessageCallback} from '../hooks/use-delete-message-callback.js'
 import * as React from 'react';
 
 export interface MessageViewProps {
-  id: string;
+  messageId: string;
 }
 
-export function MessageView({id}: MessageViewProps): JSX.Element {
+export function MessageView({messageId}: MessageViewProps): JSX.Element {
   const deleteMessage = useDeleteMessageCallback();
 
   const handleDeleteMessageClick = React.useCallback(() => {
-    deleteMessage(id);
-  }, [id, deleteMessage]);
+    deleteMessage(messageId);
+  }, [messageId, deleteMessage]);
 
   const {getMessageStore} = React.useContext(AppContext);
-  const {role, model} = getMessageStore(id).use();
+  const {role, model} = getMessageStore(messageId).use();
 
   return (
     <div className="flex space-x-2">
