@@ -1,3 +1,4 @@
+import {getViewportHeight} from './get-viewport-height.js';
 import * as monaco from 'monaco-editor';
 
 export function scrollToCursor(
@@ -22,10 +23,10 @@ export function scrollToCursor(
   } else {
     const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight);
     const lineBottom = lineTop + lineHeight;
-    const {clientHeight} = document.documentElement;
+    const viewportHeight = getViewportHeight();
 
-    if (lineBottom > window.scrollY + clientHeight) {
-      window.scrollTo({top: lineBottom - clientHeight});
+    if (lineBottom > window.scrollY + viewportHeight) {
+      window.scrollTo({top: lineBottom - viewportHeight});
     }
   }
 }
