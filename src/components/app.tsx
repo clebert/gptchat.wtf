@@ -41,13 +41,11 @@ export function App(): JSX.Element {
   return (
     <div className="2xl:container 2xl:mx-auto">
       <div className="m-2 flex flex-col space-y-2">
-        <div className="flex justify-between space-x-2">
-          <div className="flex grow space-x-2">
-            <ModelButton />
-            <AssistantModeButton />
-            <ColorSchemeButton />
-            <ApiKeyView />
-          </div>
+        <div className="flex space-x-2">
+          <ModelButton />
+          <AssistantModeButton />
+          <ColorSchemeButton />
+          <ApiKeyView />
 
           <Button title="Clear data" onClick={clearData}>
             <Icon type="arrowLeftOnRectangle" standalone />
