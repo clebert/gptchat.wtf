@@ -32,8 +32,8 @@ export function Icon({type, standalone}: IconProps): JSX.Element {
         className="h-4 w-4 stroke-current stroke-1"
         viewBox="0 0 24 24"
         fill="none"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
         <path d={pathByType[type]} />
       </svg>

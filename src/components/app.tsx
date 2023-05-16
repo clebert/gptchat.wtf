@@ -12,7 +12,7 @@ import {StylesContext} from '../contexts/styles-context.js';
 import {useClearDataCallback} from '../hooks/use-clear-data-callback.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import * as React from 'react';
-import {render} from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import 'tailwindcss/tailwind.css';
 
 export function App(): JSX.Element {
@@ -62,4 +62,4 @@ export function App(): JSX.Element {
   );
 }
 
-render(<App />, document.querySelector(`main#app`)!);
+createRoot(document.querySelector(`main#app`)!).render(<App />);
