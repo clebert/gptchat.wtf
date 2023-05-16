@@ -4,10 +4,11 @@ import stylePlugin from 'esbuild-style-plugin';
 import {minify} from 'html-minifier';
 import {readFile, rm, writeFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
-import {argv} from 'node:process';
+import {argv, env} from 'node:process';
 
 const require = createRequire(import.meta.url);
 const outdir = `dist`;
+const dev = env.NODE_ENV === `development`;
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {
@@ -31,7 +32,11 @@ const options = {
   ],
   entryNames: `[dir]/[name]-[hash]`,
   bundle: true,
-  minify: true,
+  minify: !dev,
+  define: {
+    'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV ?? `production`),
+    '__DEV__': String(dev),
+  },
   metafile: true,
   target: `es2022`,
   tsconfig: `tsconfig.base.json`,

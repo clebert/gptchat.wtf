@@ -11,6 +11,7 @@
     "format:check": "prettier --check .",
     "lint": "eslint .",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --silent",
+    "watch": "NODE_ENV=development node build.js --watch",
     "start": "aws-simple start",
     "predeploy": "cdk bootstrap --app 'npx aws-simple synth' && cdk diff --app 'npx aws-simple synth' --no-asset-metadata",
     "deploy": "cdk deploy --app 'npx aws-simple synth' --no-asset-metadata",
