@@ -2,8 +2,10 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
+import {AppContext} from '../contexts/app-context.js';
 import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
 import {useRequestCompletionCallback} from '../hooks/use-request-completion-callback.js';
+import {isTouchDevice} from '../utils/is-touch-device.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
@@ -37,10 +39,17 @@ export function NewMessageView(): JSX.Element {
     requestCompletion();
   }, [handleAddMessageClick, requestCompletion]);
 
+  const {apiKeyStore} = React.useContext(AppContext);
+  const apiKey = apiKeyStore.use();
+
   return (
-    <div className="flex space-x-2">
+    <div ref={containerRef} className="flex space-x-2">
       <div className="w-full overflow-hidden">
-        <Editor model={model} autoScroll />
+        <Editor
+          model={model}
+          autoFocus={apiKey.length > 0 && !isTouchDevice()}
+          autoScroll
+        />
       </div>
 
       <div className="flex shrink-0 flex-col space-y-2">

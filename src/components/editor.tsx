@@ -10,6 +10,7 @@ import * as React from 'react';
 export interface EditorProps {
   className?: string;
   model: monaco.editor.ITextModel;
+  autoFocus?: boolean;
   autoScroll?: boolean;
   readOnly?: boolean;
 }
@@ -17,6 +18,7 @@ export interface EditorProps {
 export function Editor({
   className,
   model,
+  autoFocus,
   autoScroll,
   readOnly,
 }: EditorProps): JSX.Element {
@@ -43,6 +45,10 @@ export function Editor({
         },
       },
     ));
+
+    if (autoFocus) {
+      editor.focus();
+    }
 
     resizeEditor(editor);
 
