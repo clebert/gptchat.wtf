@@ -92,6 +92,7 @@ export function useRequestCompletionCallback(): () => void {
 
       let completionContent = ``;
       let completion: Completion;
+      let finishReason: 'stop' | 'length' | 'content_filter' | undefined;
 
       for await (const chatEvent of chatEventGenerator) {
         completion = completionStore.get();
@@ -111,7 +112,7 @@ export function useRequestCompletionCallback(): () => void {
 
           completionContent += chatEvent.content;
         } else if (`finishReason` in chatEvent) {
-          // TODO
+          finishReason = chatEvent.finishReason;
         }
       }
 
@@ -121,7 +122,15 @@ export function useRequestCompletionCallback(): () => void {
         completionStore.set({status: `idle`});
       }
 
-      addMessage(`assistant`, completionContent ?? `No content`);
+      addMessage(
+        `assistant`,
+        completionContent ||
+          (finishReason === `length`
+            ? `Incomplete content`
+            : finishReason === `content_filter`
+            ? `Omitted content`
+            : `No content`),
+      );
     } catch (error) {
       const completion = completionStore.get();
 
