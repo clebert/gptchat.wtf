@@ -65,39 +65,45 @@ const options = {
           await writeFile(
             `${outdir}/index.html`,
             minify(
-              html.replace(
-                `<!-- SCRIPTS -->`,
-                `<link href="${getPublicPath(
-                  `app`,
-                  `css`,
-                  outputNames,
-                )}" rel="stylesheet">\n    <script>(${setupMonacoEnvironment
-                  .toString()
-                  .replace(
-                    `<editor.worker>`,
-                    getPublicPath(`editor.worker`, `js`, outputNames),
-                  )
-                  .replace(
-                    `<css.worker>`,
-                    getPublicPath(`css.worker`, `js`, outputNames),
-                  )
-                  .replace(
-                    `<html.worker>`,
-                    getPublicPath(`html.worker`, `js`, outputNames),
-                  )
-                  .replace(
-                    `<json.worker>`,
-                    getPublicPath(`json.worker`, `js`, outputNames),
-                  )
-                  .replace(
-                    `<ts.worker>`,
-                    getPublicPath(`ts.worker`, `js`, outputNames),
-                  )})();</script>\n    <script src="${getPublicPath(
-                  `app`,
-                  `js`,
-                  outputNames,
-                )}" async></script>`,
-              ),
+              html
+                .replace(
+                  `<!-- STYLES -->`,
+                  `<link href="${getPublicPath(
+                    `app`,
+                    `css`,
+                    outputNames,
+                  )}" rel="stylesheet">`,
+                )
+
+                .replace(
+                  `<!-- SCRIPTS -->`,
+                  `<script>(${setupMonacoEnvironment
+                    .toString()
+                    .replace(
+                      `<editor.worker>`,
+                      getPublicPath(`editor.worker`, `js`, outputNames),
+                    )
+                    .replace(
+                      `<css.worker>`,
+                      getPublicPath(`css.worker`, `js`, outputNames),
+                    )
+                    .replace(
+                      `<html.worker>`,
+                      getPublicPath(`html.worker`, `js`, outputNames),
+                    )
+                    .replace(
+                      `<json.worker>`,
+                      getPublicPath(`json.worker`, `js`, outputNames),
+                    )
+                    .replace(
+                      `<ts.worker>`,
+                      getPublicPath(`ts.worker`, `js`, outputNames),
+                    )})();</script>\n    <script src="${getPublicPath(
+                    `app`,
+                    `js`,
+                    outputNames,
+                  )}" async></script>`,
+                ),
               {collapseWhitespace: true, minifyCSS: true, minifyJS: true},
             ),
             {encoding: `utf-8`},
