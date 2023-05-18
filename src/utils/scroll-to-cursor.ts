@@ -13,19 +13,21 @@ export function scrollToCursor(
     return;
   }
 
+  const {scrollTop} = document.documentElement;
+
   const containerTop =
-    window.scrollY + editor.getContainerDomNode().getBoundingClientRect().top;
+    scrollTop + editor.getContainerDomNode().getBoundingClientRect().top;
 
   const lineTop = containerTop + scrolledVisiblePosition.top;
 
-  if (lineTop < window.scrollY) {
+  if (lineTop < scrollTop) {
     window.scrollTo({top: lineTop});
   } else {
     const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight);
     const lineBottom = lineTop + lineHeight;
     const viewportHeight = getViewportHeight();
 
-    if (lineBottom > window.scrollY + viewportHeight) {
+    if (lineBottom > scrollTop + viewportHeight) {
       window.scrollTo({top: lineBottom - viewportHeight});
     }
   }

@@ -1,9 +1,9 @@
 import {getViewportHeight} from './get-viewport-height.js';
 
 export function isUserScrolledToBottom(): boolean {
-  const scrollHeight = document.documentElement.scrollHeight;
+  const {scrollHeight, scrollTop} = document.documentElement;
   const viewportHeight = getViewportHeight();
-  const scrollTop = document.documentElement.scrollTop;
+  const bottomOffset = viewportHeight * 0.1;
 
-  return scrollHeight - viewportHeight - scrollTop < 24;
+  return scrollHeight - viewportHeight - scrollTop < bottomOffset;
 }

@@ -47,7 +47,7 @@ export function CompletionView(): JSX.Element {
         () => null,
       );
 
-      if (userScrolledToBottom) {
+      if (userScrolledToBottom && model.getLineCount() !== lastLineNumber) {
         window.scrollTo(0, document.documentElement.scrollHeight);
       }
     }
