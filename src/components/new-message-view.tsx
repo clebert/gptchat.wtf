@@ -15,7 +15,16 @@ export function NewMessageView(): JSX.Element {
     [],
   );
 
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
+    setTimeout(() => {
+      const {scrollTop} = document.documentElement;
+      const {top} = containerRef.current!.getBoundingClientRect();
+
+      window.scrollTo({top: scrollTop + top});
+    }, 0);
+
     return () => {
       model.dispose();
     };
