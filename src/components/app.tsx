@@ -18,14 +18,15 @@ import {createRoot} from 'react-dom/client';
 import 'tailwindcss/tailwind.css';
 
 export function App(): JSX.Element {
-  const darkMode = useDarkMode();
   const styles = React.useContext(StylesContext);
 
   React.useLayoutEffect(() => {
     document
       .querySelector(`body`)
-      ?.classList.add(...styles.background.split(` `));
-  }, [styles]);
+      ?.classList.add(...styles.background().split(` `));
+  }, []);
+
+  const darkMode = useDarkMode();
 
   React.useLayoutEffect(() => {
     if (darkMode) {

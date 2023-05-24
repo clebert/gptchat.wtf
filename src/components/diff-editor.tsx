@@ -86,7 +86,7 @@ export function DiffEditor({
   return (
     <MonacoDiffEditor
       ref={diffEditorRef}
-      className={join(className, styles.border, styles.focusWithin)}
+      className={join(className, styles.border(), styles.focus({within: true}))}
       options={{
         contextmenu: false,
         fontSize: 16,

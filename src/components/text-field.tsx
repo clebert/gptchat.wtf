@@ -43,11 +43,10 @@ export const TextField = React.forwardRef(
           className,
           `w-full appearance-none rounded-none px-2`,
           disabled && `opacity-25`,
-          styles.text,
-          styles.textPlaceholder,
-          styles.background,
-          styles.border,
-          !disabled && styles.focus,
+          styles.background(),
+          styles.border(),
+          !disabled && styles.focus(),
+          styles.text({placeholder: true}),
         )}
         type="text"
         value={value}

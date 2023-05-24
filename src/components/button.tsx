@@ -31,15 +31,10 @@ export function Button({
         className,
         `flex select-none items-center whitespace-nowrap px-2`,
         !enabled && `cursor-default opacity-25`,
-        inverted ? styles.textInverted : styles.text,
-        inverted ? styles.backgroundInverted : styles.background,
-        inverted ? styles.borderTransparent : styles.border,
-        enabled && (inverted ? styles.textInvertedActive : styles.textActive),
-        enabled &&
-          (inverted
-            ? styles.backgroundInvertedActive
-            : styles.backgroundActive),
-        enabled && styles.focus,
+        styles.background({active: enabled, inverted}),
+        styles.border({transparent: inverted}),
+        styles.focus(),
+        styles.text({active: enabled, inverted}),
       )}
       type={type}
       title={title}

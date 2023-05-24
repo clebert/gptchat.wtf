@@ -21,9 +21,9 @@ export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
     <div
       className={join(
         `flex select-none items-center px-2`,
-        styles.text,
-        styles.background,
-        styles.borderTransparent,
+        styles.background(),
+        styles.border({transparent: true}),
+        styles.text(),
       )}
       title={titles[role]}
     >
