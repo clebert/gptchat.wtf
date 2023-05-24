@@ -11,6 +11,7 @@ import {createAssistantModeStore} from '../stores/create-assistant-mode-store.js
 import {createColorSchemeStore} from '../stores/create-color-scheme-store.js';
 import {createCompletionStore} from '../stores/create-completion-store.js';
 import {createConversationStore} from '../stores/create-conversation-store.js';
+import {createDiffModeStore} from '../stores/create-diff-mode-store.js';
 import {createMessageStore} from '../stores/create-message-store.js';
 import {createModelStore} from '../stores/create-model-store.js';
 import * as React from 'react';
@@ -21,6 +22,7 @@ export interface App {
   readonly colorSchemeStore: Store<ColorScheme>;
   readonly completionStore: Store<Completion>;
   readonly conversationStore: Store<Conversation>;
+  readonly diffModeStore: Store<boolean>;
   readonly modelStore: Store<Model>;
 
   getMessageStore(messageId: string): Store<Message>;
@@ -35,6 +37,7 @@ export const AppContext = React.createContext<App>({
   colorSchemeStore: createColorSchemeStore(),
   completionStore: createCompletionStore(),
   conversationStore: createConversationStore(),
+  diffModeStore: createDiffModeStore(),
   modelStore: createModelStore(),
 
   getMessageStore(messageId: string): Store<Message> {

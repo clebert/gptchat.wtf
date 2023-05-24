@@ -5,5 +5,5 @@ export function isUserScrolledToBottom(): boolean {
   const viewportHeight = getViewportHeight();
   const bottomOffset = viewportHeight * 0.1;
 
-  return scrollHeight - viewportHeight - scrollTop < bottomOffset;
+  return scrollHeight - scrollTop - viewportHeight < bottomOffset;
 }

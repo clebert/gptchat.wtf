@@ -3,6 +3,8 @@ import {AssistantModeButton} from './assistant-mode-button.js';
 import {Button} from './button.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
 import {CompletionView} from './completion-view.js';
+import {DiffMessageView} from './diff-message-view.js';
+import {DiffModeButton} from './diff-mode-button.js';
 import {Icon} from './icon.js';
 import {MessageView} from './message-view.js';
 import {ModelButton} from './model-button.js';
@@ -33,10 +35,15 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const {completionStore, conversationStore} = React.useContext(AppContext);
+  const {completionStore, conversationStore, diffModeStore, getMessageStore} =
+    React.useContext(AppContext);
+
   const completion = completionStore.use();
-  const {messageIds} = conversationStore.use();
+  const conversation = conversationStore.use();
+  const diffMode = diffModeStore.use();
   const clearData = useClearDataCallback();
+
+  let previousAssistantMessageId: string | undefined;
 
   return (
     <div className="2xl:container 2xl:mx-auto">
@@ -44,6 +51,7 @@ export function App(): JSX.Element {
         <div className="flex space-x-2">
           <ModelButton />
           <AssistantModeButton />
+          <DiffModeButton />
           <ColorSchemeButton />
           <ApiKeyView />
 
@@ -52,9 +60,27 @@ export function App(): JSX.Element {
           </Button>
         </div>
 
-        {messageIds.map((messageId) => (
-          <MessageView key={messageId} messageId={messageId} />
-        ))}
+        {conversation.messageIds.map((messageId) => {
+          const message = getMessageStore(messageId).get();
+
+          if (diffMode && message.role === `assistant`) {
+            try {
+              if (previousAssistantMessageId) {
+                return (
+                  <DiffMessageView
+                    key={messageId}
+                    messageId1={previousAssistantMessageId}
+                    messageId2={messageId}
+                  />
+                );
+              }
+            } finally {
+              previousAssistantMessageId = messageId;
+            }
+          }
+
+          return <MessageView key={messageId} messageId={messageId} />;
+        })}
 
         {completion.status === `idle` ? <NewMessageView /> : <CompletionView />}
       </div>
