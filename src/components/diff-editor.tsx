@@ -1,10 +1,12 @@
+import type * as monaco from 'monaco-editor';
+
 import './editor.css';
+import {MonacoDiffEditor} from './monaco-diff-editor.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
 import {join} from '../utils/join.js';
 import {resizeDiffEditor} from '../utils/resize-diff-editor.js';
 import {scrollToCursor} from '../utils/scroll-to-cursor.js';
-import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
 export interface DiffEditorProps {
@@ -24,29 +26,10 @@ export function DiffEditor({
   autoScroll,
   readOnly,
 }: DiffEditorProps): JSX.Element {
-  const styles = React.useContext(StylesContext);
-  const containerRef = React.useRef<HTMLDivElement>(null);
-  const diffEditorRef = React.useRef<monaco.editor.IStandaloneDiffEditor>();
+  const diffEditorRef = React.useRef<monaco.editor.IStandaloneDiffEditor>(null);
 
   React.useEffect(() => {
-    const diffEditor = (diffEditorRef.current = monaco.editor.createDiffEditor(
-      containerRef.current!,
-      {
-        contextmenu: false,
-        fontSize: 16,
-        lineNumbers: `off`,
-        minimap: {enabled: false},
-        originalEditable: !readOnly,
-        readOnly,
-        scrollBeyondLastLine: false,
-        wordWrap: `on`,
-        scrollbar: {
-          vertical: `hidden`,
-          horizontal: `hidden`,
-          handleMouseWheel: false,
-        },
-      },
-    ));
+    const diffEditor = diffEditorRef.current!;
 
     diffEditor.setModel({original: originalModel, modified: modifiedModel});
 
@@ -88,7 +71,6 @@ export function DiffEditor({
 
     return () => {
       abortController.abort();
-      diffEditor.dispose();
     };
   }, []);
 
@@ -99,10 +81,27 @@ export function DiffEditor({
     diffEditorRef.current!._themeService.setTheme(darkMode ? `vs-dark` : `vs`);
   }, [darkMode]);
 
+  const styles = React.useContext(StylesContext);
+
   return (
-    <div
-      ref={containerRef}
+    <MonacoDiffEditor
+      ref={diffEditorRef}
       className={join(className, styles.border, styles.focusWithin)}
+      options={{
+        contextmenu: false,
+        fontSize: 16,
+        lineNumbers: `off`,
+        minimap: {enabled: false},
+        originalEditable: !readOnly,
+        readOnly,
+        scrollBeyondLastLine: false,
+        wordWrap: `on`,
+        scrollbar: {
+          vertical: `hidden`,
+          horizontal: `hidden`,
+          handleMouseWheel: false,
+        },
+      }}
     />
   );
 }
