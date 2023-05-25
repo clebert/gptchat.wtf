@@ -4,7 +4,7 @@ import type {Completion} from '../stores/create-completion-store.js';
 import type {Conversation} from '../stores/create-conversation-store.js';
 import type {Message} from '../stores/create-message-store.js';
 import type {Model} from '../stores/create-model-store.js';
-import type {Store} from '../stores/store.js';
+import type {Store} from '../wtfkit/store.js';
 
 import {createApiKeyStore} from '../stores/create-api-key-store.js';
 import {createAssistantModeStore} from '../stores/create-assistant-mode-store.js';

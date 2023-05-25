@@ -4,9 +4,9 @@ import './editor.css';
 import {MonacoEditor} from './monaco-editor.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
-import {join} from '../utils/join.js';
 import {resizeEditor} from '../utils/resize-editor.js';
 import {scrollToCursor} from '../utils/scroll-to-cursor.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface EditorProps {
@@ -72,7 +72,11 @@ export function Editor({
   return (
     <MonacoEditor
       ref={editorRef}
-      className={join(className, styles.border(), styles.focus({within: true}))}
+      className={joinClassNames(
+        className,
+        styles.border(),
+        styles.focus({within: true}),
+      )}
       options={{
         contextmenu: false,
         fontSize: 16,

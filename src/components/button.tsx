@@ -1,5 +1,5 @@
 import {StylesContext} from '../contexts/styles-context.js';
-import {join} from '../utils/join.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface ButtonProps {
@@ -27,7 +27,7 @@ export function Button({
 
   return (
     <button
-      className={join(
+      className={joinClassNames(
         className,
         `flex select-none items-center whitespace-nowrap px-2`,
         !enabled && `cursor-default opacity-25`,

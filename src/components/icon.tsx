@@ -1,4 +1,4 @@
-import {join} from '../utils/join.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface IconProps {
@@ -55,7 +55,10 @@ const pathByType = {
 export function Icon({type, standalone}: IconProps): JSX.Element {
   return (
     <div
-      className={join(`inline-flex h-6 items-center`, !standalone && `mr-1`)}
+      className={joinClassNames(
+        `inline-flex h-6 items-center`,
+        !standalone && `mr-1`,
+      )}
     >
       <svg
         className="h-4 w-4 stroke-current stroke-1"
@@ -64,8 +67,8 @@ export function Icon({type, standalone}: IconProps): JSX.Element {
         strokeLinecap="round"
         strokeLinejoin="round"
       >
-        {pathByType[type].map((d) => (
-          <path d={d} />
+        {pathByType[type].map((d, index) => (
+          <path key={index} d={d} />
         ))}
       </svg>
     </div>

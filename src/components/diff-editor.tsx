@@ -4,9 +4,9 @@ import './editor.css';
 import {MonacoDiffEditor} from './monaco-diff-editor.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
-import {join} from '../utils/join.js';
 import {resizeDiffEditor} from '../utils/resize-diff-editor.js';
 import {scrollToCursor} from '../utils/scroll-to-cursor.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface DiffEditorProps {
@@ -86,7 +86,11 @@ export function DiffEditor({
   return (
     <MonacoDiffEditor
       ref={diffEditorRef}
-      className={join(className, styles.border(), styles.focus({within: true}))}
+      className={joinClassNames(
+        className,
+        styles.border(),
+        styles.focus({within: true}),
+      )}
       options={{
         contextmenu: false,
         fontSize: 16,

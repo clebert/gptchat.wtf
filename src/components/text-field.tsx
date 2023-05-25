@@ -1,5 +1,5 @@
 import {StylesContext} from '../contexts/styles-context.js';
-import {join} from '../utils/join.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface TextFieldProps {
@@ -39,7 +39,7 @@ export const TextField = React.forwardRef(
     return (
       <input
         ref={ref}
-        className={join(
+        className={joinClassNames(
           className,
           `w-full appearance-none rounded-none px-2`,
           disabled && `opacity-25`,

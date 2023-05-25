@@ -1,6 +1,6 @@
 import {Icon} from './icon.js';
 import {StylesContext} from '../contexts/styles-context.js';
-import {join} from '../utils/join.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface MessageRoleIconProps {
@@ -19,7 +19,7 @@ export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
 
   return (
     <div
-      className={join(
+      className={joinClassNames(
         `flex select-none items-center px-2`,
         styles.background(),
         styles.border({transparent: true}),

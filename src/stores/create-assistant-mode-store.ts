@@ -1,14 +1,17 @@
-import type {Store} from './store.js';
+import type {Store} from '../wtfkit/store.js';
 
-import {createPersistentStore} from './create-persistent-store.js';
+import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
+import {createValueStore} from '../wtfkit/create-value-store.js';
 import {literal} from 'zod';
 
 export type AssistantMode = 'general' | 'programming';
 
 export function createAssistantModeStore(): Store<AssistantMode> {
-  return createPersistentStore(
-    `store:assistant_mode`,
-    literal(`general`).or(literal(`programming`)),
+  return createValueStore(
+    createJsonStorageItem(
+      `assistant_mode`,
+      literal(`general`).or(literal(`programming`)),
+    ),
     `general`,
   );
 }

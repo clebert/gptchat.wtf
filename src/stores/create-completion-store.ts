@@ -1,4 +1,4 @@
-import {Store} from './store.js';
+import {Store} from '../wtfkit/store.js';
 
 export type Completion =
   | {

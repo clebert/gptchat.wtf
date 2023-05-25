@@ -1,6 +1,7 @@
-import type {Store} from './store.js';
+import type {Store} from '../wtfkit/store.js';
 
-import {createPersistentStore} from './create-persistent-store.js';
+import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
+import {createValueStore} from '../wtfkit/create-value-store.js';
 import {array, object, string} from 'zod';
 
 export interface Conversation {
@@ -8,9 +9,11 @@ export interface Conversation {
 }
 
 export function createConversationStore(): Store<Conversation> {
-  return createPersistentStore(
-    `store:conversation`,
-    object({messageIds: array(string())}),
+  return createValueStore(
+    createJsonStorageItem(
+      `conversation`,
+      object({messageIds: array(string())}),
+    ),
     {messageIds: []},
   );
 }

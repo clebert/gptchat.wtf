@@ -1,8 +1,9 @@
-import type {Store} from './store.js';
+import type {Store} from '../wtfkit/store.js';
 
-import {createPersistentStore} from './create-persistent-store.js';
+import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
+import {createValueStore} from '../wtfkit/create-value-store.js';
 import {boolean} from 'zod';
 
 export function createDiffModeStore(): Store<boolean> {
-  return createPersistentStore(`store:diff_mode`, boolean(), false);
+  return createValueStore(createJsonStorageItem(`diff_mode`, boolean()), false);
 }

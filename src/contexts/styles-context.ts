@@ -1,4 +1,4 @@
-import {join} from '../utils/join.js';
+import {joinClassNames} from '../wtfkit/join-class-names.js';
 import * as React from 'react';
 
 export interface Styles {
@@ -19,7 +19,7 @@ export interface Styles {
 
 export const StylesContext = React.createContext<Styles>({
   background({active, inverted} = {}) {
-    return join(
+    return joinClassNames(
       active &&
         (inverted
           ? `active:bg-white dark:active:bg-neutral-900`
@@ -43,7 +43,7 @@ export const StylesContext = React.createContext<Styles>({
   },
 
   text({active, inverted, placeholder} = {}) {
-    return join(
+    return joinClassNames(
       active &&
         (inverted
           ? `active:text-black dark:active:text-white`
