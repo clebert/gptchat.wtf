@@ -31,7 +31,7 @@ export function MessageView({messageId}: MessageViewProps): JSX.Element {
           <Icon type="trash" standalone></Icon>
         </Button>
 
-        {role && <MessageRoleIcon role={role} />}
+        <MessageRoleIcon role={role} />
       </div>
     </div>
   );

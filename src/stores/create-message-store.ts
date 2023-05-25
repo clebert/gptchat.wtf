@@ -5,7 +5,7 @@ import * as monaco from 'monaco-editor';
 import {literal, object, string} from 'zod';
 
 export interface Message {
-  readonly role?: 'user' | 'assistant';
+  readonly role: 'user' | 'assistant';
   readonly model: monaco.editor.ITextModel;
 }
 
@@ -18,13 +18,15 @@ export function createMessageStore(messageId: string): Store<Message> {
     }),
   );
 
-  const {role, content} = storageItem.value ?? {content: ``};
+  const {role, content} = storageItem.value ?? {role: `user`, content: ``};
   const model = monaco.editor.createModel(content, `markdown`);
 
   const store = new Store(
     {role, model},
     {
       onDispose: () => {
+        model.dispose();
+
         storageItem.value = undefined;
       },
     },
@@ -36,9 +38,10 @@ export function createMessageStore(messageId: string): Store<Message> {
     debounce(() => {
       const message = store.get();
 
-      storageItem.value = message.role
-        ? {role: message.role, content: message.model.getValue()}
-        : undefined;
+      storageItem.value = {
+        role: message.role,
+        content: message.model.getValue(),
+      };
     }, 500),
   );
 

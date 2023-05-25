@@ -44,9 +44,10 @@ export const AppContext = React.createContext<App>({
     let messageStore = messageStores.get(messageId);
 
     if (!messageStore) {
-      messageStore = createMessageStore(messageId);
-
-      messageStores.set(messageId, messageStore);
+      messageStores.set(
+        messageId,
+        (messageStore = createMessageStore(messageId)),
+      );
     }
 
     return messageStore;
@@ -57,7 +58,6 @@ export const AppContext = React.createContext<App>({
 
     if (messageStore) {
       messageStores.delete(messageId);
-      messageStore.get().model.dispose();
       messageStore.dispose();
     }
   },

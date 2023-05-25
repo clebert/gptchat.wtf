@@ -54,8 +54,9 @@ export function useRequestCompletionCallback(): () => void {
         const {role, model} = getMessageStore(messageId).get();
         const content = model.getValue();
 
-        return role && content ? {role, content} : undefined;
-      });
+        return content ? {role, content} : undefined;
+      })
+      .filter(Boolean) as ChatMessage[];
 
     if (!message) {
       return;
@@ -80,7 +81,7 @@ export function useRequestCompletionCallback(): () => void {
                   : programmingSystemMessageContent,
             },
             message,
-            ...(messages.filter(Boolean) as ChatMessage[]),
+            ...messages,
           ],
         },
         abortController.signal,
@@ -126,10 +127,10 @@ export function useRequestCompletionCallback(): () => void {
         `assistant`,
         completionContent ||
           (finishReason === `length`
-            ? `Incomplete content`
+            ? `Incomplete content.`
             : finishReason === `content_filter`
-            ? `Omitted content`
-            : `No content`),
+            ? `Omitted content.`
+            : `No content.`),
       );
     } catch (error) {
       const completion = completionStore.get();
@@ -139,7 +140,7 @@ export function useRequestCompletionCallback(): () => void {
 
         addMessage(
           `assistant`,
-          error instanceof Error ? error.message : `Unknown error`,
+          error instanceof Error ? error.message : `Unknown error.`,
         );
       }
     }

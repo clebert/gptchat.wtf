@@ -70,8 +70,8 @@ export function App(): JSX.Element {
                 return (
                   <DiffMessageView
                     key={messageId}
-                    messageId1={previousAssistantMessageId}
-                    messageId2={messageId}
+                    originalMessageId={previousAssistantMessageId}
+                    modifiedMessageId={messageId}
                   />
                 );
               }

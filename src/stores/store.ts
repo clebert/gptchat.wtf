@@ -18,8 +18,6 @@ export class Store<const TValue> {
     return this.#value;
   }
 
-  readonly #listeners = new Set<() => void>();
-
   set(newValue: TValue): void {
     if (!Object.is(newValue, this.#value)) {
       this.#value = newValue;
@@ -34,6 +32,8 @@ export class Store<const TValue> {
       () => this.get(),
     );
   }
+
+  readonly #listeners = new Set<() => void>();
 
   subscribe(listener: () => void): () => void {
     this.#listeners.add(listener);

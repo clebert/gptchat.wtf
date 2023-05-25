@@ -7,29 +7,33 @@ import {useDeleteMessageCallback} from '../hooks/use-delete-message-callback.js'
 import * as React from 'react';
 
 export interface DiffMessageViewProps {
-  messageId1: string;
-  messageId2: string;
+  originalMessageId: string;
+  modifiedMessageId: string;
 }
 
 export function DiffMessageView({
-  messageId1,
-  messageId2,
+  originalMessageId,
+  modifiedMessageId,
 }: DiffMessageViewProps): JSX.Element {
   const deleteMessage = useDeleteMessageCallback();
 
   const handleDeleteMessageClick = React.useCallback(() => {
-    deleteMessage(messageId2);
-  }, [messageId2, deleteMessage]);
+    deleteMessage(modifiedMessageId);
+  }, [modifiedMessageId, deleteMessage]);
 
   const {getMessageStore} = React.useContext(AppContext);
 
-  const {model: model1} = getMessageStore(messageId1).use();
-  const {model: model2} = getMessageStore(messageId2).use();
+  const {model: originalModel} = getMessageStore(originalMessageId).use();
+  const {model: modifiedModel} = getMessageStore(modifiedMessageId).use();
 
   return (
     <div className="flex space-x-2">
       <div className="w-full overflow-hidden">
-        <DiffEditor originalModel={model1} modifiedModel={model2} autoScroll />
+        <DiffEditor
+          originalModel={originalModel}
+          modifiedModel={modifiedModel}
+          autoScroll
+        />
       </div>
 
       <div className="flex shrink-0 flex-col space-y-2">
