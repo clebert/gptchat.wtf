@@ -1,8 +1,8 @@
 import autoprefixer from 'autoprefixer';
 import * as esbuild from 'esbuild';
+import {htmlPlugin} from 'esbuild-html-plugin';
 import stylePlugin from 'esbuild-style-plugin';
-import {minify} from 'html-minifier';
-import {readFile, rm, writeFile} from 'node:fs/promises';
+import {rm} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {argv, env} from 'node:process';
 
@@ -33,6 +33,7 @@ const options = {
   entryNames: `[dir]/[name]-[hash]`,
   bundle: true,
   minify: !dev,
+  sourcemap: true,
   define: {
     'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV ?? `production`),
     '__DEV__': String(dev),
@@ -52,64 +53,42 @@ const options = {
         plugins: [require(`tailwindcss`), autoprefixer],
       },
     }),
-    {
-      name: `html`,
-      setup: (build) =>
-        build.onEnd(async (result) => {
-          const html = await readFile(`src/index.html`, {encoding: `utf-8`});
+    htmlPlugin({
+      outfile: `index.html`,
+      language: `en`,
 
-          const outputNames = result.metafile
-            ? Object.keys(result.metafile.outputs)
-            : [];
+      createHeadElements: (outputUrls) => [
+        `<meta charset="utf-8" />`,
+        `<meta name="viewport" content="width=device-width, initial-scale=1" />`,
+        `<title>gptchat.wtf</title>`,
 
-          await writeFile(
-            `${outdir}/index.html`,
-            minify(
-              html
-                .replace(
-                  `<!-- STYLES -->`,
-                  `<link href="${getPublicPath(
-                    `app`,
-                    `css`,
-                    outputNames,
-                  )}" rel="stylesheet">`,
+        ...outputUrls
+          .filter((url) => url.endsWith(`.css`))
+          .map((url) => `<link href="${url}" rel="stylesheet">`),
+      ],
+
+      createBodyElements: (outputUrls) => [
+        `<main id="app"></main>`,
+
+        `<script src="${outputUrls.find(
+          (url) => url.includes(`app`) && url.endsWith(`.js`),
+        )}" async></script>`,
+
+        `<script>(${[`editor`, `css`, `html`, `json`, `ts`].reduce(
+          (template, workerType) =>
+            template.replace(
+              `<${workerType}>`,
+              /** @type {string} */ (
+                outputUrls.find(
+                  (url) =>
+                    url.includes(`${workerType}.worker`) && url.endsWith(`.js`),
                 )
-
-                .replace(
-                  `<!-- SCRIPTS -->`,
-                  `<script>(${setupMonacoEnvironment
-                    .toString()
-                    .replace(
-                      `<editor.worker>`,
-                      getPublicPath(`editor.worker`, `js`, outputNames),
-                    )
-                    .replace(
-                      `<css.worker>`,
-                      getPublicPath(`css.worker`, `js`, outputNames),
-                    )
-                    .replace(
-                      `<html.worker>`,
-                      getPublicPath(`html.worker`, `js`, outputNames),
-                    )
-                    .replace(
-                      `<json.worker>`,
-                      getPublicPath(`json.worker`, `js`, outputNames),
-                    )
-                    .replace(
-                      `<ts.worker>`,
-                      getPublicPath(`ts.worker`, `js`, outputNames),
-                    )})();</script>\n    <script src="${getPublicPath(
-                    `app`,
-                    `js`,
-                    outputNames,
-                  )}" async></script>`,
-                ),
-              {collapseWhitespace: true, minifyCSS: true, minifyJS: true},
+              ),
             ),
-            {encoding: `utf-8`},
-          );
-        }),
-    },
+          setupMonacoEnvironment.toString(),
+        )})();</script>`,
+      ],
+    }),
   ],
 };
 
@@ -123,38 +102,22 @@ if (argv.includes(`--watch`)) {
   await esbuild.build(options);
 }
 
-/** @type {(entryName: string, entryType: 'css' |'js', outputNames: readonly string[]) => string} */
-function getPublicPath(entryName, entryType, outputNames) {
-  const outputName = outputNames.find(
-    (name) =>
-      name.startsWith(`${outdir}/${entryName}-`) &&
-      name.endsWith(`.${entryType}`),
-  );
-
-  if (!outputName) {
-    throw new Error(`Unknown entry name: "${entryName}"`);
-  }
-
-  // TODO: use publicPath
-  return outputName.replace(outdir, `/static`);
-}
-
 function setupMonacoEnvironment() {
   self.MonacoEnvironment = {
     getWorkerUrl(_moduleId, label) {
       switch (label) {
         case `css`:
-          return `<css.worker>`;
+          return `<css>`;
         case `html`:
-          return `<html.worker>`;
+          return `<html>`;
         case `json`:
-          return `<json.worker>`;
+          return `<json>`;
         case `typescript`:
         case `javascript`:
-          return `<ts.worker>`;
+          return `<ts>`;
       }
 
-      return `<editor.worker>`;
+      return `<editor>`;
     },
   };
 }
