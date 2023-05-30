@@ -1,7 +1,6 @@
 /** @type {import('aws-simple').ConfigFileDefaultExport} */
 export default () => ({
   hostedZoneName: `gptchat.wtf`,
-  monitoring: {accessLoggingEnabled: true},
   terminationProtectionEnabled: true,
   routes: [
     {
