@@ -33,7 +33,7 @@ const options = {
   entryNames: `[dir]/[name]-[hash]`,
   bundle: true,
   minify: !dev,
-  sourcemap: true,
+  sourcemap: dev,
   define: {
     'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV ?? `production`),
     '__DEV__': String(dev),
