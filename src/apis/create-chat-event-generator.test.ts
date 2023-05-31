@@ -78,4 +78,14 @@ describe(`createChatEventGenerator()`, () => {
       `Incorrect API key provided: ***. You can find your API key at https://platform.openai.com/account/api-keys.`,
     );
   });
+
+  it(`ignores read errors`, async () => {
+    const chatEventGenerator = createChatEventGenerator({
+      read() {
+        throw new Error(`oops`);
+      },
+    });
+
+    expect(await chatEventGenerator.next()).toEqual({done: true});
+  });
 });

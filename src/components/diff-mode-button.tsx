@@ -1,21 +1,26 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
-import {AppContext} from '../contexts/app-context.js';
-import {useToggleDiffModeCallback} from '../hooks/use-toggle-diff-mode-callback.js';
+import {diffModeStore} from '../stores/diff-mode-store.js';
+import {useStore} from '../wtfkit/use-store.js';
 import * as React from 'react';
 
+const titles = {off: `Diffing Off`, on: `Diffing On`};
+const iconTypes = {off: `eyeSlash`, on: `eye`} as const;
+
 export function DiffModeButton(): JSX.Element {
-  const toggleDiffMode = useToggleDiffModeCallback();
-  const {diffModeStore} = React.useContext(AppContext);
-  const mode = diffModeStore.use();
+  const diffMode = useStore(diffModeStore);
+
+  const toggle = React.useCallback(() => {
+    diffModeStore.get().actions.toggle();
+  }, []);
 
   return (
     <Button
       className="border-dashed"
-      title={mode ? `Diffing On` : `Diffing Off`}
-      onClick={toggleDiffMode}
+      title={titles[diffMode.state]}
+      onClick={toggle}
     >
-      <Icon type={mode ? `eye` : `eyeSlash`} standalone />
+      <Icon type={iconTypes[diffMode.state]} standalone />
     </Button>
   );
 }

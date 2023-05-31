@@ -29,9 +29,15 @@ export async function createChatEventStream(
     signal,
   });
 
-  if (!response.body || !response.ok) {
+  const {body} = response;
+
+  if (!body || !response.ok) {
     throw new Error(`Error connecting to OpenAI API: ${response.statusText}`);
   }
 
-  return response.body;
+  signal.addEventListener(`abort`, () => {
+    void body.cancel();
+  });
+
+  return body;
 }

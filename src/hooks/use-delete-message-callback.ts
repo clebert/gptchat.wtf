@@ -1,15 +1,16 @@
 import {AppContext} from '../contexts/app-context.js';
+import {conversationStore} from '../stores/conversation-store.js';
 import * as React from 'react';
 
 export function useDeleteMessageCallback(): (messageId: string) => void {
-  const {conversationStore, disposeMessageStore} = React.useContext(AppContext);
+  const {disposeMessageStore} = React.useContext(AppContext);
 
   return React.useCallback((messageId) => {
     const conversation = conversationStore.get();
 
-    conversationStore.set({
+    conversation.actions.set({
       ...conversation,
-      messageIds: conversation.messageIds.filter(
+      messageIds: conversation.value.messageIds.filter(
         (otherMessageId) => otherMessageId !== messageId,
       ),
     });

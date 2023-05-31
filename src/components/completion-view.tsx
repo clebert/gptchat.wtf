@@ -2,9 +2,9 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
-import {AppContext} from '../contexts/app-context.js';
-import {useCancelCompletionCallback} from '../hooks/use-cancel-completion-callback.js';
+import {completionStore} from '../stores/completion-store.js';
 import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
+import {useStore} from '../wtfkit/use-store.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
@@ -22,11 +22,10 @@ export function CompletionView(): JSX.Element {
     };
   }, []);
 
-  const {completionStore} = React.useContext(AppContext);
-  const completion = completionStore.use();
+  const receivingCompletion = useStore(completionStore, `receiving`);
 
   React.useEffect(() => {
-    if (completion.status === `receiving`) {
+    if (receivingCompletion) {
       const userScrolledToBottom = isUserScrolledToBottom();
       const lastLineNumber = model.getLineCount();
       const lastLineColumn = model.getLineMaxColumn(lastLineNumber);
@@ -41,7 +40,7 @@ export function CompletionView(): JSX.Element {
               endLineNumber: lastLineNumber,
               endColumn: lastLineColumn,
             },
-            text: completion.contentDelta,
+            text: receivingCompletion.value.contentDelta,
           },
         ],
         () => null,
@@ -51,9 +50,13 @@ export function CompletionView(): JSX.Element {
         window.scrollTo(0, document.documentElement.scrollHeight);
       }
     }
-  }, [completion]);
+  }, [receivingCompletion]);
 
-  const cancelCompletion = useCancelCompletionCallback();
+  const cancelCompletion = React.useCallback(() => {
+    (
+      completionStore.get(`sending`) ?? completionStore.get(`receiving`)
+    )?.actions.cancel({});
+  }, []);
 
   return (
     <div className="flex space-x-2">

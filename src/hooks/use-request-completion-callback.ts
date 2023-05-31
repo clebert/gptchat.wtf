@@ -1,10 +1,15 @@
 import type {ChatMessage} from '../apis/create-chat-event-stream.js';
-import type {Completion} from '../stores/create-completion-store.js';
+import type {InferSnapshot} from '../wtfkit/create-store.js';
 
 import {useAddMessageCallback} from './use-add-message-callback.js';
 import {createChatEventGenerator} from '../apis/create-chat-event-generator.js';
 import {createChatEventStream} from '../apis/create-chat-event-stream.js';
 import {AppContext} from '../contexts/app-context.js';
+import {apiKeyStore} from '../stores/api-key-store.js';
+import {assistantModeStore} from '../stores/assistant-mode-store.js';
+import {completionStore} from '../stores/completion-store.js';
+import {conversationStore} from '../stores/conversation-store.js';
+import {modelStore} from '../stores/model-store.js';
 import * as React from 'react';
 
 const generalSystemMessageContent = [
@@ -30,27 +35,20 @@ const programmingSystemMessageContent = [
 ].join(`\n`);
 
 export function useRequestCompletionCallback(): () => void {
-  const {
-    apiKeyStore,
-    assistantModeStore,
-    completionStore,
-    conversationStore,
-    modelStore,
-    getMessageStore,
-  } = React.useContext(AppContext);
-
+  const {getMessageStore} = React.useContext(AppContext);
   const addMessage = useAddMessageCallback();
 
   return React.useCallback(async () => {
     const apiKey = apiKeyStore.get();
+    const idleCompletion = completionStore.get(`idle`);
 
-    if (!apiKey || completionStore.get().status !== `idle`) {
+    if (!apiKey.value || !idleCompletion) {
       return;
     }
 
     const [message, ...messages] = conversationStore
       .get()
-      .messageIds.map((messageId): ChatMessage | undefined => {
+      .value.messageIds.map((messageId): ChatMessage | undefined => {
         const {role, model} = getMessageStore(messageId).get();
         const content = model.getValue();
 
@@ -62,21 +60,31 @@ export function useRequestCompletionCallback(): () => void {
       return;
     }
 
-    const abortController = new AbortController();
     const completionId = crypto.randomUUID();
 
-    completionStore.set({status: `sending`, id: completionId});
+    idleCompletion.actions.send({id: completionId});
+
+    const abortController = new AbortController();
+
+    completionStore.subscribe(
+      () => {
+        if (completionStore.get(`idle`)) {
+          abortController.abort();
+        }
+      },
+      {signal: abortController.signal},
+    );
 
     try {
       const chatEventStream = await createChatEventStream(
         {
-          apiKey,
-          model: modelStore.get(),
+          apiKey: apiKey.value,
+          model: modelStore.get().state,
           messages: [
             {
               role: `system`,
               content:
-                assistantModeStore.get() === `general`
+                assistantModeStore.get().state === `general`
                   ? generalSystemMessageContent
                   : programmingSystemMessageContent,
             },
@@ -92,35 +100,38 @@ export function useRequestCompletionCallback(): () => void {
       );
 
       let completionContent = ``;
-      let completion: Completion;
+
+      let completion:
+        | InferSnapshot<typeof completionStore, 'sending' | 'receiving'>
+        | undefined;
+
       let finishReason: 'stop' | 'length' | 'content_filter' | undefined;
 
       for await (const chatEvent of chatEventGenerator) {
-        completion = completionStore.get();
+        completion =
+          completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
-        if (completion.status === `idle` || completion.id !== completionId) {
-          abortController.abort();
+        if (completion?.value.id === completionId) {
+          if (`content` in chatEvent) {
+            completion.actions.receive({
+              id: completionId,
+              contentDelta: chatEvent.content,
+            });
 
+            completionContent += chatEvent.content;
+          } else if (`finishReason` in chatEvent) {
+            finishReason = chatEvent.finishReason;
+          }
+        } else {
           break;
-        }
-
-        if (`content` in chatEvent) {
-          completionStore.set({
-            status: `receiving`,
-            id: completionId,
-            contentDelta: chatEvent.content,
-          });
-
-          completionContent += chatEvent.content;
-        } else if (`finishReason` in chatEvent) {
-          finishReason = chatEvent.finishReason;
         }
       }
 
-      completion = completionStore.get();
+      completion =
+        completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
-      if (completion.status !== `idle` && completion.id === completionId) {
-        completionStore.set({status: `idle`});
+      if (completion?.value.id === completionId) {
+        completion.actions.cancel({});
       }
 
       addMessage(
@@ -133,10 +144,11 @@ export function useRequestCompletionCallback(): () => void {
             : `No content.`),
       );
     } catch (error) {
-      const completion = completionStore.get();
+      const completion =
+        completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
-      if (completion.status !== `idle` && completion.id === completionId) {
-        completionStore.set({status: `idle`});
+      if (completion?.value.id === completionId) {
+        completion.actions.cancel({});
 
         addMessage(
           `assistant`,

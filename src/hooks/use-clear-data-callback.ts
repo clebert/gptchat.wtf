@@ -1,16 +1,18 @@
 import {AppContext} from '../contexts/app-context.js';
+import {apiKeyStore} from '../stores/api-key-store.js';
+import {conversationStore} from '../stores/conversation-store.js';
 import * as React from 'react';
 
 export function useClearDataCallback(): any {
-  const {apiKeyStore, conversationStore, disposeMessageStore} =
-    React.useContext(AppContext);
+  const {disposeMessageStore} = React.useContext(AppContext);
 
   return React.useCallback(() => {
-    apiKeyStore.set(``);
+    apiKeyStore.get().actions.set(``);
 
-    const {messageIds} = conversationStore.get();
+    const conversation = conversationStore.get();
+    const {messageIds} = conversation.value;
 
-    conversationStore.set({messageIds: []});
+    conversation.actions.set({messageIds: []});
 
     for (const messageId of messageIds) {
       disposeMessageStore(messageId);

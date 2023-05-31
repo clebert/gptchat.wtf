@@ -1,31 +1,35 @@
 import type {TypeOf} from 'zod';
 
-import {literal, object, string, tuple, union} from 'zod';
+import * as zod from 'zod';
 
 export type ChatEvent =
   | {readonly role: 'assistant'}
   | {readonly content: string}
   | {readonly finishReason: 'stop' | 'length' | 'content_filter'};
 
-const choicesResponseSchema = object({
-  choices: tuple([
-    object({
-      delta: object({role: literal(`assistant`)}).or(
-        object({content: string()}),
+const choicesResponseSchema = zod.object({
+  choices: zod.tuple([
+    zod
+      .object({
+        delta: zod
+          .object({role: zod.literal(`assistant`)})
+          .or(zod.object({content: zod.string()})),
+      })
+      .or(
+        zod.object({
+          finish_reason: zod.union([
+            zod.literal(`stop`),
+            zod.literal(`length`),
+            zod.literal(`content_filter`),
+          ]),
+        }),
       ),
-    }).or(
-      object({
-        finish_reason: union([
-          literal(`stop`),
-          literal(`length`),
-          literal(`content_filter`),
-        ]),
-      }),
-    ),
   ]),
 });
 
-const errorResponseSchema = object({error: object({message: string()})});
+const errorResponseSchema = zod.object({
+  error: zod.object({message: zod.string()}),
+});
 
 export async function* createChatEventGenerator(
   reader: Pick<ReadableStreamDefaultReader<Uint8Array>, 'read'>,
@@ -35,13 +39,19 @@ export async function* createChatEventGenerator(
   let buffer: string | undefined;
 
   while (true) {
-    const {value, done} = await reader.read();
+    let result;
 
-    if (done) {
-      break;
+    try {
+      result = await reader.read();
+
+      if (result.done) {
+        return;
+      }
+    } catch {
+      return;
     }
 
-    const chunk = decoder.decode(value, {stream: true});
+    const chunk = decoder.decode(result.value, {stream: true});
 
     if (buffer === undefined) {
       let response: TypeOf<typeof errorResponseSchema> | undefined;

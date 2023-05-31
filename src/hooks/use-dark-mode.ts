@@ -1,11 +1,11 @@
-import {AppContext} from '../contexts/app-context.js';
+import {colorSchemeStore} from '../stores/color-scheme-store.js';
+import {useStore} from '../wtfkit/use-store.js';
 import * as React from 'react';
 
 const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
 
 export function useDarkMode(): boolean {
-  const {colorSchemeStore} = React.useContext(AppContext);
-  const colorScheme = colorSchemeStore.use();
+  const colorScheme = useStore(colorSchemeStore);
   const [prefersDark, setPrefersDark] = React.useState(mediaQuery.matches);
 
   React.useEffect(() => {
@@ -16,5 +16,8 @@ export function useDarkMode(): boolean {
     return () => mediaQuery.removeEventListener(`change`, listener);
   }, []);
 
-  return colorScheme === `dark` || (colorScheme === `auto` && prefersDark);
+  return (
+    colorScheme.state === `dark` ||
+    (colorScheme.state === `auto` && prefersDark)
+  );
 }

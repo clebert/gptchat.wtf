@@ -1,18 +1,17 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
 import {TextField} from './text-field.js';
-import {AppContext} from '../contexts/app-context.js';
+import {apiKeyStore} from '../stores/api-key-store.js';
+import {useStore} from '../wtfkit/use-store.js';
 import * as React from 'react';
 
 export function ApiKeyView(): JSX.Element {
-  const {apiKeyStore} = React.useContext(AppContext);
-
   const setApiKey = React.useCallback((value: string) => {
-    apiKeyStore.set(value);
+    apiKeyStore.get().actions.set(value);
   }, []);
 
   const [showApiKey, setShowApiKey] = React.useState(
-    () => apiKeyStore.get().length === 0,
+    () => apiKeyStore.get().value.length === 0,
   );
 
   const handleShowApiKeyClick = React.useCallback(() => {
@@ -31,7 +30,7 @@ export function ApiKeyView(): JSX.Element {
     apiKeyField.focus();
 
     const handleBlur = () => {
-      setShowApiKey(apiKeyStore.get().length === 0);
+      setShowApiKey(apiKeyStore.get().value.length === 0);
     };
 
     apiKeyField.addEventListener(`blur`, handleBlur);
@@ -41,16 +40,16 @@ export function ApiKeyView(): JSX.Element {
     };
   }, [showApiKey]);
 
-  const apiKey = apiKeyStore.use();
+  const apiKey = useStore(apiKeyStore);
 
-  if (!showApiKey && !apiKey) {
+  if (!showApiKey && !apiKey.value) {
     setShowApiKey(true);
   }
 
   return showApiKey ? (
     <TextField
       ref={apiKeyFieldRef}
-      value={apiKey}
+      value={apiKey.value}
       placeholder="API Key"
       onInput={setApiKey}
     />

@@ -13,6 +13,10 @@ import {AppContext} from '../contexts/app-context.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useClearDataCallback} from '../hooks/use-clear-data-callback.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
+import {completionStore} from '../stores/completion-store.js';
+import {conversationStore} from '../stores/conversation-store.js';
+import {diffModeStore} from '../stores/diff-mode-store.js';
+import {useStore} from '../wtfkit/use-store.js';
 import * as React from 'react';
 import {createRoot} from 'react-dom/client';
 import 'tailwindcss/tailwind.css';
@@ -36,12 +40,11 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const {completionStore, conversationStore, diffModeStore, getMessageStore} =
-    React.useContext(AppContext);
+  const {getMessageStore} = React.useContext(AppContext);
 
-  const completion = completionStore.use();
-  const conversation = conversationStore.use();
-  const diffMode = diffModeStore.use();
+  const completion = useStore(completionStore);
+  const conversation = useStore(conversationStore);
+  const diffMode = useStore(diffModeStore);
   const clearData = useClearDataCallback();
 
   let previousAssistantMessageId: string | undefined;
@@ -61,10 +64,10 @@ export function App(): JSX.Element {
           </Button>
         </div>
 
-        {conversation.messageIds.map((messageId) => {
+        {conversation.value.messageIds.map((messageId) => {
           const message = getMessageStore(messageId).get();
 
-          if (diffMode && message.role === `assistant`) {
+          if (diffMode.state === `on` && message.role === `assistant`) {
             try {
               if (previousAssistantMessageId) {
                 return (
@@ -83,7 +86,7 @@ export function App(): JSX.Element {
           return <MessageView key={messageId} messageId={messageId} />;
         })}
 
-        {completion.status === `idle` ? <NewMessageView /> : <CompletionView />}
+        {completion.state === `idle` ? <NewMessageView /> : <CompletionView />}
       </div>
     </div>
   );

@@ -1,11 +1,12 @@
 import {AppContext} from '../contexts/app-context.js';
+import {conversationStore} from '../stores/conversation-store.js';
 import * as React from 'react';
 
 export function useAddMessageCallback(): (
   role: 'user' | 'assistant',
   content: string,
 ) => void {
-  const {conversationStore, getMessageStore} = React.useContext(AppContext);
+  const {getMessageStore} = React.useContext(AppContext);
 
   return React.useCallback((role, content) => {
     const messageId = crypto.randomUUID();
@@ -14,8 +15,10 @@ export function useAddMessageCallback(): (
     messageStore.set({...messageStore.get(), role});
     messageStore.get().model.setValue(content);
 
-    conversationStore.set({
-      messageIds: [...conversationStore.get().messageIds, messageId],
+    const conversation = conversationStore.get();
+
+    conversation.actions.set({
+      messageIds: [...conversation.value.messageIds, messageId],
     });
   }, []);
 }

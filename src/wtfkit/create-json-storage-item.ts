@@ -1,13 +1,17 @@
-import type {ValueAccessor} from './create-value-store.js';
 import type {ZodType} from 'zod';
 
 import {deserializeJson} from './deserialize-json.js';
 import {serializeJson} from './serialize-json.js';
 
+export interface JsonStorageItem<TValue> {
+  get value(): TValue | undefined;
+  set value(newValue: TValue | undefined);
+}
+
 export function createJsonStorageItem<const TValue>(
   key: string,
   schema: ZodType<TValue>,
-): ValueAccessor<TValue> {
+): JsonStorageItem<TValue> {
   return {
     get value() {
       const text = localStorage.getItem(key);
