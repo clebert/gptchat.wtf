@@ -1,15 +1,15 @@
 import {createStore} from '../wtfkit/create-store.js';
-import * as zod from 'zod';
+import * as z from 'zod';
 
 export const completionStore = createStore({
   initialState: `idle`,
   initialValue: {},
   valueSchemaMap: {
-    idle: zod.object({}),
-    sending: zod.object({id: zod.string().uuid()}),
-    receiving: zod.object({
-      id: zod.string().uuid(),
-      contentDelta: zod.string(),
+    idle: z.object({}),
+    sending: z.object({id: z.string().uuid()}),
+    receiving: z.object({
+      id: z.string().uuid(),
+      contentDelta: z.string(),
     }),
   },
   transitionsMap: {

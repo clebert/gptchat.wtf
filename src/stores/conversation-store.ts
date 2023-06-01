@@ -1,8 +1,8 @@
 import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
 import {createStore} from '../wtfkit/create-store.js';
-import * as zod from 'zod';
+import * as z from 'zod';
 
-const valueSchema = zod.object({messageIds: zod.array(zod.string())});
+const valueSchema = z.object({messageIds: z.array(z.string())});
 const storageItem = createJsonStorageItem(`conversation`, valueSchema);
 
 export const conversationStore = createStore({

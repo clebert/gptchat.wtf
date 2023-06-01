@@ -1,34 +1,34 @@
 import type {TypeOf} from 'zod';
 
-import * as zod from 'zod';
+import * as z from 'zod';
 
 export type ChatEvent =
   | {readonly role: 'assistant'}
   | {readonly content: string}
   | {readonly finishReason: 'stop' | 'length' | 'content_filter'};
 
-const choicesResponseSchema = zod.object({
-  choices: zod.tuple([
-    zod
+const choicesResponseSchema = z.object({
+  choices: z.tuple([
+    z
       .object({
-        delta: zod
-          .object({role: zod.literal(`assistant`)})
-          .or(zod.object({content: zod.string()})),
+        delta: z
+          .object({role: z.literal(`assistant`)})
+          .or(z.object({content: z.string()})),
       })
       .or(
-        zod.object({
-          finish_reason: zod.union([
-            zod.literal(`stop`),
-            zod.literal(`length`),
-            zod.literal(`content_filter`),
+        z.object({
+          finish_reason: z.union([
+            z.literal(`stop`),
+            z.literal(`length`),
+            z.literal(`content_filter`),
           ]),
         }),
       ),
   ]),
 });
 
-const errorResponseSchema = zod.object({
-  error: zod.object({message: zod.string()}),
+const errorResponseSchema = z.object({
+  error: z.object({message: z.string()}),
 });
 
 export async function* createChatEventGenerator(

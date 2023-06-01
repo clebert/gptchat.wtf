@@ -1,19 +1,19 @@
 import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
 import {createStore} from '../wtfkit/create-store.js';
-import * as zod from 'zod';
+import * as z from 'zod';
 
 const storageItem = createJsonStorageItem(
   `color_scheme`,
-  zod.union([zod.literal(`auto`), zod.literal(`light`), zod.literal(`dark`)]),
+  z.union([z.literal(`auto`), z.literal(`light`), z.literal(`dark`)]),
 );
 
 export const colorSchemeStore = createStore({
   initialState: storageItem.value ?? `auto`,
   initialValue: undefined,
   valueSchemaMap: {
-    auto: zod.void(),
-    light: zod.void(),
-    dark: zod.void(),
+    auto: z.void(),
+    light: z.void(),
+    dark: z.void(),
   },
   transitionsMap: {
     auto: {toggle: `light`},

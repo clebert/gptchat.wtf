@@ -2,7 +2,7 @@ import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
 import {Store} from '../wtfkit/store.js';
 import debounce from 'lodash.debounce';
 import * as monaco from 'monaco-editor';
-import * as zod from 'zod';
+import * as z from 'zod';
 
 export interface Message {
   readonly role: 'user' | 'assistant';
@@ -12,9 +12,9 @@ export interface Message {
 export function createMessageStore(messageId: string): Store<Message> {
   const storageItem = createJsonStorageItem(
     `message:${messageId}`,
-    zod.object({
-      role: zod.literal(`user`).or(zod.literal(`assistant`)),
-      content: zod.string(),
+    z.object({
+      role: z.literal(`user`).or(z.literal(`assistant`)),
+      content: z.string(),
     }),
   );
 
