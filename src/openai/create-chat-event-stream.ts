@@ -36,7 +36,9 @@ export async function createChatEventStream(
   }
 
   signal.addEventListener(`abort`, () => {
-    void body.cancel();
+    if (!body.locked) {
+      void body.cancel();
+    }
   });
 
   return body;

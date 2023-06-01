@@ -1,10 +1,10 @@
-import type {ChatMessage} from '../apis/create-chat-event-stream.js';
+import type {ChatMessage} from '../openai/create-chat-event-stream.js';
 import type {InferSnapshot} from '../wtfkit/create-store.js';
 
 import {useAddMessageCallback} from './use-add-message-callback.js';
-import {createChatEventGenerator} from '../apis/create-chat-event-generator.js';
-import {createChatEventStream} from '../apis/create-chat-event-stream.js';
 import {AppContext} from '../contexts/app-context.js';
+import {createChatEventGenerator} from '../openai/create-chat-event-generator.js';
+import {createChatEventStream} from '../openai/create-chat-event-stream.js';
 import {apiKeyStore} from '../stores/api-key-store.js';
 import {assistantModeStore} from '../stores/assistant-mode-store.js';
 import {completionStore} from '../stores/completion-store.js';
