@@ -15,7 +15,7 @@ const iconTypes = {
 } as const;
 
 export function AssistantModeButton(): JSX.Element {
-  const assistantMode = useStore(assistantModeStore);
+  const assistantModeSnapshot = useStore(assistantModeStore);
 
   const toggle = React.useCallback(() => {
     assistantModeStore.get().actions.toggle();
@@ -24,10 +24,10 @@ export function AssistantModeButton(): JSX.Element {
   return (
     <Button
       className="border-dashed"
-      title={titles[assistantMode.state]}
+      title={titles[assistantModeSnapshot.state]}
       onClick={toggle}
     >
-      <Icon type={iconTypes[assistantMode.state]} standalone />
+      <Icon type={iconTypes[assistantModeSnapshot.state]} standalone />
     </Button>
   );
 }

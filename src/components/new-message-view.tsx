@@ -49,14 +49,14 @@ export function NewMessageView(): JSX.Element {
     requestCompletion();
   }, [handleAddMessageClick, requestCompletion]);
 
-  const apiKey = useStore(apiKeyStore);
+  const apiKeySnapshot = useStore(apiKeyStore);
 
   return (
     <div ref={containerRef} className="flex space-x-2">
       <div className="w-full overflow-hidden">
         <Editor
           model={model}
-          autoFocus={apiKey.value.length > 0 && !isTouchDevice()}
+          autoFocus={apiKeySnapshot.value.length > 0 && !isTouchDevice()}
           autoScroll
         />
       </div>
@@ -65,6 +65,7 @@ export function NewMessageView(): JSX.Element {
         <Button
           title="Request Chat Completion"
           inverted
+          disabled={!apiKeySnapshot.value}
           onClick={handleRequestCompletionClick}
         >
           <Icon type="paperAirplane" standalone />

@@ -40,16 +40,16 @@ export function ApiKeyView(): JSX.Element {
     };
   }, [showApiKey]);
 
-  const apiKey = useStore(apiKeyStore);
+  const apiKeySnapshot = useStore(apiKeyStore);
 
-  if (!showApiKey && !apiKey.value) {
+  if (!showApiKey && !apiKeySnapshot.value) {
     setShowApiKey(true);
   }
 
   return showApiKey ? (
     <TextField
       ref={apiKeyFieldRef}
-      value={apiKey.value}
+      value={apiKeySnapshot.value}
       placeholder="API Key"
       onInput={setApiKey}
     />

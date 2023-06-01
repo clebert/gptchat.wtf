@@ -5,7 +5,7 @@ import * as React from 'react';
 const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
 
 export function useDarkMode(): boolean {
-  const colorScheme = useStore(colorSchemeStore);
+  const colorSchemeSnapshot = useStore(colorSchemeStore);
   const [prefersDark, setPrefersDark] = React.useState(mediaQuery.matches);
 
   React.useEffect(() => {
@@ -17,7 +17,7 @@ export function useDarkMode(): boolean {
   }, []);
 
   return (
-    colorScheme.state === `dark` ||
-    (colorScheme.state === `auto` && prefersDark)
+    colorSchemeSnapshot.state === `dark` ||
+    (colorSchemeSnapshot.state === `auto` && prefersDark)
   );
 }

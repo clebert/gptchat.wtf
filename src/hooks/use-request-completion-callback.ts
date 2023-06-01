@@ -39,10 +39,10 @@ export function useRequestCompletionCallback(): () => void {
   const addMessage = useAddMessageCallback();
 
   return React.useCallback(async () => {
-    const apiKey = apiKeyStore.get();
+    const apiKeySnapshot = apiKeyStore.get();
     const idleCompletion = completionStore.get(`idle`);
 
-    if (!apiKey.value || !idleCompletion) {
+    if (!apiKeySnapshot.value || !idleCompletion) {
       return;
     }
 
@@ -78,7 +78,7 @@ export function useRequestCompletionCallback(): () => void {
     try {
       const chatEventStream = await createChatEventStream(
         {
-          apiKey: apiKey.value,
+          apiKey: apiKeySnapshot.value,
           model: modelStore.get().state,
           messages: [
             {

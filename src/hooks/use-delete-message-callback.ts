@@ -6,11 +6,11 @@ export function useDeleteMessageCallback(): (messageId: string) => void {
   const {disposeMessageStore} = React.useContext(AppContext);
 
   return React.useCallback((messageId) => {
-    const conversation = conversationStore.get();
+    const conversationSnapshot = conversationStore.get();
 
-    conversation.actions.set({
-      ...conversation,
-      messageIds: conversation.value.messageIds.filter(
+    conversationSnapshot.actions.set({
+      ...conversationSnapshot,
+      messageIds: conversationSnapshot.value.messageIds.filter(
         (otherMessageId) => otherMessageId !== messageId,
       ),
     });

@@ -36,8 +36,8 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const completion = useStore(completionStore);
-  const conversation = useStore(conversationStore);
+  const completionSnapshot = useStore(completionStore);
+  const conversationSnapshot = useStore(conversationStore);
   const clearData = useClearDataCallback();
 
   return (
@@ -54,11 +54,15 @@ export function App(): JSX.Element {
           </Button>
         </div>
 
-        {conversation.value.messageIds.map((messageId) => (
+        {conversationSnapshot.value.messageIds.map((messageId) => (
           <MessageView key={messageId} messageId={messageId} />
         ))}
 
-        {completion.state === `idle` ? <NewMessageView /> : <CompletionView />}
+        {completionSnapshot.state === `idle` ? (
+          <NewMessageView />
+        ) : (
+          <CompletionView />
+        )}
       </div>
     </div>
   );

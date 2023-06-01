@@ -13,7 +13,7 @@ const iconTypes = {
 } as const;
 
 export function ColorSchemeButton(): JSX.Element {
-  const colorScheme = useStore(colorSchemeStore);
+  const colorSchemeSnapshot = useStore(colorSchemeStore);
 
   const toggle = React.useCallback(() => {
     colorSchemeStore.get().actions.toggle();
@@ -22,10 +22,10 @@ export function ColorSchemeButton(): JSX.Element {
   return (
     <Button
       className="border-dashed"
-      title={titles[colorScheme.state]}
+      title={titles[colorSchemeSnapshot.state]}
       onClick={toggle}
     >
-      <Icon type={iconTypes[colorScheme.state]} standalone />
+      <Icon type={iconTypes[colorSchemeSnapshot.state]} standalone />
     </Button>
   );
 }

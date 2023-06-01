@@ -6,7 +6,7 @@ import * as React from 'react';
 const titles = {'gpt-4': `GPT-4`, 'gpt-3.5-turbo': `GPT-3.5 Turbo`};
 
 export function ModelButton(): JSX.Element {
-  const model = useStore(modelStore);
+  const modelSnapshot = useStore(modelStore);
 
   const toggle = React.useCallback(() => {
     modelStore.get().actions.toggle();
@@ -15,10 +15,10 @@ export function ModelButton(): JSX.Element {
   return (
     <Button
       className="border-dashed"
-      title={titles[model.state]}
+      title={titles[modelSnapshot.state]}
       onClick={toggle}
     >
-      {titles[model.state]}
+      {titles[modelSnapshot.state]}
     </Button>
   );
 }

@@ -9,10 +9,10 @@ export function useClearDataCallback(): any {
   return React.useCallback(() => {
     apiKeyStore.get().actions.set(``);
 
-    const conversation = conversationStore.get();
-    const {messageIds} = conversation.value;
+    const conversationSnapshot = conversationStore.get();
+    const {messageIds} = conversationSnapshot.value;
 
-    conversation.actions.set({messageIds: []});
+    conversationSnapshot.actions.set({messageIds: []});
 
     for (const messageId of messageIds) {
       disposeMessageStore(messageId);

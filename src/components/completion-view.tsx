@@ -22,10 +22,10 @@ export function CompletionView(): JSX.Element {
     };
   }, []);
 
-  const receivingCompletion = useStore(completionStore, `receiving`);
+  const receivingCompletionSnapshot = useStore(completionStore, `receiving`);
 
   React.useEffect(() => {
-    if (receivingCompletion) {
+    if (receivingCompletionSnapshot) {
       const userScrolledToBottom = isUserScrolledToBottom();
       const lastLineNumber = model.getLineCount();
       const lastLineColumn = model.getLineMaxColumn(lastLineNumber);
@@ -40,7 +40,7 @@ export function CompletionView(): JSX.Element {
               endLineNumber: lastLineNumber,
               endColumn: lastLineColumn,
             },
-            text: receivingCompletion.value.contentDelta,
+            text: receivingCompletionSnapshot.value.contentDelta,
           },
         ],
         () => null,
@@ -50,7 +50,7 @@ export function CompletionView(): JSX.Element {
         window.scrollTo(0, document.documentElement.scrollHeight);
       }
     }
-  }, [receivingCompletion]);
+  }, [receivingCompletionSnapshot]);
 
   const cancelCompletion = React.useCallback(() => {
     (
