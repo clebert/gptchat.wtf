@@ -2,13 +2,13 @@ import type {ChatMessage} from '../openai/create-chat-event-stream.js';
 import type {InferSnapshot} from '../wtfkit/create-store.js';
 
 import {useAddMessageCallback} from './use-add-message-callback.js';
-import {AppContext} from '../contexts/app-context.js';
 import {createChatEventGenerator} from '../openai/create-chat-event-generator.js';
 import {createChatEventStream} from '../openai/create-chat-event-stream.js';
 import {apiKeyStore} from '../stores/api-key-store.js';
 import {assistantModeStore} from '../stores/assistant-mode-store.js';
 import {completionStore} from '../stores/completion-store.js';
 import {conversationStore} from '../stores/conversation-store.js';
+import {messageStoreRegistry} from '../stores/message-store-registry.js';
 import {modelStore} from '../stores/model-store.js';
 import * as React from 'react';
 
@@ -35,7 +35,6 @@ const programmingSystemMessageContent = [
 ].join(`\n`);
 
 export function useRequestCompletionCallback(): () => void {
-  const {getMessageStore} = React.useContext(AppContext);
   const addMessage = useAddMessageCallback();
 
   return React.useCallback(async () => {
@@ -49,8 +48,7 @@ export function useRequestCompletionCallback(): () => void {
     const [message, ...messages] = conversationStore
       .get()
       .value.messageIds.map((messageId): ChatMessage | undefined => {
-        const {role, model} = getMessageStore(messageId).get();
-        const content = model.getValue();
+        const {role, content} = messageStoreRegistry.get(messageId).get().value;
 
         return content ? {role, content} : undefined;
       })

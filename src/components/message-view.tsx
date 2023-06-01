@@ -2,8 +2,11 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
-import {AppContext} from '../contexts/app-context.js';
 import {useDeleteMessageCallback} from '../hooks/use-delete-message-callback.js';
+import {messageStoreRegistry} from '../stores/message-store-registry.js';
+import {useStore} from '../wtfkit/use-store.js';
+import debounce from 'lodash.debounce';
+import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
 export interface MessageViewProps {
@@ -15,10 +18,35 @@ export function MessageView({messageId}: MessageViewProps): JSX.Element {
 
   const handleDeleteMessageClick = React.useCallback(() => {
     deleteMessage(messageId);
-  }, [messageId, deleteMessage]);
+  }, []);
 
-  const {getMessageStore} = React.useContext(AppContext);
-  const {role, model} = getMessageStore(messageId).use();
+  const messageStore = React.useMemo(
+    () => messageStoreRegistry.get(messageId),
+    [],
+  );
+
+  const model = React.useMemo(
+    () =>
+      monaco.editor.createModel(messageStore.get().value.content, `markdown`),
+    [],
+  );
+
+  React.useEffect(() => {
+    model.onDidChangeContent(
+      debounce(() => {
+        messageStore.get().actions.set({
+          ...messageStore.get().value,
+          content: model.getValue(),
+        });
+      }, 500),
+    );
+
+    return () => {
+      model.dispose();
+    };
+  }, []);
+
+  const messageSnapshot = useStore(messageStore);
 
   return (
     <div className="flex space-x-2">
@@ -31,7 +59,7 @@ export function MessageView({messageId}: MessageViewProps): JSX.Element {
           <Icon type="trash" standalone></Icon>
         </Button>
 
-        <MessageRoleIcon role={role} />
+        <MessageRoleIcon role={messageSnapshot.value.role} />
       </div>
     </div>
   );

@@ -169,8 +169,8 @@ export function createStore<
       listeners.add(listener);
 
       const unsubscribe = () => {
-        signal?.removeEventListener(`abort`, unsubscribe);
         listeners.delete(listener);
+        signal?.removeEventListener(`abort`, unsubscribe);
       };
 
       signal?.addEventListener(`abort`, unsubscribe);

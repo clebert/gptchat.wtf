@@ -1,10 +1,8 @@
-import {AppContext} from '../contexts/app-context.js';
 import {conversationStore} from '../stores/conversation-store.js';
+import {messageStoreRegistry} from '../stores/message-store-registry.js';
 import * as React from 'react';
 
 export function useDeleteMessageCallback(): (messageId: string) => void {
-  const {disposeMessageStore} = React.useContext(AppContext);
-
   return React.useCallback((messageId) => {
     const conversationSnapshot = conversationStore.get();
 
@@ -15,6 +13,6 @@ export function useDeleteMessageCallback(): (messageId: string) => void {
       ),
     });
 
-    disposeMessageStore(messageId);
+    messageStoreRegistry.dispose(messageId);
   }, []);
 }

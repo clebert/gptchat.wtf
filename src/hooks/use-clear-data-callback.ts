@@ -1,11 +1,9 @@
-import {AppContext} from '../contexts/app-context.js';
 import {apiKeyStore} from '../stores/api-key-store.js';
 import {conversationStore} from '../stores/conversation-store.js';
+import {messageStoreRegistry} from '../stores/message-store-registry.js';
 import * as React from 'react';
 
 export function useClearDataCallback(): any {
-  const {disposeMessageStore} = React.useContext(AppContext);
-
   return React.useCallback(() => {
     apiKeyStore.get().actions.set(``);
 
@@ -15,7 +13,7 @@ export function useClearDataCallback(): any {
     conversationSnapshot.actions.set({messageIds: []});
 
     for (const messageId of messageIds) {
-      disposeMessageStore(messageId);
+      messageStoreRegistry.dispose(messageId);
     }
   }, []);
 }
