@@ -2,6 +2,8 @@
   "name": "gptchat.wtf",
   "version": "0.0.0",
   "private": true,
+  "license": "MIT",
+  "author": "Clemens Akens",
   "type": "module",
   "scripts": {
     "ci": "run-p build compile:check format:check lint test",
