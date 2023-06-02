@@ -55,7 +55,7 @@ export function CompletionView(): JSX.Element {
   const cancelCompletion = React.useCallback(() => {
     (
       completionStore.get(`sending`) ?? completionStore.get(`receiving`)
-    )?.actions.cancel({});
+    )?.actions.cancel();
   }, []);
 
   return (

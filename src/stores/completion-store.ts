@@ -3,14 +3,11 @@ import * as z from 'zod';
 
 export const completionStore = createStore({
   initialState: `idle`,
-  initialValue: {},
+  initialValue: undefined,
   valueSchemaMap: {
-    idle: z.object({}),
+    idle: z.void(),
     sending: z.object({id: z.string().uuid()}),
-    receiving: z.object({
-      id: z.string().uuid(),
-      contentDelta: z.string(),
-    }),
+    receiving: z.object({id: z.string().uuid(), contentDelta: z.string()}),
   },
   transitionsMap: {
     idle: {send: `sending`},

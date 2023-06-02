@@ -129,7 +129,7 @@ export function useRequestCompletionCallback(): () => void {
         completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
       if (completion?.value.id === completionId) {
-        completion.actions.cancel({});
+        completion.actions.cancel();
       }
 
       addMessage(
@@ -146,7 +146,7 @@ export function useRequestCompletionCallback(): () => void {
         completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
       if (completion?.value.id === completionId) {
-        completion.actions.cancel({});
+        completion.actions.cancel();
 
         addMessage(
           `assistant`,
