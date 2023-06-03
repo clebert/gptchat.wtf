@@ -1,4 +1,4 @@
-import {createStore} from '../wtfkit/create-store.js';
+import {createStore} from 'state-guard';
 import * as z from 'zod';
 
 export const completionStore = createStore({

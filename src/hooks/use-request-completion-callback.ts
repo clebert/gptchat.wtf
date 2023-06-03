@@ -1,5 +1,5 @@
 import type {ChatMessage} from '../openai/create-chat-event-stream.js';
-import type {InferSnapshot} from '../wtfkit/create-store.js';
+import type {InferSnapshot} from 'state-guard';
 
 import {useAddMessageCallback} from './use-add-message-callback.js';
 import {createChatEventGenerator} from '../openai/create-chat-event-generator.js';

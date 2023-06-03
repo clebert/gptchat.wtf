@@ -1,7 +1,7 @@
-import type {Store} from '../wtfkit/create-store.js';
+import type {Store} from 'state-guard';
 
 import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
-import {createStore} from '../wtfkit/create-store.js';
+import {createStore} from 'state-guard';
 import * as z from 'zod';
 
 export type MessageStore = Store<

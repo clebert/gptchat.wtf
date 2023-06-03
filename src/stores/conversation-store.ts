@@ -1,5 +1,5 @@
 import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
-import {createStore} from '../wtfkit/create-store.js';
+import {createStore} from 'state-guard';
 import * as z from 'zod';
 
 const valueSchema = z.object({messageIds: z.array(z.string())});

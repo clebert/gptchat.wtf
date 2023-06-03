@@ -3,7 +3,7 @@ import type {
   Store,
   TransitionsMap,
   ValueSchemaMap,
-} from './create-store.js';
+} from 'state-guard';
 
 import * as React from 'react';
 
@@ -16,7 +16,13 @@ export function useStore<
   expectedState?: TExpectedState,
 ): TExpectedState extends keyof TValueSchemaMap
   ? Snapshot<TValueSchemaMap, TTransitionsMap, TExpectedState> | undefined
-  : Snapshot<TValueSchemaMap, TTransitionsMap, keyof TValueSchemaMap> {
+  : {
+      [TState in keyof TValueSchemaMap]: Snapshot<
+        TValueSchemaMap,
+        TTransitionsMap,
+        TState
+      >;
+    }[keyof TValueSchemaMap] {
   return React.useSyncExternalStore(store.subscribe, () =>
     store.get(expectedState),
   );
