@@ -1,4 +1,4 @@
-import type {ZodType} from 'zod';
+import type {z} from 'zod';
 
 import {deserializeJson} from './deserialize-json.js';
 import {serializeJson} from './serialize-json.js';
@@ -10,7 +10,7 @@ export interface JsonLocationParam<TValue> {
 
 export function createJsonLocationParam<const TValue>(
   key: string,
-  schema: ZodType<TValue>,
+  schema: z.ZodType<TValue>,
   options?: {readonly replace?: boolean},
 ): JsonLocationParam<TValue> {
   return {

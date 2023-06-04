@@ -7,7 +7,7 @@ export function useDeleteMessageCallback(): (messageId: string) => void {
     const conversationSnapshot = conversationStore.get();
 
     conversationSnapshot.actions.set({
-      ...conversationSnapshot,
+      ...conversationSnapshot.value,
       messageIds: conversationSnapshot.value.messageIds.filter(
         (otherMessageId) => otherMessageId !== messageId,
       ),

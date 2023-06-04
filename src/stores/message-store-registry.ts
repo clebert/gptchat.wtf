@@ -2,7 +2,7 @@ import type {Store} from 'state-guard';
 
 import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
 import {createStore} from 'state-guard';
-import * as z from 'zod';
+import {z} from 'zod';
 
 export type MessageStore = Store<
   {readonly current: typeof valueSchema},
@@ -36,10 +36,12 @@ export const messageStoreRegistry = {
   },
 };
 
-const valueSchema = z.object({
-  role: z.literal(`user`).or(z.literal(`assistant`)),
-  content: z.string(),
-});
+const valueSchema = z
+  .object({
+    role: z.literal(`user`).or(z.literal(`assistant`)),
+    content: z.string(),
+  })
+  .strict();
 
 function createMessageStore(
   messageId: string,

@@ -1,9 +1,9 @@
-import type {TypeOf, ZodType} from 'zod';
+import type {z} from 'zod';
 
-export function deserializeJson<TSchema extends ZodType>(
+export function deserializeJson<TSchema extends z.ZodType>(
   text: string,
   schema: TSchema,
-): TypeOf<TSchema> | undefined {
+): z.TypeOf<TSchema> | undefined {
   try {
     return schema.parse(JSON.parse(text));
   } catch {

@@ -1,6 +1,4 @@
-import type {TypeOf} from 'zod';
-
-import * as z from 'zod';
+import {z} from 'zod';
 
 export type ChatEvent =
   | {readonly role: 'assistant'}
@@ -54,7 +52,7 @@ export async function* createChatEventGenerator(
     const chunk = decoder.decode(result.value, {stream: true});
 
     if (buffer === undefined) {
-      let response: TypeOf<typeof errorResponseSchema> | undefined;
+      let response: z.TypeOf<typeof errorResponseSchema> | undefined;
 
       try {
         response = errorResponseSchema.parse(JSON.parse(chunk));

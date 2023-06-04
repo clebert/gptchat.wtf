@@ -1,6 +1,6 @@
 import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
 import {createStore} from 'state-guard';
-import * as z from 'zod';
+import {z} from 'zod';
 
 const storageItem = createJsonStorageItem(`api_key`, z.string());
 

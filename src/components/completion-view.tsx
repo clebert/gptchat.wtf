@@ -22,10 +22,13 @@ export function CompletionView(): JSX.Element {
     };
   }, []);
 
+  const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>(null);
   const receivingCompletionSnapshot = useStore(completionStore, `receiving`);
 
   React.useEffect(() => {
     if (receivingCompletionSnapshot) {
+      const editor = editorRef.current!;
+      const contentHeight = editor.getContentHeight();
       const userScrolledToBottom = isUserScrolledToBottom();
       const lastLineNumber = model.getLineCount();
       const lastLineColumn = model.getLineMaxColumn(lastLineNumber);
@@ -46,7 +49,7 @@ export function CompletionView(): JSX.Element {
         () => null,
       );
 
-      if (userScrolledToBottom && model.getLineCount() !== lastLineNumber) {
+      if (userScrolledToBottom && editor.getContentHeight() !== contentHeight) {
         window.scrollTo(0, document.documentElement.scrollHeight);
       }
     }
@@ -61,7 +64,7 @@ export function CompletionView(): JSX.Element {
   return (
     <div className="flex space-x-2">
       <div className="w-full overflow-hidden">
-        <Editor model={model} readOnly />
+        <Editor ref={editorRef} model={model} readOnly />
       </div>
 
       <div className="flex shrink-0 flex-col space-y-2">
