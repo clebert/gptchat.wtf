@@ -2,18 +2,18 @@ import {createStore} from 'state-guard';
 import {z} from 'zod';
 
 export const completionStore = createStore({
-  initialState: `idle`,
+  initialState: `inactive`,
   initialValue: undefined,
   valueSchemaMap: {
-    idle: z.void(),
+    inactive: z.void(),
     sending: z.object({id: z.string().uuid()}).strict(),
     receiving: z
       .object({id: z.string().uuid(), contentDelta: z.string()})
       .strict(),
   },
   transitionsMap: {
-    idle: {send: `sending`},
-    sending: {cancel: `idle`, receive: `receiving`},
-    receiving: {cancel: `idle`, receive: `receiving`},
+    inactive: {send: `sending`},
+    sending: {cancel: `inactive`, receive: `receiving`},
+    receiving: {cancel: `inactive`, receive: `receiving`},
   },
 });

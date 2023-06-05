@@ -40,14 +40,14 @@ export function NewMessageView(): JSX.Element {
       addMessage(`user`, model.getValue());
       model.setValue(``);
     }
-  }, [addMessage]);
+  }, []);
 
   const requestCompletion = useRequestCompletionCallback();
 
   const handleRequestCompletionClick = React.useCallback(() => {
     handleAddMessageClick();
     requestCompletion();
-  }, [handleAddMessageClick, requestCompletion]);
+  }, []);
 
   const apiKeySnapshot = useStore(apiKeyStore);
 

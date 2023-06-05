@@ -36,7 +36,7 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const completionSnapshot = useStore(completionStore);
+  const inactiveCompletionSnapshot = useStore(completionStore, `inactive`);
   const conversationSnapshot = useStore(conversationStore);
   const clearData = useClearDataCallback();
 
@@ -58,11 +58,7 @@ export function App(): JSX.Element {
           <MessageView key={messageId} messageId={messageId} />
         ))}
 
-        {completionSnapshot.state === `idle` ? (
-          <NewMessageView />
-        ) : (
-          <CompletionView />
-        )}
+        {inactiveCompletionSnapshot ? <NewMessageView /> : <CompletionView />}
       </div>
     </div>
   );

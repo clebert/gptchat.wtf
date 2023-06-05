@@ -39,9 +39,9 @@ export function useRequestCompletionCallback(): () => void {
 
   return React.useCallback(async () => {
     const apiKeySnapshot = apiKeyStore.get();
-    const idleCompletion = completionStore.get(`idle`);
+    const inactiveCompletion = completionStore.get(`inactive`);
 
-    if (!apiKeySnapshot.value || !idleCompletion) {
+    if (!apiKeySnapshot.value || !inactiveCompletion) {
       return;
     }
 
@@ -60,13 +60,13 @@ export function useRequestCompletionCallback(): () => void {
 
     const completionId = crypto.randomUUID();
 
-    idleCompletion.actions.send({id: completionId});
+    inactiveCompletion.actions.send({id: completionId});
 
     const abortController = new AbortController();
 
     completionStore.subscribe(
       () => {
-        if (completionStore.get(`idle`)) {
+        if (completionStore.get(`inactive`)) {
           abortController.abort();
         }
       },
@@ -99,19 +99,19 @@ export function useRequestCompletionCallback(): () => void {
 
       let completionContent = ``;
 
-      let completion:
+      let activeCompletionSnapshot:
         | InferSnapshot<typeof completionStore, 'sending' | 'receiving'>
         | undefined;
 
       let finishReason: 'stop' | 'length' | 'content_filter' | undefined;
 
       for await (const chatEvent of chatEventGenerator) {
-        completion =
+        activeCompletionSnapshot =
           completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
-        if (completion?.value.id === completionId) {
+        if (activeCompletionSnapshot?.value.id === completionId) {
           if (`content` in chatEvent) {
-            completion.actions.receive({
+            activeCompletionSnapshot.actions.receive({
               id: completionId,
               contentDelta: chatEvent.content,
             });
@@ -125,11 +125,11 @@ export function useRequestCompletionCallback(): () => void {
         }
       }
 
-      completion =
+      activeCompletionSnapshot =
         completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
-      if (completion?.value.id === completionId) {
-        completion.actions.cancel();
+      if (activeCompletionSnapshot?.value.id === completionId) {
+        activeCompletionSnapshot.actions.cancel();
       }
 
       addMessage(
@@ -142,11 +142,11 @@ export function useRequestCompletionCallback(): () => void {
             : `No content.`),
       );
     } catch (error) {
-      const completion =
+      const activeCompletionSnapshot =
         completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
-      if (completion?.value.id === completionId) {
-        completion.actions.cancel();
+      if (activeCompletionSnapshot?.value.id === completionId) {
+        activeCompletionSnapshot.actions.cancel();
 
         addMessage(
           `assistant`,
@@ -154,5 +154,5 @@ export function useRequestCompletionCallback(): () => void {
         );
       }
     }
-  }, [addMessage]);
+  }, []);
 }
