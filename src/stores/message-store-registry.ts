@@ -1,6 +1,6 @@
 import type {Store} from 'state-guard';
 
-import {createJsonStorageItem} from '../wtfkit/create-json-storage-item.js';
+import {createJsonStorageItem} from '../utils/create-json-storage-item.js';
 import {createStore} from 'state-guard';
 import {z} from 'zod';
 

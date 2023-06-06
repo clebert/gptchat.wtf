@@ -1,4 +1,4 @@
-import {joinClassNames} from '../wtfkit/join-class-names.js';
+import {joinClassNames} from '../utils/join-class-names.js';
 import * as React from 'react';
 
 export interface Styles {

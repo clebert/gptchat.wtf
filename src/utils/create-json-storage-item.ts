@@ -1,8 +1,5 @@
 import type {z} from 'zod';
 
-import {deserializeJson} from './deserialize-json.js';
-import {serializeJson} from './serialize-json.js';
-
 export interface JsonStorageItem<TValue> {
   get value(): TValue | undefined;
   set value(newValue: TValue | undefined);
@@ -29,4 +26,23 @@ export function createJsonStorageItem<const TValue>(
       }
     },
   };
+}
+
+function deserializeJson<TSchema extends z.ZodType>(
+  text: string,
+  schema: TSchema,
+): z.TypeOf<TSchema> | undefined {
+  try {
+    return schema.parse(JSON.parse(text));
+  } catch {
+    return undefined;
+  }
+}
+
+function serializeJson(value: unknown): string | undefined {
+  if (typeof value === `number`) {
+    return isFinite(value) ? JSON.stringify(value) : undefined;
+  }
+
+  return value != null ? JSON.stringify(value) : undefined;
 }

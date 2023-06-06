@@ -1,6 +1,6 @@
 import {Icon} from './icon.js';
 import {StylesContext} from '../contexts/styles-context.js';
-import {joinClassNames} from '../wtfkit/join-class-names.js';
+import {joinClassNames} from '../utils/join-class-names.js';
 import * as React from 'react';
 
 export interface MessageRoleIconProps {

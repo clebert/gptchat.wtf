@@ -1,7 +1,7 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
+import {useStore} from '../hooks/use-store.js';
 import {colorSchemeStore} from '../stores/color-scheme-store.js';
-import {useStore} from '../wtfkit/use-store.js';
 import * as React from 'react';
 
 const titles = {auto: `System Theme`, light: `Day Theme`, dark: `Night Theme`};

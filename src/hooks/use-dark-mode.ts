@@ -1,5 +1,5 @@
+import {useStore} from './use-store.js';
 import {colorSchemeStore} from '../stores/color-scheme-store.js';
-import {useStore} from '../wtfkit/use-store.js';
 import * as React from 'react';
 
 const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);

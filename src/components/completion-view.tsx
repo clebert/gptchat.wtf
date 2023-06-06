@@ -2,9 +2,9 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
+import {useStore} from '../hooks/use-store.js';
 import {completionStore} from '../stores/completion-store.js';
 import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
-import {useStore} from '../wtfkit/use-store.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
 

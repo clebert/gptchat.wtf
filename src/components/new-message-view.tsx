@@ -4,9 +4,9 @@ import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
 import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
 import {useRequestCompletionCallback} from '../hooks/use-request-completion-callback.js';
+import {useStore} from '../hooks/use-store.js';
 import {apiKeyStore} from '../stores/api-key-store.js';
 import {isTouchDevice} from '../utils/is-touch-device.js';
-import {useStore} from '../wtfkit/use-store.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
