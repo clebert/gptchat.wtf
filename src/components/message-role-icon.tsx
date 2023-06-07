@@ -20,7 +20,7 @@ export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
   return (
     <div
       className={joinClassNames(
-        `flex select-none items-center px-2`,
+        `select-none px-2`,
         styles.background(),
         styles.border({transparent: true}),
         styles.text(),

@@ -28,12 +28,12 @@ export function Button({
     <button
       className={joinClassNames(
         className,
-        `flex select-none items-center whitespace-nowrap px-2`,
+        `select-none whitespace-nowrap px-2`,
         !enabled && `cursor-default opacity-25`,
-        styles.background({active: enabled, inverted}),
+        styles.background({interactive: enabled, inverted}),
         styles.border({transparent: inverted}),
         styles.focus(),
-        styles.text({active: enabled, inverted}),
+        styles.text({interactive: enabled, inverted}),
       )}
       type={type}
       title={title}

@@ -56,7 +56,7 @@ export function Icon({type, standalone}: IconProps): JSX.Element {
   return (
     <div
       className={joinClassNames(
-        `inline-flex h-6 items-center`,
+        `inline-flex h-5 align-middle`,
         !standalone && `mr-1`,
       )}
     >
