@@ -119,5 +119,8 @@ function setupMonacoEnvironment() {
 
       return `<editor>`;
     },
+    createTrustedTypesPolicy() {
+      return undefined;
+    },
   };
 }
