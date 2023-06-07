@@ -14,8 +14,6 @@ import {useStore} from '../hooks/use-store.js';
 import {completionStore} from '../stores/completion-store.js';
 import {conversationStore} from '../stores/conversation-store.js';
 import * as React from 'react';
-import {createRoot} from 'react-dom/client';
-import 'tailwindcss/tailwind.css';
 
 export function App(): JSX.Element {
   const styles = React.useContext(StylesContext);
@@ -63,5 +61,3 @@ export function App(): JSX.Element {
     </div>
   );
 }
-
-createRoot(document.querySelector(`main#app`)!).render(<App />);

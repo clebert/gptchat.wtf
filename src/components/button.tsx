@@ -2,8 +2,7 @@ import {StylesContext} from '../contexts/styles-context.js';
 import {joinClassNames} from '../utils/join-class-names.js';
 import * as React from 'react';
 
-export interface ButtonProps {
-  children: React.ReactNode;
+export interface ButtonProps extends React.PropsWithChildren {
   className?: string;
   type?: 'button' | 'submit';
   title: string;

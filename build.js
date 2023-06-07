@@ -15,7 +15,7 @@ const options = {
   entryPoints: [
     {
       out: `app`,
-      in: `src/components/app.tsx`,
+      in: `src/index.tsx`,
     },
     {
       out: `editor.worker`,
