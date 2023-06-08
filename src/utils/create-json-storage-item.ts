@@ -1,6 +1,9 @@
 import type {z} from 'zod';
 
-export interface JsonStorageItem<TValue> {
+import {deserializeJson} from './deserialize-json.js';
+import {serializeJson} from './serialize-json.js';
+
+export interface Accessor<TValue> {
   get value(): TValue | undefined;
   set value(newValue: TValue | undefined);
 }
@@ -8,7 +11,7 @@ export interface JsonStorageItem<TValue> {
 export function createJsonStorageItem<const TValue>(
   key: string,
   schema: z.ZodType<TValue>,
-): JsonStorageItem<TValue> {
+): Accessor<TValue> {
   return {
     get value() {
       const text = localStorage.getItem(key);
@@ -26,23 +29,4 @@ export function createJsonStorageItem<const TValue>(
       }
     },
   };
-}
-
-function deserializeJson<TSchema extends z.ZodType>(
-  text: string,
-  schema: TSchema,
-): z.TypeOf<TSchema> | undefined {
-  try {
-    return schema.parse(JSON.parse(text));
-  } catch {
-    return undefined;
-  }
-}
-
-function serializeJson(value: unknown): string | undefined {
-  if (typeof value === `number`) {
-    return isFinite(value) ? JSON.stringify(value) : undefined;
-  }
-
-  return value != null ? JSON.stringify(value) : undefined;
 }
