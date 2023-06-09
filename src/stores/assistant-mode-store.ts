@@ -10,9 +10,9 @@ const storageItem = createJsonStorageItem(
 export const assistantModeStore = createStore({
   initialState: storageItem.value ?? `general`,
   initialValue: undefined,
-  valueSchemaMap: {
-    general: z.void(),
-    programming: z.void(),
+  transformerMap: {
+    general: () => undefined,
+    programming: () => undefined,
   },
   transitionsMap: {
     general: {toggle: `programming`},

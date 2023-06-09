@@ -7,7 +7,7 @@ const storageItem = createJsonStorageItem(`api_key`, z.string());
 export const apiKeyStore = createStore({
   initialState: `current`,
   initialValue: storageItem.value ?? ``,
-  valueSchemaMap: {current: z.string()},
+  transformerMap: {current: (apiKey: string) => apiKey},
   transitionsMap: {current: {set: `current`}},
 });
 

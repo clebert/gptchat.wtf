@@ -10,9 +10,9 @@ const storageItem = createJsonStorageItem(
 export const modelStore = createStore({
   initialState: storageItem.value ?? `gpt-4`,
   initialValue: undefined,
-  valueSchemaMap: {
-    'gpt-4': z.void(),
-    'gpt-3.5-turbo': z.void(),
+  transformerMap: {
+    'gpt-4': () => undefined,
+    'gpt-3.5-turbo': () => undefined,
   },
   transitionsMap: {
     'gpt-4': {toggle: `gpt-3.5-turbo`},

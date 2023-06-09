@@ -1,15 +1,13 @@
 import {createStore} from 'state-guard';
-import {z} from 'zod';
 
 export const completionStore = createStore({
   initialState: `inactive`,
   initialValue: undefined,
-  valueSchemaMap: {
-    inactive: z.void(),
-    sending: z.object({id: z.string().uuid()}).strict(),
-    receiving: z
-      .object({id: z.string().uuid(), contentDelta: z.string()})
-      .strict(),
+  transformerMap: {
+    inactive: () => undefined,
+    sending: (value: {readonly id: string}) => value,
+    receiving: (value: {readonly id: string; readonly contentDelta: string}) =>
+      value,
   },
   transitionsMap: {
     inactive: {send: `sending`},

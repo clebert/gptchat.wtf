@@ -5,9 +5,14 @@ import {createStore} from 'state-guard';
 import {z} from 'zod';
 
 export type MessageStore = Store<
-  {readonly current: typeof valueSchema},
+  {readonly current: (message: Message) => Message},
   {readonly current: {readonly set: 'current'}}
 >;
+
+export interface Message {
+  readonly role: 'user' | 'assistant';
+  readonly content: string;
+}
 
 const messageStores = new Map<string, MessageStore>();
 const abortControllers = new Map<string, AbortController>();
@@ -36,26 +41,22 @@ export const messageStoreRegistry = {
   },
 };
 
-const valueSchema = z
-  .object({
-    role: z.literal(`user`).or(z.literal(`assistant`)),
-    content: z.string(),
-  })
-  .strict();
-
 function createMessageStore(
   messageId: string,
   signal: AbortSignal,
 ): MessageStore {
   const storageItem = createJsonStorageItem(
     `message:${messageId}`,
-    valueSchema,
+    z.object({
+      role: z.literal(`user`).or(z.literal(`assistant`)),
+      content: z.string(),
+    }),
   );
 
   const store = createStore({
     initialState: `current`,
     initialValue: storageItem.value ?? {role: `user`, content: ``},
-    valueSchemaMap: {current: valueSchema},
+    transformerMap: {current: (message: Message) => message},
     transitionsMap: {current: {set: `current`}},
   });
 
