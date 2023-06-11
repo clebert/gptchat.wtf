@@ -1,4 +1,3 @@
-import type {ChatMessage} from '../openai/create-chat-event-stream.js';
 import type {InferSnapshot} from 'state-guard';
 
 import {useAddMessageCallback} from './use-add-message-callback.js';
@@ -8,7 +7,6 @@ import {apiKeyStore} from '../stores/api-key-store.js';
 import {assistantModeStore} from '../stores/assistant-mode-store.js';
 import {completionStore} from '../stores/completion-store.js';
 import {conversationStore} from '../stores/conversation-store.js';
-import {messageStoreRegistry} from '../stores/message-store-registry.js';
 import {modelStore} from '../stores/model-store.js';
 import * as React from 'react';
 
@@ -47,12 +45,7 @@ export function useRequestCompletionCallback(): () => void {
 
     const [message, ...messages] = conversationStore
       .get()
-      .value.messageIds.map((messageId): ChatMessage | undefined => {
-        const {role, content} = messageStoreRegistry.get(messageId).get().value;
-
-        return content ? {role, content} : undefined;
-      })
-      .filter(Boolean) as ChatMessage[];
+      .value.messages.map(({role, content}) => ({role, content}));
 
     if (!message) {
       return;

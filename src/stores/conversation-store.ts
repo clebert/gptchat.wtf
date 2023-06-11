@@ -1,23 +1,3 @@
-import {createJsonStorageItem} from '../utils/create-json-storage-item.js';
-import {createStore} from 'state-guard';
-import {z} from 'zod';
+import {createConversationStore} from './create-conversation-store.js';
 
-const storageItem = createJsonStorageItem(
-  `conversation`,
-  z.object({messageIds: z.array(z.string())}),
-);
-
-export const conversationStore = createStore({
-  initialState: `current`,
-  initialValue: storageItem.value ?? {messageIds: []},
-  transformerMap: {
-    current: (conversation: {readonly messageIds: string[]}) => conversation,
-  },
-  transitionsMap: {
-    current: {set: `current`},
-  },
-});
-
-conversationStore.subscribe(() => {
-  storageItem.value = conversationStore.get().value;
-});
+export const conversationStore = createConversationStore(`default`);

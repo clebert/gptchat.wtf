@@ -52,8 +52,8 @@ export function App(): JSX.Element {
           </Button>
         </div>
 
-        {conversationSnapshot.value.messageIds.map((messageId) => (
-          <MessageView key={messageId} messageId={messageId} />
+        {conversationSnapshot.value.messages.map((message) => (
+          <MessageView key={message.messageId} message={message} />
         ))}
 
         {inactiveCompletionSnapshot ? <NewMessageView /> : <CompletionView />}
