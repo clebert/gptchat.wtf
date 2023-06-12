@@ -4,11 +4,12 @@ import {htmlPlugin} from 'esbuild-html-plugin';
 import stylePlugin from 'esbuild-style-plugin';
 import {rm} from 'node:fs/promises';
 import {createRequire} from 'node:module';
-import {argv, env} from 'node:process';
+import process from 'node:process';
 
 const require = createRequire(import.meta.url);
 const outdir = `dist`;
-const dev = env.NODE_ENV === `development`;
+const nodeEnv = process.env.NODE_ENV ?? `production`;
+const dev = nodeEnv !== `production`;
 
 /** @type {import('esbuild').BuildOptions} */
 const options = {
@@ -35,8 +36,7 @@ const options = {
   minify: !dev,
   sourcemap: dev,
   define: {
-    'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV ?? `production`),
-    '__DEV__': String(dev),
+    'process.env.NODE_ENV': JSON.stringify(nodeEnv),
   },
   metafile: true,
   target: `es2022`,
@@ -92,7 +92,7 @@ const options = {
   ],
 };
 
-if (argv.includes(`--watch`)) {
+if (process.argv.includes(`--watch`)) {
   const ctx = await esbuild.context(options);
 
   await ctx.watch();
