@@ -10,7 +10,6 @@ import {NewMessageView} from './new-message-view.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useClearDataCallback} from '../hooks/use-clear-data-callback.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
-import {useStore} from '../hooks/use-store.js';
 import {completionStore} from '../stores/completion-store.js';
 import {conversationStore} from '../stores/conversation-store.js';
 import * as React from 'react';
@@ -34,8 +33,16 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const inactiveCompletionSnapshot = useStore(completionStore, `inactive`);
-  const conversationSnapshot = useStore(conversationStore);
+  const inactiveCompletionSnapshot = React.useSyncExternalStore(
+    completionStore.subscribe,
+    () => completionStore.get(`inactive`),
+  );
+
+  const conversationSnapshot = React.useSyncExternalStore(
+    conversationStore.subscribe,
+    () => conversationStore.get(),
+  );
+
   const clearData = useClearDataCallback();
 
   return (

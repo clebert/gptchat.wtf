@@ -1,6 +1,6 @@
-import {createStore} from 'state-guard';
+import {createStateMachine} from 'state-guard';
 
-export const completionStore = createStore({
+export const completionStore = createStateMachine({
   initialState: `inactive`,
   initialValue: undefined,
   transformerMap: {

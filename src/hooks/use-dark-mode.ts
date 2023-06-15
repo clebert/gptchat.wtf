@@ -1,11 +1,14 @@
-import {useStore} from './use-store.js';
 import {colorSchemeStore} from '../stores/color-scheme-store.js';
 import * as React from 'react';
 
 const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
 
 export function useDarkMode(): boolean {
-  const colorSchemeSnapshot = useStore(colorSchemeStore);
+  const colorSchemeSnapshot = React.useSyncExternalStore(
+    colorSchemeStore.subscribe,
+    () => colorSchemeStore.get(),
+  );
+
   const [prefersDark, setPrefersDark] = React.useState(mediaQuery.matches);
 
   React.useEffect(() => {

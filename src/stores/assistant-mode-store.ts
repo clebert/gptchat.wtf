@@ -1,5 +1,5 @@
 import {createJsonStorageItem} from '../utils/create-json-storage-item.js';
-import {createStore} from 'state-guard';
+import {createStateMachine} from 'state-guard';
 import {z} from 'zod';
 
 const storageItem = createJsonStorageItem(
@@ -7,7 +7,7 @@ const storageItem = createJsonStorageItem(
   z.literal(`general`).or(z.literal(`programming`)),
 );
 
-export const assistantModeStore = createStore({
+export const assistantModeStore = createStateMachine({
   initialState: storageItem.value ?? `general`,
   initialValue: undefined,
   transformerMap: {

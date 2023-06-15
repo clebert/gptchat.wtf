@@ -2,7 +2,6 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
-import {useStore} from '../hooks/use-store.js';
 import {completionStore} from '../stores/completion-store.js';
 import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
 import * as monaco from 'monaco-editor';
@@ -23,7 +22,11 @@ export function CompletionView(): JSX.Element {
   }, []);
 
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>(null);
-  const receivingCompletionSnapshot = useStore(completionStore, `receiving`);
+
+  const receivingCompletionSnapshot = React.useSyncExternalStore(
+    completionStore.subscribe,
+    () => completionStore.get(`receiving`),
+  );
 
   React.useEffect(() => {
     if (receivingCompletionSnapshot) {

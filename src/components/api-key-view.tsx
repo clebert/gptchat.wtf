@@ -1,7 +1,6 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
 import {TextField} from './text-field.js';
-import {useStore} from '../hooks/use-store.js';
 import {apiKeyStore} from '../stores/api-key-store.js';
 import * as React from 'react';
 
@@ -40,7 +39,9 @@ export function ApiKeyView(): JSX.Element {
     };
   }, [showApiKey]);
 
-  const apiKeySnapshot = useStore(apiKeyStore);
+  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () =>
+    apiKeyStore.get(),
+  );
 
   if (!showApiKey && !apiKeySnapshot.value) {
     setShowApiKey(true);

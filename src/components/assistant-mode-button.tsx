@@ -1,6 +1,5 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
-import {useStore} from '../hooks/use-store.js';
 import {assistantModeStore} from '../stores/assistant-mode-store.js';
 import * as React from 'react';
 
@@ -15,7 +14,10 @@ const iconTypes = {
 } as const;
 
 export function AssistantModeButton(): JSX.Element {
-  const assistantModeSnapshot = useStore(assistantModeStore);
+  const assistantModeSnapshot = React.useSyncExternalStore(
+    assistantModeStore.subscribe,
+    () => assistantModeStore.get(),
+  );
 
   const toggle = React.useCallback(() => {
     assistantModeStore.get().actions.toggle();
