@@ -86,11 +86,7 @@ export const Editor = React.forwardRef(
     return (
       <MonacoEditor
         ref={editorRef}
-        className={joinClassNames(
-          className,
-          styles.border(),
-          styles.focus({within: true}),
-        )}
+        className={joinClassNames(className, styles.border(), styles.focus({within: true}))}
         options={{
           contextmenu: false,
           fontSize: 16,

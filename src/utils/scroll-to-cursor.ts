@@ -1,23 +1,16 @@
 import {getViewportHeight} from './get-viewport-height.js';
 import * as monaco from 'monaco-editor';
 
-export function scrollToCursor(
-  editor: monaco.editor.IStandaloneCodeEditor,
-): void {
+export function scrollToCursor(editor: monaco.editor.IStandaloneCodeEditor): void {
   const position = editor.getPosition();
-
-  const scrolledVisiblePosition =
-    position && editor.getScrolledVisiblePosition(position);
+  const scrolledVisiblePosition = position && editor.getScrolledVisiblePosition(position);
 
   if (!scrolledVisiblePosition) {
     return;
   }
 
   const {scrollTop} = document.documentElement;
-
-  const containerTop =
-    scrollTop + editor.getContainerDomNode().getBoundingClientRect().top;
-
+  const containerTop = scrollTop + editor.getContainerDomNode().getBoundingClientRect().top;
   const lineTop = containerTop + scrolledVisiblePosition.top;
 
   if (lineTop < scrollTop) {

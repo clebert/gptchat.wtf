@@ -8,10 +8,7 @@ import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
 export function CompletionView(): JSX.Element {
-  const model = React.useMemo(
-    () => monaco.editor.createModel(``, `markdown`),
-    [],
-  );
+  const model = React.useMemo(() => monaco.editor.createModel(``, `markdown`), []);
 
   React.useEffect(() => {
     window.scrollTo(0, document.documentElement.scrollHeight);
@@ -23,9 +20,8 @@ export function CompletionView(): JSX.Element {
 
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>(null);
 
-  const receivingCompletionSnapshot = React.useSyncExternalStore(
-    completionStore.subscribe,
-    () => completionStore.get(`receiving`),
+  const receivingCompletionSnapshot = React.useSyncExternalStore(completionStore.subscribe, () =>
+    completionStore.get(`receiving`),
   );
 
   React.useEffect(() => {
@@ -59,9 +55,7 @@ export function CompletionView(): JSX.Element {
   }, [receivingCompletionSnapshot]);
 
   const cancelCompletion = React.useCallback(() => {
-    (
-      completionStore.get(`sending`) ?? completionStore.get(`receiving`)
-    )?.actions.cancel();
+    (completionStore.get(`sending`) ?? completionStore.get(`receiving`))?.actions.cancel();
   }, []);
 
   return (

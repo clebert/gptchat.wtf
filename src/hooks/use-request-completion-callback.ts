@@ -35,6 +35,7 @@ const programmingSystemMessageContent = [
 export function useRequestCompletionCallback(): () => void {
   const addMessage = useAddMessageCallback();
 
+  // eslint-disable-next-line complexity
   return React.useCallback(async () => {
     const apiKeySnapshot = apiKeyStore.get();
     const inactiveCompletion = completionStore.get(`inactive`);
@@ -66,29 +67,33 @@ export function useRequestCompletionCallback(): () => void {
       {signal: abortController.signal},
     );
 
+    const assistantMode = assistantModeStore.get().state;
+
+    const systemMessage =
+      assistantMode !== `freestyle`
+        ? {
+            role: `system` as const,
+            content:
+              assistantMode === `general`
+                ? generalSystemMessageContent
+                : programmingSystemMessageContent,
+          }
+        : undefined;
+
     try {
       const chatEventStream = await createChatEventStream(
         {
           apiKey: apiKeySnapshot.value,
           model: modelStore.get().state,
           messages: [
-            {
-              role: `system`,
-              content:
-                assistantModeStore.get().state === `general`
-                  ? generalSystemMessageContent
-                  : programmingSystemMessageContent,
-            },
-            message,
+            ...(systemMessage ? ([systemMessage, message] as const) : ([message] as const)),
             ...messages,
           ],
         },
         abortController.signal,
       );
 
-      const chatEventGenerator = createChatEventGenerator(
-        chatEventStream.getReader(),
-      );
+      const chatEventGenerator = createChatEventGenerator(chatEventStream.getReader());
 
       let completionContent = ``;
 
@@ -118,8 +123,7 @@ export function useRequestCompletionCallback(): () => void {
         }
       }
 
-      activeCompletionSnapshot =
-        completionStore.get(`sending`) ?? completionStore.get(`receiving`);
+      activeCompletionSnapshot = completionStore.get(`sending`) ?? completionStore.get(`receiving`);
 
       if (activeCompletionSnapshot?.value.id === completionId) {
         activeCompletionSnapshot.actions.cancel();
@@ -141,10 +145,7 @@ export function useRequestCompletionCallback(): () => void {
       if (activeCompletionSnapshot?.value.id === completionId) {
         activeCompletionSnapshot.actions.cancel();
 
-        addMessage(
-          `assistant`,
-          error instanceof Error ? error.message : `Unknown error.`,
-        );
+        addMessage(`assistant`, error instanceof Error ? error.message : `Unknown error.`);
       }
     }
   }, []);

@@ -14,19 +14,10 @@ export interface TextFieldProps {
 
 export const TextField = React.forwardRef(
   (
-    {
-      className,
-      value,
-      placeholder,
-      disabled,
-      required,
-      onInput,
-    }: TextFieldProps,
+    {className, value, placeholder, disabled, required, onInput}: TextFieldProps,
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
-    const handleInput = React.useCallback<
-      React.FormEventHandler<HTMLInputElement>
-    >(
+    const handleInput = React.useCallback<React.FormEventHandler<HTMLInputElement>>(
       (event) => {
         event.preventDefault();
         onInput(event.currentTarget.value);

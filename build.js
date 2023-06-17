@@ -14,14 +14,8 @@ const dev = nodeEnv !== `production`;
 /** @type {import('esbuild').BuildOptions} */
 const options = {
   entryPoints: [
-    {
-      out: `app`,
-      in: `src/index.tsx`,
-    },
-    {
-      out: `editor.worker`,
-      in: require.resolve(`monaco-editor/esm/vs/editor/editor.worker`),
-    },
+    {out: `app`, in: `src/index.tsx`},
+    {out: `editor.worker`, in: require.resolve(`monaco-editor/esm/vs/editor/editor.worker`)},
     ...[`css`, `html`, `json`, `ts`].map((language) => ({
       out: `${language}.worker`,
       in: require.resolve(
@@ -35,17 +29,13 @@ const options = {
   bundle: true,
   minify: !dev,
   sourcemap: dev,
-  define: {
-    'process.env.NODE_ENV': JSON.stringify(nodeEnv),
-  },
+  define: {'process.env.NODE_ENV': JSON.stringify(nodeEnv)},
   metafile: true,
   target: `es2022`,
   tsconfig: `tsconfig.base.json`,
   outdir,
   publicPath: `/static`,
-  loader: {
-    '.ttf': `file`,
-  },
+  loader: {'.ttf': `file`},
   plugins: [
     stylePlugin({
       postcss: {
@@ -80,8 +70,7 @@ const options = {
               `<${workerType}>`,
               /** @type {string} */ (
                 outputUrls.find(
-                  (url) =>
-                    url.includes(`${workerType}.worker`) && url.endsWith(`.js`),
+                  (url) => url.includes(`${workerType}.worker`) && url.endsWith(`.js`),
                 )
               ),
             ),

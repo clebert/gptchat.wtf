@@ -21,10 +21,7 @@ export function MessageView({message}: MessageViewProps): JSX.Element {
     deleteMessage(message.messageId);
   }, []);
 
-  const model = React.useMemo(
-    () => monaco.editor.createModel(message.content, `markdown`),
-    [],
-  );
+  const model = React.useMemo(() => monaco.editor.createModel(message.content, `markdown`), []);
 
   React.useEffect(() => {
     model.onDidChangeContent(
@@ -54,10 +51,7 @@ export function MessageView({message}: MessageViewProps): JSX.Element {
         </div>
 
         <div className="flex shrink-0 flex-col space-y-2">
-          <Button
-            title="Delete Chat Message"
-            onClick={handleDeleteMessageClick}
-          >
+          <Button title="Delete Chat Message" onClick={handleDeleteMessageClick}>
             <Icon type="trash" standalone></Icon>
           </Button>
 

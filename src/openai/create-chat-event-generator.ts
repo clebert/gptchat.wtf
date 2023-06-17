@@ -9,9 +9,7 @@ const choicesResponseSchema = z.object({
   choices: z.tuple([
     z
       .object({
-        delta: z
-          .object({role: z.literal(`assistant`)})
-          .or(z.object({content: z.string()})),
+        delta: z.object({role: z.literal(`assistant`)}).or(z.object({content: z.string()})),
       })
       .or(
         z.object({

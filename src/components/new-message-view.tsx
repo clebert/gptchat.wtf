@@ -10,11 +10,7 @@ import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
 export function NewMessageView(): JSX.Element {
-  const model = React.useMemo(
-    () => monaco.editor.createModel(``, `markdown`),
-    [],
-  );
-
+  const model = React.useMemo(() => monaco.editor.createModel(``, `markdown`), []);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -48,9 +44,7 @@ export function NewMessageView(): JSX.Element {
     requestCompletion();
   }, []);
 
-  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () =>
-    apiKeyStore.get(),
-  );
+  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () => apiKeyStore.get());
 
   return (
     <div ref={containerRef} className="flex space-x-2">

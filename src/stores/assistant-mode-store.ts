@@ -4,7 +4,7 @@ import {z} from 'zod';
 
 const storageItem = createJsonStorageItem(
   `assistant_mode`,
-  z.literal(`general`).or(z.literal(`programming`)),
+  z.literal(`general`).or(z.literal(`programming`)).or(z.literal(`freestyle`)),
 );
 
 export const assistantModeStore = createStateMachine({
@@ -13,10 +13,12 @@ export const assistantModeStore = createStateMachine({
   transformerMap: {
     general: () => undefined,
     programming: () => undefined,
+    freestyle: () => undefined,
   },
   transitionsMap: {
     general: {toggle: `programming`},
-    programming: {toggle: `general`},
+    programming: {toggle: `freestyle`},
+    freestyle: {toggle: `general`},
   },
 });
 

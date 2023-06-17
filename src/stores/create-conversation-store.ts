@@ -21,9 +21,7 @@ export function createConversationStore(conversationId: string) {
     initialState: `current`,
     initialValue: storageItem.value ?? {messages: []},
     transformerMap: {
-      current: (
-        messages: readonly Message[],
-      ): {readonly messages: readonly Message[]} => ({
+      current: (messages: readonly Message[]): {readonly messages: readonly Message[]} => ({
         messages,
       }),
     },
@@ -35,8 +33,7 @@ export function createConversationStore(conversationId: string) {
       value: {messages},
     } = store.get();
 
-    storageItem.value =
-      messages.length > 0 ? {messages: [...messages]} : undefined;
+    storageItem.value = messages.length > 0 ? {messages: [...messages]} : undefined;
   });
 
   return store;

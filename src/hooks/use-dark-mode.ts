@@ -4,9 +4,8 @@ import * as React from 'react';
 const mediaQuery = window.matchMedia(`(prefers-color-scheme: dark)`);
 
 export function useDarkMode(): boolean {
-  const colorSchemeSnapshot = React.useSyncExternalStore(
-    colorSchemeStore.subscribe,
-    () => colorSchemeStore.get(),
+  const colorSchemeSnapshot = React.useSyncExternalStore(colorSchemeStore.subscribe, () =>
+    colorSchemeStore.get(),
   );
 
   const [prefersDark, setPrefersDark] = React.useState(mediaQuery.matches);
@@ -20,7 +19,6 @@ export function useDarkMode(): boolean {
   }, []);
 
   return (
-    colorSchemeSnapshot.state === `dark` ||
-    (colorSchemeSnapshot.state === `auto` && prefersDark)
+    colorSchemeSnapshot.state === `dark` || (colorSchemeSnapshot.state === `auto` && prefersDark)
   );
 }

@@ -18,9 +18,7 @@ export function App(): JSX.Element {
   const styles = React.useContext(StylesContext);
 
   React.useLayoutEffect(() => {
-    document
-      .querySelector(`body`)
-      ?.classList.add(...styles.background().split(` `));
+    document.querySelector(`body`)?.classList.add(...styles.background().split(` `));
   }, []);
 
   const darkMode = useDarkMode();
@@ -33,14 +31,12 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const inactiveCompletionSnapshot = React.useSyncExternalStore(
-    completionStore.subscribe,
-    () => completionStore.get(`inactive`),
+  const inactiveCompletionSnapshot = React.useSyncExternalStore(completionStore.subscribe, () =>
+    completionStore.get(`inactive`),
   );
 
-  const conversationSnapshot = React.useSyncExternalStore(
-    conversationStore.subscribe,
-    () => conversationStore.get(),
+  const conversationSnapshot = React.useSyncExternalStore(conversationStore.subscribe, () =>
+    conversationStore.get(),
   );
 
   const clearData = useClearDataCallback();

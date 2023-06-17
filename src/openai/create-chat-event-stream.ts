@@ -17,10 +17,7 @@ export async function createChatEventStream(
 
   const response = await fetch(`https://api.openai.com/v1/chat/completions`, {
     method: `POST`,
-    headers: {
-      'Content-Type': `application/json`,
-      'Authorization': `Bearer ${apiKey}`,
-    },
+    headers: {'Content-Type': `application/json`, 'Authorization': `Bearer ${apiKey}`},
     body: JSON.stringify({
       model,
       messages: messages.map(({role, content}) => ({role, content})),

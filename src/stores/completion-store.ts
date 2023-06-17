@@ -6,8 +6,7 @@ export const completionStore = createStateMachine({
   transformerMap: {
     inactive: () => undefined,
     sending: (value: {readonly id: string}) => value,
-    receiving: (value: {readonly id: string; readonly contentDelta: string}) =>
-      value,
+    receiving: (value: {readonly id: string; readonly contentDelta: string}) => value,
   },
   transitionsMap: {
     inactive: {send: `sending`},

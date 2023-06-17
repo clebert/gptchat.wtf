@@ -24,17 +24,13 @@ class AsyncReader {
 
     const chunk = this.#chunks.shift();
 
-    return chunk
-      ? {done: false, value: new TextEncoder().encode(chunk)}
-      : {done: true};
+    return chunk ? {done: false, value: new TextEncoder().encode(chunk)} : {done: true};
   }
 }
 
 describe(`createChatEventGenerator()`, () => {
   it(`yields chat events`, async () => {
-    const chatEventGenerator = createChatEventGenerator(
-      new AsyncReader(dataChunks),
-    );
+    const chatEventGenerator = createChatEventGenerator(new AsyncReader(dataChunks));
 
     expect(await chatEventGenerator.next()).toEqual({
       done: false,
@@ -70,9 +66,7 @@ describe(`createChatEventGenerator()`, () => {
   });
 
   it(`throws an error`, async () => {
-    const chatEventGenerator = createChatEventGenerator(
-      new AsyncReader(errorChunks),
-    );
+    const chatEventGenerator = createChatEventGenerator(new AsyncReader(errorChunks));
 
     await expect(chatEventGenerator.next()).rejects.toThrow(
       `Incorrect API key provided: ***. You can find your API key at https://platform.openai.com/account/api-keys.`,

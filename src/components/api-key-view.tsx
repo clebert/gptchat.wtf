@@ -9,9 +9,7 @@ export function ApiKeyView(): JSX.Element {
     apiKeyStore.get().actions.set(value);
   }, []);
 
-  const [showApiKey, setShowApiKey] = React.useState(
-    () => apiKeyStore.get().value.length === 0,
-  );
+  const [showApiKey, setShowApiKey] = React.useState(() => apiKeyStore.get().value.length === 0);
 
   const handleShowApiKeyClick = React.useCallback(() => {
     setShowApiKey(true);
@@ -39,9 +37,7 @@ export function ApiKeyView(): JSX.Element {
     };
   }, [showApiKey]);
 
-  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () =>
-    apiKeyStore.get(),
-  );
+  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () => apiKeyStore.get());
 
   if (!showApiKey && !apiKeySnapshot.value) {
     setShowApiKey(true);

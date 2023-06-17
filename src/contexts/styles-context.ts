@@ -2,11 +2,7 @@ import {joinClassNames} from '../utils/join-class-names.js';
 import * as React from 'react';
 
 export interface Styles {
-  background(options?: {
-    readonly interactive?: boolean;
-    readonly inverted?: boolean;
-  }): string;
-
+  background(options?: {readonly interactive?: boolean; readonly inverted?: boolean}): string;
   border(options?: {readonly transparent?: boolean}): string;
   focus(options?: {readonly within?: boolean}): string;
 
@@ -24,9 +20,7 @@ export const StylesContext = React.createContext<Styles>({
         (inverted
           ? `active:bg-white dark:active:bg-neutral-900`
           : `active:bg-neutral-900 dark:active:bg-white`),
-      inverted
-        ? `bg-neutral-900 dark:bg-white`
-        : `bg-white dark:bg-neutral-900`,
+      inverted ? `bg-neutral-900 dark:bg-white` : `bg-white dark:bg-neutral-900`,
     );
   },
 
