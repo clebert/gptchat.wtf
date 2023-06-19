@@ -5,7 +5,6 @@
     "resolveJsonModule": true
   },
   "exclude": [
-    "coverage",
     "dist"
   ],
   "extends": [

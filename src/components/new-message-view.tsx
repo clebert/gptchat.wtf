@@ -3,7 +3,7 @@ import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
 import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
-import {useRequestCompletionCallback} from '../hooks/use-request-completion-callback.js';
+import {useRequestCompletionsCallback} from '../hooks/use-request-completions-callback.js';
 import {apiKeyStore} from '../stores/api-key-store.js';
 import {isTouchDevice} from '../utils/is-touch-device.js';
 import * as monaco from 'monaco-editor';
@@ -37,11 +37,11 @@ export function NewMessageView(): JSX.Element {
     }
   }, []);
 
-  const requestCompletion = useRequestCompletionCallback();
+  const requestCompletions = useRequestCompletionsCallback();
 
-  const handleRequestCompletionClick = React.useCallback(() => {
+  const handleRequestCompletionsClick = React.useCallback(() => {
     handleAddMessageClick();
-    requestCompletion();
+    requestCompletions();
   }, []);
 
   const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () => apiKeyStore.get());
@@ -58,10 +58,10 @@ export function NewMessageView(): JSX.Element {
 
       <div className="flex shrink-0 flex-col space-y-2">
         <Button
-          title="Request Chat Completion"
+          title="Request Chat Completions"
           inverted
           disabled={!apiKeySnapshot.value}
-          onClick={handleRequestCompletionClick}
+          onClick={handleRequestCompletionsClick}
         >
           <Icon type="paperAirplane" standalone />
         </Button>

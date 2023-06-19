@@ -2,7 +2,7 @@ import {ApiKeyView} from './api-key-view.js';
 import {AssistantModeButton} from './assistant-mode-button.js';
 import {Button} from './button.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
-import {CompletionView} from './completion-view.js';
+import {CompletionsView} from './completions-view.js';
 import {Icon} from './icon.js';
 import {MessageView} from './message-view.js';
 import {ModelButton} from './model-button.js';
@@ -10,7 +10,7 @@ import {NewMessageView} from './new-message-view.js';
 import {StylesContext} from '../contexts/styles-context.js';
 import {useClearDataCallback} from '../hooks/use-clear-data-callback.js';
 import {useDarkMode} from '../hooks/use-dark-mode.js';
-import {completionStore} from '../stores/completion-store.js';
+import {chatCompletions} from '../stores/chat-completions.js';
 import {conversationStore} from '../stores/conversation-store.js';
 import * as React from 'react';
 
@@ -31,8 +31,8 @@ export function App(): JSX.Element {
     }
   }, [darkMode]);
 
-  const inactiveCompletionSnapshot = React.useSyncExternalStore(completionStore.subscribe, () =>
-    completionStore.get(`inactive`),
+  const chatCompletionsSnapshot = React.useSyncExternalStore(chatCompletions.subscribe, () =>
+    chatCompletions.get(),
   );
 
   const conversationSnapshot = React.useSyncExternalStore(conversationStore.subscribe, () =>
@@ -59,7 +59,11 @@ export function App(): JSX.Element {
           <MessageView key={message.messageId} message={message} />
         ))}
 
-        {inactiveCompletionSnapshot ? <NewMessageView /> : <CompletionView />}
+        {chatCompletionsSnapshot.state === `isInitialized` ? (
+          <NewMessageView />
+        ) : (
+          <CompletionsView />
+        )}
       </div>
     </div>
   );
