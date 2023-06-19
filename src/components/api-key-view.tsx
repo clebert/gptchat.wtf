@@ -1,57 +1,54 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
 import {TextField} from './text-field.js';
-import {apiKeyStore} from '../stores/api-key-store.js';
+import {apiKeyMachine} from '../machines/api-key-machine.js';
 import * as React from 'react';
 
 export function ApiKeyView(): JSX.Element {
-  const setApiKey = React.useCallback((value: string) => {
-    apiKeyStore.get().actions.set(value);
+  const {value: apiKey} = React.useSyncExternalStore(apiKeyMachine.subscribe, () =>
+    apiKeyMachine.get(),
+  );
+
+  const [isTextFieldVisible, setIsTextFieldVisible] = React.useState(() => apiKey.length === 0);
+
+  if (apiKey.length === 0 && !isTextFieldVisible) {
+    setIsTextFieldVisible(true);
+  }
+
+  const showTextField = React.useCallback(() => {
+    setIsTextFieldVisible(true);
   }, []);
 
-  const [showApiKey, setShowApiKey] = React.useState(() => apiKeyStore.get().value.length === 0);
-
-  const handleShowApiKeyClick = React.useCallback(() => {
-    setShowApiKey(true);
-  }, []);
-
-  const apiKeyFieldRef = React.useRef<HTMLInputElement>(null);
+  const textFieldRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    const apiKeyField = apiKeyFieldRef.current;
+    const textField = textFieldRef.current;
 
-    if (!showApiKey || !apiKeyField) {
+    if (!isTextFieldVisible || !textField) {
       return;
     }
 
-    apiKeyField.focus();
+    textField.focus();
 
-    const handleBlur = () => {
-      setShowApiKey(apiKeyStore.get().value.length === 0);
+    const blur = () => {
+      setIsTextFieldVisible(apiKeyMachine.get().value.length === 0);
     };
 
-    apiKeyField.addEventListener(`blur`, handleBlur);
+    textField.addEventListener(`blur`, blur);
 
     return () => {
-      apiKeyField?.removeEventListener(`blur`, handleBlur);
+      textField.removeEventListener(`blur`, blur);
     };
-  }, [showApiKey]);
+  }, [isTextFieldVisible]);
 
-  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () => apiKeyStore.get());
+  const setApiKey = React.useCallback((value: string) => {
+    apiKeyMachine.get().actions.initialize(value);
+  }, []);
 
-  if (!showApiKey && !apiKeySnapshot.value) {
-    setShowApiKey(true);
-  }
-
-  return showApiKey ? (
-    <TextField
-      ref={apiKeyFieldRef}
-      value={apiKeySnapshot.value}
-      placeholder="API Key"
-      onInput={setApiKey}
-    />
+  return isTextFieldVisible ? (
+    <TextField ref={textFieldRef} value={apiKey} placeholder="API Key" onInput={setApiKey} />
   ) : (
-    <Button title="Show API Key" onClick={handleShowApiKeyClick}>
+    <Button title="Show API Key" onClick={showTextField}>
       <Icon type="key" standalone />
     </Button>
   );

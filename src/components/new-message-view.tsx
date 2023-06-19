@@ -2,15 +2,17 @@ import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
-import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
-import {useRequestCompletionsCallback} from '../hooks/use-request-completions-callback.js';
-import {apiKeyStore} from '../stores/api-key-store.js';
+import {apiKeyMachine} from '../machines/api-key-machine.js';
+import {completionsMachine} from '../machines/completions-machine.js';
+import {gptModelMachine} from '../machines/gpt-model-machine.js';
+import {messagesMachine} from '../machines/messages-machine.js';
 import {isTouchDevice} from '../utils/is-touch-device.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
 
 export function NewMessageView(): JSX.Element {
   const model = React.useMemo(() => monaco.editor.createModel(``, `markdown`), []);
+
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -26,47 +28,74 @@ export function NewMessageView(): JSX.Element {
     };
   }, []);
 
-  const addMessage = useAddMessageCallback();
+  const content = React.useSyncExternalStore(
+    (listener) => {
+      const {dispose} = model.onDidChangeContent(listener);
 
-  const handleAddMessageClick = React.useCallback(() => {
-    const content = model.getValue();
+      return dispose;
+    },
+    () => model.getValue(),
+  );
 
-    if (content) {
-      addMessage(`user`, model.getValue());
-      model.setValue(``);
-    }
-  }, []);
+  const messagesSnapshot = React.useSyncExternalStore(messagesMachine.subscribe, () =>
+    messagesMachine.get(),
+  );
 
-  const requestCompletions = useRequestCompletionsCallback();
+  const addMessage = React.useMemo(
+    () =>
+      content.length > 0
+        ? () => {
+            messagesSnapshot.actions.initialize([
+              ...messagesSnapshot.value,
+              {messageId: crypto.randomUUID(), role: `user`, content},
+            ]);
 
-  const handleRequestCompletionsClick = React.useCallback(() => {
-    handleAddMessageClick();
-    requestCompletions();
-  }, []);
+            model.setValue(``);
+          }
+        : undefined,
+    [content, messagesSnapshot],
+  );
 
-  const apiKeySnapshot = React.useSyncExternalStore(apiKeyStore.subscribe, () => apiKeyStore.get());
+  const completionsSnapshot = React.useSyncExternalStore(completionsMachine.subscribe, () =>
+    completionsMachine.get(),
+  );
+
+  const requestCompletions = React.useMemo(() => {
+    return (addMessage || messagesSnapshot.value.length > 0) &&
+      completionsSnapshot.state === `isInitialized`
+      ? () => {
+          addMessage?.();
+
+          const [message, ...otherMessages] = messagesMachine.get().value.map((otherMessage) => ({
+            role: otherMessage.role,
+            content: otherMessage.content,
+          }));
+
+          completionsSnapshot.actions.send({
+            apiKey: apiKeyMachine.get().value,
+            model: gptModelMachine.get().state === `isGpt4` ? `gpt-4` : `gpt-3.5-turbo`,
+            messages: [message!, ...otherMessages],
+          });
+        }
+      : undefined;
+  }, [addMessage, messagesSnapshot, completionsSnapshot]);
+
+  const {value: apiKey} = React.useSyncExternalStore(apiKeyMachine.subscribe, () =>
+    apiKeyMachine.get(),
+  );
 
   return (
     <div ref={containerRef} className="flex space-x-2">
       <div className="w-full overflow-hidden">
-        <Editor
-          model={model}
-          autoFocus={apiKeySnapshot.value.length > 0 && !isTouchDevice()}
-          autoScroll
-        />
+        <Editor model={model} autoFocus={apiKey.length > 0 && !isTouchDevice()} autoScroll />
       </div>
 
       <div className="flex shrink-0 flex-col space-y-2">
-        <Button
-          title="Request Chat Completions"
-          inverted
-          disabled={!apiKeySnapshot.value}
-          onClick={handleRequestCompletionsClick}
-        >
+        <Button title="Request Chat Completions" inverted onClick={requestCompletions}>
           <Icon type="paperAirplane" standalone />
         </Button>
 
-        <Button title="Add Chat Message" onClick={handleAddMessageClick}>
+        <Button title="Add Chat Message" onClick={addMessage}>
           <Icon type="plus" standalone />
         </Button>
 

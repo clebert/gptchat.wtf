@@ -1,9 +1,11 @@
+import type {Message} from '../machines/messages-machine.js';
+
 import {Button} from './button.js';
 import {Editor} from './editor.js';
 import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
-import {useAddMessageCallback} from '../hooks/use-add-message-callback.js';
-import {chatCompletions} from '../stores/chat-completions.js';
+import {completionsMachine} from '../machines/completions-machine.js';
+import {messagesMachine} from '../machines/messages-machine.js';
 import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
@@ -21,12 +23,12 @@ export function CompletionsView(): JSX.Element {
 
   const editorRef = React.useRef<monaco.editor.IStandaloneCodeEditor>(null);
 
-  const chatCompletionsSnapshot = React.useSyncExternalStore(chatCompletions.subscribe, () =>
-    chatCompletions.get(),
+  const completionsSnapshot = React.useSyncExternalStore(completionsMachine.subscribe, () =>
+    completionsMachine.get(),
   );
 
   React.useEffect(() => {
-    if (chatCompletionsSnapshot.state !== `isReceiving`) {
+    if (completionsSnapshot.state !== `isReceiving`) {
       return;
     }
 
@@ -46,7 +48,7 @@ export function CompletionsView(): JSX.Element {
             endLineNumber: lastLineNumber,
             endColumn: lastLineColumn,
           },
-          text: chatCompletionsSnapshot.value.contentDelta,
+          text: completionsSnapshot.value.contentDelta,
         },
       ],
       () => null,
@@ -55,39 +57,52 @@ export function CompletionsView(): JSX.Element {
     if (userScrolledToBottom && editor.getContentHeight() !== contentHeight) {
       window.scrollTo(0, document.documentElement.scrollHeight);
     }
-  }, [chatCompletionsSnapshot]);
-
-  const addMessage = useAddMessageCallback();
+  }, [completionsSnapshot]);
 
   React.useEffect(() => {
-    if (
-      chatCompletionsSnapshot.state !== `isFinished` &&
-      chatCompletionsSnapshot.state !== `isFailed`
-    ) {
+    if (completionsSnapshot.state !== `isFinished` && completionsSnapshot.state !== `isFailed`) {
       return;
     }
 
-    if (chatCompletionsSnapshot.value.content) {
-      addMessage(`assistant`, chatCompletionsSnapshot.value.content);
-    }
+    const messagesSnapshot = messagesMachine.get();
+    const newMessages: Message[] = [...messagesSnapshot.value];
 
-    if (chatCompletionsSnapshot.state === `isFailed`) {
-      addMessage(`assistant`, String(chatCompletionsSnapshot.value.error));
-    }
-
-    chatCompletionsSnapshot.actions.initialize();
-  }, [chatCompletionsSnapshot]);
-
-  const cancelCompletions = React.useCallback(() => {
-    if (chatCompletionsSnapshot.state === `isSending`) {
-      chatCompletionsSnapshot.actions.initialize();
-    } else if (chatCompletionsSnapshot.state === `isReceiving`) {
-      chatCompletionsSnapshot.actions.finish({
-        reason: `stop`,
-        content: chatCompletionsSnapshot.value.content,
+    if (completionsSnapshot.value.content) {
+      newMessages.push({
+        messageId: crypto.randomUUID(),
+        role: `assistant`,
+        content: completionsSnapshot.value.content,
       });
     }
-  }, [chatCompletionsSnapshot]);
+
+    if (completionsSnapshot.state === `isFailed`) {
+      newMessages.push({
+        messageId: crypto.randomUUID(),
+        role: `assistant`,
+        content: String(completionsSnapshot.value.error),
+      });
+    }
+
+    messagesSnapshot.actions.initialize(newMessages);
+    completionsSnapshot.actions.initialize();
+  }, [completionsSnapshot]);
+
+  const cancelCompletions = React.useMemo(
+    () =>
+      completionsSnapshot.state === `isSending`
+        ? () => {
+            completionsSnapshot.actions.initialize();
+          }
+        : completionsSnapshot.state === `isReceiving`
+        ? () => {
+            completionsSnapshot.actions.finish({
+              reason: `stop`,
+              content: completionsSnapshot.value.content,
+            });
+          }
+        : undefined,
+    [completionsSnapshot],
+  );
 
   return (
     <div className="flex space-x-2">

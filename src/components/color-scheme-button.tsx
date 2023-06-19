@@ -1,28 +1,28 @@
 import {Button} from './button.js';
 import {Icon} from './icon.js';
-import {colorSchemeStore} from '../stores/color-scheme-store.js';
+import {colorSchemeMachine} from '../machines/color-scheme-machine.js';
 import * as React from 'react';
 
-const titles = {auto: `System Theme`, light: `Day Theme`, dark: `Night Theme`};
+const titles = {isAuto: `System Theme`, isLight: `Day Theme`, isDark: `Night Theme`};
 
 const iconTypes = {
-  auto: `computerDesktop`,
-  light: `sun`,
-  dark: `moon`,
+  isAuto: `computerDesktop`,
+  isLight: `sun`,
+  isDark: `moon`,
 } as const;
 
 export function ColorSchemeButton(): JSX.Element {
-  const colorSchemeSnapshot = React.useSyncExternalStore(colorSchemeStore.subscribe, () =>
-    colorSchemeStore.get(),
+  const {state: colorScheme} = React.useSyncExternalStore(colorSchemeMachine.subscribe, () =>
+    colorSchemeMachine.get(),
   );
 
   const toggle = React.useCallback(() => {
-    colorSchemeStore.get().actions.toggle();
+    colorSchemeMachine.get().actions.toggle();
   }, []);
 
   return (
-    <Button className="border-dashed" title={titles[colorSchemeSnapshot.state]} onClick={toggle}>
-      <Icon type={iconTypes[colorSchemeSnapshot.state]} standalone />
+    <Button className="border-dashed" title={titles[colorScheme]} onClick={toggle}>
+      <Icon type={iconTypes[colorScheme]} standalone />
     </Button>
   );
 }

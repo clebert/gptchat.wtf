@@ -17,7 +17,7 @@ export const TextField = React.forwardRef(
     {className, value, placeholder, disabled, required, onInput}: TextFieldProps,
     ref: React.ForwardedRef<HTMLInputElement>,
   ): JSX.Element => {
-    const handleInput = React.useCallback<React.FormEventHandler<HTMLInputElement>>(
+    const input = React.useCallback<React.FormEventHandler<HTMLInputElement>>(
       (event) => {
         event.preventDefault();
         onInput(event.currentTarget.value);
@@ -47,7 +47,7 @@ export const TextField = React.forwardRef(
         disabled={disabled}
         required={required}
         spellCheck={false}
-        onInput={handleInput}
+        onInput={input}
       />
     );
   },

@@ -4,14 +4,15 @@ import {joinClassNames} from '../utils/join-class-names.js';
 import * as React from 'react';
 
 export interface MessageRoleIconProps {
-  role: 'user' | 'assistant';
+  role: 'assistant' | 'user' | 'system';
 }
 
-const titles = {user: `User`, assistant: `Assistant`};
+const titles = {assistant: `Assistant`, user: `User`, system: `System`};
 
 const iconTypes = {
   user: `user`,
   assistant: `chatBubbleLeftEllipsis`,
+  system: `adjustmentsHorizontal`,
 } as const;
 
 export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
