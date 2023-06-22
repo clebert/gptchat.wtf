@@ -60,9 +60,14 @@ export function NewMessageView(): JSX.Element {
     completionsMachine.get(),
   );
 
+  const {value: apiKey} = React.useSyncExternalStore(apiKeyMachine.subscribe, () =>
+    apiKeyMachine.get(),
+  );
+
   const requestCompletions = React.useMemo(() => {
     return (addMessage || messagesSnapshot.value.length > 0) &&
-      completionsSnapshot.state === `isInitialized`
+      completionsSnapshot.state === `isInitialized` &&
+      apiKey.length > 0
       ? () => {
           addMessage?.();
 
@@ -72,17 +77,13 @@ export function NewMessageView(): JSX.Element {
           }));
 
           completionsSnapshot.actions.send({
-            apiKey: apiKeyMachine.get().value,
+            apiKey,
             model: gptModelMachine.get().state === `isGpt4` ? `gpt-4` : `gpt-3.5-turbo`,
             messages: [message!, ...otherMessages],
           });
         }
       : undefined;
-  }, [addMessage, messagesSnapshot, completionsSnapshot]);
-
-  const {value: apiKey} = React.useSyncExternalStore(apiKeyMachine.subscribe, () =>
-    apiKeyMachine.get(),
-  );
+  }, [addMessage, messagesSnapshot, completionsSnapshot, apiKey]);
 
   return (
     <div ref={containerRef} className="flex space-x-2">
