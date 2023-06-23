@@ -1,5 +1,5 @@
 import {createJsonStorageItem} from '../utils/create-json-storage-item.js';
-import {createStateMachine} from 'state-guard';
+import {createMachine} from 'state-guard';
 import {z} from 'zod';
 
 export type Message = z.TypeOf<typeof messageSchema>;
@@ -12,7 +12,7 @@ const messageSchema = z.object({
 
 const storageItem = createJsonStorageItem<readonly Message[]>(`messages`, z.array(messageSchema));
 
-export const messagesMachine = createStateMachine({
+export const messagesMachine = createMachine({
   initialState: `isInitialized`,
   initialValue: storageItem.value ?? [],
   transformerMap: {isInitialized: (value: readonly Message[]) => value},

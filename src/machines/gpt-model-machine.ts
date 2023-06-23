@@ -1,10 +1,10 @@
 import {createJsonStorageItem} from '../utils/create-json-storage-item.js';
-import {createStateMachine} from 'state-guard';
+import {createMachine} from 'state-guard';
 import {z} from 'zod';
 
 const storageItem = createJsonStorageItem(`gptModel`, z.literal(`isGpt35Turbo`));
 
-export const gptModelMachine = createStateMachine({
+export const gptModelMachine = createMachine({
   initialState: storageItem.value ?? `isGpt4`,
   initialValue: undefined,
   transformerMap: {

@@ -1,10 +1,10 @@
 import {createJsonStorageItem} from '../utils/create-json-storage-item.js';
-import {createStateMachine} from 'state-guard';
+import {createMachine} from 'state-guard';
 import {z} from 'zod';
 
 const storageItem = createJsonStorageItem(`apiKey`, z.string());
 
-export const apiKeyMachine = createStateMachine({
+export const apiKeyMachine = createMachine({
   initialState: `isInitialized`,
   initialValue: storageItem.value ?? ``,
   transformerMap: {isInitialized: (value: string) => value},

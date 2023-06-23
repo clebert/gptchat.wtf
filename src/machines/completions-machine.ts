@@ -1,3 +1,3 @@
-import {createChatCompletionsStateMachine} from 'chat-completions';
+import {createChatCompletionsMachine} from 'chat-completions';
 
-export const completionsMachine = createChatCompletionsStateMachine();
+export const completionsMachine = createChatCompletionsMachine();
