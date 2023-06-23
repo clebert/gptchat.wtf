@@ -20,6 +20,7 @@
     "postdeploy": "aws-simple upload --yes && aws-simple redeploy --yes"
   },
   "dependencies": {
+    "@heroicons/react": "^2.0.18",
     "chat-completions": "^3.0.0",
     "lodash.debounce": "^4.0.8",
     "monaco-editor": "^0.39.0",
