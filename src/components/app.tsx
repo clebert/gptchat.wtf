@@ -58,7 +58,8 @@ export function App(): JSX.Element {
             <ApiKeyView />
 
             <Button title="Clear data" onClick={clearData}>
-              <Icon type="arrowLeftOnRectangle" standalone />
+              <Icon type="arrowRightOnRectangle" />
+              Clear data
             </Button>
           </div>
         </div>
