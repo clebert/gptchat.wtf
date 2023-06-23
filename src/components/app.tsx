@@ -2,6 +2,7 @@ import {ApiKeyView} from './api-key-view.js';
 import {Button} from './button.js';
 import {ColorSchemeButton} from './color-scheme-button.js';
 import {CompletionsView} from './completions-view.js';
+import {Headline} from './headline.js';
 import {Icon} from './icon.js';
 import {MessageView} from './message-view.js';
 import {ModelButton} from './model-button.js';
@@ -45,15 +46,21 @@ export function App(): JSX.Element {
 
   return (
     <div className="2xl:container 2xl:mx-auto">
-      <div className="m-2 flex flex-col space-y-2">
-        <div className="flex space-x-2">
-          <ModelButton />
-          <ColorSchemeButton />
-          <ApiKeyView />
+      <div className="m-4 flex flex-col space-y-4">
+        <div className="flex flex-col space-y-4 md:flex-row md:items-center md:space-x-4 md:space-y-0">
+          <div className="flex space-x-2">
+            <Headline />
+          </div>
 
-          <Button title="Clear data" onClick={clearData}>
-            <Icon type="arrowLeftOnRectangle" standalone />
-          </Button>
+          <div className="flex grow space-x-2">
+            <ModelButton />
+            <ColorSchemeButton />
+            <ApiKeyView />
+
+            <Button title="Clear data" onClick={clearData}>
+              <Icon type="arrowLeftOnRectangle" standalone />
+            </Button>
+          </div>
         </div>
 
         {messages.map((message) => (
