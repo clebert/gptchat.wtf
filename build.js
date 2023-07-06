@@ -51,6 +51,8 @@ const options = {
         `<meta charset="utf-8" />`,
         `<meta name="viewport" content="width=device-width, initial-scale=1" />`,
         `<title>gptchat.wtf</title>`,
+        `<link rel="icon" href="/apple-touch-icon.png" />`,
+        `<link rel="apple-touch-icon" href="/apple-touch-icon.png" />`,
 
         ...outputUrls
           .filter((url) => url.endsWith(`.css`))

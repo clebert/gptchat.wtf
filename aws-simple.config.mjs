@@ -10,6 +10,12 @@ export default () => ({
       responseHeaders: {'cache-control': `no-store`},
     },
     {
+      type: `file`,
+      publicPath: `/apple-touch-icon.png`,
+      path: `apple-touch-icon.png`,
+      responseHeaders: {'cache-control': `max-age=86400`}, // 24 hours
+    },
+    {
       type: `folder`,
       publicPath: `/static/*`,
       path: `dist`,
