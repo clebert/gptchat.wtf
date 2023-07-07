@@ -35,13 +35,22 @@ export function App(): JSX.Element {
     completionsMachine.get(),
   );
 
-  const clearData = React.useCallback(() => {
-    apiKeyMachine.get().actions.initialize(``);
-    messagesMachine.get().actions.initialize([]);
-  }, []);
-
   const {value: messages} = React.useSyncExternalStore(messagesMachine.subscribe, () =>
     messagesMachine.get(),
+  );
+
+  const clearChat = React.useMemo(
+    () => (messages.length > 0 ? () => messagesMachine.get().actions.initialize([]) : undefined),
+    [messages],
+  );
+
+  const {value: apiKey} = React.useSyncExternalStore(apiKeyMachine.subscribe, () =>
+    apiKeyMachine.get(),
+  );
+
+  const clearApiKey = React.useMemo(
+    () => (apiKey.length > 0 ? () => apiKeyMachine.get().actions.initialize(``) : undefined),
+    [apiKey],
   );
 
   return (
@@ -53,14 +62,21 @@ export function App(): JSX.Element {
           </div>
 
           <div className="flex grow space-x-2">
-            <ModelButton />
-            <ColorSchemeButton />
-            <ApiKeyView />
+            <div className="flex grow space-x-2">
+              <ModelButton />
+              <ColorSchemeButton />
+              <ApiKeyView />
 
-            <Button title="Clear data" onClick={clearData}>
-              <Icon type="arrowRightOnRectangle" />
-              Clear data
-            </Button>
+              <Button title="Clear API key" onClick={clearApiKey}>
+                <Icon type="arrowRightOnRectangle" standalone />
+              </Button>
+            </div>
+
+            <div className="flex space-x-2">
+              <Button title="Clear chat" onClick={clearChat}>
+                <Icon type="trash" standalone />
+              </Button>
+            </div>
           </div>
         </div>
 
