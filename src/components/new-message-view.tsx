@@ -1,6 +1,4 @@
-import {Button} from './button.js';
 import {Editor} from './editor.js';
-import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
 import {apiKeyMachine} from '../machines/api-key-machine.js';
 import {completionsMachine} from '../machines/completions-machine.js';
@@ -9,6 +7,7 @@ import {messagesMachine} from '../machines/messages-machine.js';
 import {isTouchDevice} from '../utils/is-touch-device.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
+import {Button, Container, Icon} from 'wtfkit';
 
 export function NewMessageView(): JSX.Element {
   const model = React.useMemo(() => monaco.editor.createModel(``, `markdown`), []);
@@ -86,22 +85,22 @@ export function NewMessageView(): JSX.Element {
   }, [addMessage, messagesSnapshot, completionsSnapshot, apiKey]);
 
   return (
-    <div ref={containerRef} className="flex space-x-2">
-      <div className="w-full overflow-hidden">
+    <Container ref={containerRef}>
+      <Container col grow>
         <Editor model={model} autoFocus={apiKey.length > 0 && !isTouchDevice()} autoScroll />
-      </div>
+      </Container>
 
-      <div className="flex shrink-0 flex-col space-y-2">
-        <Button title="Request Chat Completions" inverted onClick={requestCompletions}>
+      <Container col>
+        <Button title="Request chat completions" inverted onClick={requestCompletions}>
           <Icon type="paperAirplane" standalone />
         </Button>
 
-        <Button title="Add Chat Message" onClick={addMessage}>
+        <Button title="Add chat message" onClick={addMessage}>
           <Icon type="plus" standalone />
         </Button>
 
         <MessageRoleIcon role="user" />
-      </div>
-    </div>
+      </Container>
+    </Container>
   );
 }

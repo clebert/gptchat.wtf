@@ -1,13 +1,12 @@
 import type {Message} from '../machines/messages-machine.js';
 
-import {Button} from './button.js';
 import {Editor} from './editor.js';
-import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
 import {messagesMachine} from '../machines/messages-machine.js';
 import debounce from 'lodash.debounce';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
+import {Button, Container, Icon} from 'wtfkit';
 
 export interface MessageViewProps {
   message: Message;
@@ -46,19 +45,19 @@ export function MessageView({message}: MessageViewProps): JSX.Element {
 
   return React.useMemo(
     () => (
-      <div className="flex space-x-2">
-        <div className="w-full overflow-hidden">
+      <Container>
+        <Container col grow>
           <Editor model={model} autoScroll />
-        </div>
+        </Container>
 
-        <div className="flex shrink-0 flex-col space-y-2">
-          <Button title="Delete Chat Message" onClick={deleteMessage}>
+        <Container col>
+          <Button title="Delete chat message" onClick={deleteMessage}>
             <Icon type="trash" standalone></Icon>
           </Button>
 
           <MessageRoleIcon role={message.role} />
-        </div>
-      </div>
+        </Container>
+      </Container>
     ),
     [],
   );

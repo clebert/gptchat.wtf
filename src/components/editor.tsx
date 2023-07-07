@@ -2,12 +2,10 @@ import type * as monaco from 'monaco-editor';
 
 import './editor.css';
 import {MonacoEditor} from './monaco-editor.js';
-import {StylesContext} from '../contexts/styles-context.js';
-import {useDarkMode} from '../hooks/use-dark-mode.js';
-import {joinClassNames} from '../utils/join-class-names.js';
 import {resizeEditor} from '../utils/resize-editor.js';
 import {scrollToCursor} from '../utils/scroll-to-cursor.js';
 import * as React from 'react';
+import {Styles, joinClassNames, useDarkMode} from 'wtfkit';
 
 export interface EditorProps {
   className?: string;
@@ -81,7 +79,7 @@ export const Editor = React.forwardRef(
       editorRef.current!._themeService.setTheme(darkMode ? `vs-dark` : `vs`);
     }, [darkMode]);
 
-    const styles = React.useContext(StylesContext);
+    const styles = React.useContext(Styles.Context);
 
     return (
       <MonacoEditor

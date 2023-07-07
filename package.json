@@ -20,13 +20,13 @@
     "postdeploy": "aws-simple upload --yes && aws-simple redeploy --yes"
   },
   "dependencies": {
-    "@heroicons/react": "^2.0.18",
     "chat-completions": "^3.0.0",
     "lodash.debounce": "^4.0.8",
     "monaco-editor": "^0.39.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "state-guard": "^4.0.0",
+    "wtfkit": "^1.0.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -49,7 +49,7 @@
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-markdown": "^3.0.0",
     "npm-run-all": "^4.1.5",
-    "prettier": "^3.0.0",
+    "prettier": "^2.8.8",
     "prettier-plugin-tailwindcss": "^0.3.0",
     "size-limit": "^8.2.6",
     "tailwindcss": "^3.3.2",

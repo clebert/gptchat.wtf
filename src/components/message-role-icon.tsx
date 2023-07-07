@@ -1,7 +1,5 @@
-import {Icon} from './icon.js';
-import {StylesContext} from '../contexts/styles-context.js';
-import {joinClassNames} from '../utils/join-class-names.js';
 import * as React from 'react';
+import {Icon, Styles, joinClassNames} from 'wtfkit';
 
 export interface MessageRoleIconProps {
   role: 'assistant' | 'user' | 'system';
@@ -16,7 +14,7 @@ const iconTypes = {
 } as const;
 
 export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
-  const styles = React.useContext(StylesContext);
+  const styles = React.useContext(Styles.Context);
 
   return (
     <div

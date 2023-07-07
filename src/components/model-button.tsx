@@ -1,6 +1,6 @@
-import {Button} from './button.js';
 import {gptModelMachine} from '../machines/gpt-model-machine.js';
 import * as React from 'react';
+import {Button} from 'wtfkit';
 
 const titles = {isGpt4: `GPT-4`, isGpt35Turbo: `GPT-3.5 Turbo`};
 

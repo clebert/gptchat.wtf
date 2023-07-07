@@ -1,14 +1,13 @@
 import type {Message} from '../machines/messages-machine.js';
 
-import {Button} from './button.js';
 import {Editor} from './editor.js';
-import {Icon} from './icon.js';
 import {MessageRoleIcon} from './message-role-icon.js';
 import {completionsMachine} from '../machines/completions-machine.js';
 import {messagesMachine} from '../machines/messages-machine.js';
 import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
 import * as monaco from 'monaco-editor';
 import * as React from 'react';
+import {Button, Container, Icon} from 'wtfkit';
 
 export function CompletionsView(): JSX.Element {
   const model = React.useMemo(() => monaco.editor.createModel(``, `markdown`), []);
@@ -105,18 +104,18 @@ export function CompletionsView(): JSX.Element {
   );
 
   return (
-    <div className="flex space-x-2">
-      <div className="w-full overflow-hidden">
+    <Container>
+      <Container col grow>
         <Editor ref={editorRef} model={model} readOnly />
-      </div>
+      </Container>
 
-      <div className="flex shrink-0 flex-col space-y-2">
-        <Button title="Cancel Chat Completions" onClick={cancelCompletions}>
+      <Container col>
+        <Button title="Cancel chat completions" onClick={cancelCompletions}>
           <Icon type="xMark" standalone />
         </Button>
 
         <MessageRoleIcon role="assistant" />
-      </div>
-    </div>
+      </Container>
+    </Container>
   );
 }
