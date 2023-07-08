@@ -43,17 +43,7 @@ export function App(): JSX.Element {
     apiKeyMachine.get(),
   );
 
-  const [apiKeyDeletionRequested, requestApiKeyDeletion] = useToggle(false, 3000);
-
-  if (apiKeyDeletionRequested && apiKey.length === 0) {
-    requestApiKeyDeletion();
-  }
-
-  const deleteApiKey = React.useMemo(
-    () => (apiKey.length > 0 ? () => void apiKeyMachine.get().actions.initialize(``) : undefined),
-    [apiKey],
-  );
-
+  const [apiKeyVisible, toggleApiKeyVisibility] = useToggle(apiKey.length === 0);
   const styles = React.useMemo(() => new Styles({neutralGray: true}), []);
 
   return (
@@ -67,18 +57,17 @@ export function App(): JSX.Element {
           <Container grow>
             <ModelButton />
             <ColorSchemeButton />
-            <ApiKeyView />
 
-            {apiKeyDeletionRequested ? (
-              <Button title="Confirm API key deletion" onClick={deleteApiKey}>
-                <Icon type="arrowRightOnRectangle" />
-                Delete API key
-              </Button>
-            ) : (
-              <Button title="Delete API key" onClick={deleteApiKey && requestApiKeyDeletion}>
-                <Icon type="arrowRightOnRectangle" standalone />
-              </Button>
-            )}
+            <Button
+              className="border-dashed"
+              title={apiKeyVisible ? `API key visible` : `API key hidden`}
+              disabled={apiKey.length === 0}
+              onClick={toggleApiKeyVisibility}
+            >
+              <Icon type={apiKeyVisible ? `eye` : `eyeSlash`} standalone />
+            </Button>
+
+            {apiKeyVisible && <ApiKeyView />}
           </Container>
 
           <Container>

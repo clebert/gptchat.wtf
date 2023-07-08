@@ -6,7 +6,10 @@ export function ApiKeyView(): JSX.Element {
   const textFieldRef = React.useRef<HTMLInputElement>(null);
 
   React.useEffect(() => {
-    textFieldRef.current?.focus();
+    const textField = textFieldRef.current!;
+
+    textField.focus();
+    textField.select();
   }, []);
 
   const {value: apiKey} = React.useSyncExternalStore(apiKeyMachine.subscribe, () =>
@@ -17,13 +20,5 @@ export function ApiKeyView(): JSX.Element {
     apiKeyMachine.get().actions.initialize(value);
   }, []);
 
-  return (
-    <TextField
-      ref={textFieldRef}
-      type="password"
-      value={apiKey}
-      placeholder="API key"
-      onInput={setApiKey}
-    />
-  );
+  return <TextField ref={textFieldRef} value={apiKey} placeholder="API key" onInput={setApiKey} />;
 }
