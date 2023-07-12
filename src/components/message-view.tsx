@@ -1,7 +1,7 @@
 import type {Message} from '../machines/messages-machine.js';
 
 import {Editor} from './editor.js';
-import {MessageRoleIcon} from './message-role-icon.js';
+import {MessageIcon} from './message-icon.js';
 import {messagesMachine} from '../machines/messages-machine.js';
 import debounce from 'lodash.debounce';
 import * as monaco from 'monaco-editor';
@@ -55,7 +55,7 @@ export function MessageView({message}: MessageViewProps): JSX.Element {
             <Icon type="trash" standalone></Icon>
           </Button>
 
-          <MessageRoleIcon role={message.role} />
+          <MessageIcon role={message.role} />
         </Container>
       </Container>
     ),

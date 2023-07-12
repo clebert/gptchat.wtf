@@ -1,5 +1,5 @@
 import {Editor} from './editor.js';
-import {MessageRoleIcon} from './message-role-icon.js';
+import {MessageIcon} from './message-icon.js';
 import {apiKeyMachine} from '../machines/api-key-machine.js';
 import {completionsMachine} from '../machines/completions-machine.js';
 import {gptModelMachine} from '../machines/gpt-model-machine.js';
@@ -99,7 +99,7 @@ export function NewMessageView(): JSX.Element {
           <Icon type="plus" standalone />
         </Button>
 
-        <MessageRoleIcon role="user" />
+        <MessageIcon role="user" />
       </Container>
     </Container>
   );

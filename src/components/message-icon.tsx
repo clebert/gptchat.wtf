@@ -1,19 +1,19 @@
 import * as React from 'react';
 import {Icon, Styles, joinClassNames} from 'wtfkit';
 
-export interface MessageRoleIconProps {
+export interface MessageIconProps {
   role: 'assistant' | 'user' | 'system';
 }
 
 const titles = {assistant: `Assistant`, user: `User`, system: `System`};
 
 const iconTypes = {
-  user: `user`,
   assistant: `chatBubbleLeftEllipsis`,
+  user: `user`,
   system: `adjustmentsHorizontal`,
 } as const;
 
-export function MessageRoleIcon({role}: MessageRoleIconProps): JSX.Element {
+export function MessageIcon({role}: MessageIconProps): JSX.Element {
   const styles = React.useContext(Styles.Context);
 
   return (

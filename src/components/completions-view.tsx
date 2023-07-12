@@ -1,7 +1,7 @@
 import type {Message} from '../machines/messages-machine.js';
 
 import {Editor} from './editor.js';
-import {MessageRoleIcon} from './message-role-icon.js';
+import {MessageIcon} from './message-icon.js';
 import {completionsMachine} from '../machines/completions-machine.js';
 import {messagesMachine} from '../machines/messages-machine.js';
 import {isUserScrolledToBottom} from '../utils/is-user-scrolled-to-bottom.js';
@@ -114,7 +114,7 @@ export function CompletionsView(): JSX.Element {
           <Icon type="xMark" standalone />
         </Button>
 
-        <MessageRoleIcon role="assistant" />
+        <MessageIcon role="assistant" />
       </Container>
     </Container>
   );
