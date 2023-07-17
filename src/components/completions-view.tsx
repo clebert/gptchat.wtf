@@ -65,21 +65,28 @@ export function CompletionsView(): JSX.Element {
 
     const messagesSnapshot = messagesMachine.get();
     const newMessages: Message[] = [...messagesSnapshot.value];
+    const {content} = completionsSnapshot.value;
 
-    if (completionsSnapshot.value.content) {
-      newMessages.push({
-        messageId: crypto.randomUUID(),
-        role: `assistant`,
-        content: completionsSnapshot.value.content,
-      });
+    if (content) {
+      if (completionsSnapshot.state === `isFailed`) {
+        newMessages.push({
+          messageId: crypto.randomUUID(),
+          role: `assistant`,
+          content: `[error] ${content}`,
+        });
+      } else if (completionsSnapshot.value.reason !== `stop`) {
+        newMessages.push({
+          messageId: crypto.randomUUID(),
+          role: `assistant`,
+          content: `[${completionsSnapshot.value.reason}] ${content}`,
+        });
+      } else {
+        newMessages.push({messageId: crypto.randomUUID(), role: `assistant`, content});
+      }
     }
 
     if (completionsSnapshot.state === `isFailed`) {
-      newMessages.push({
-        messageId: crypto.randomUUID(),
-        role: `assistant`,
-        content: String(completionsSnapshot.value.error),
-      });
+      console.error(completionsSnapshot.value.error);
     }
 
     messagesSnapshot.actions.initialize(newMessages);
