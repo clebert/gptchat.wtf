@@ -33,6 +33,13 @@
         }
       }
     ],
+    ".prettierrc.json": [
+      {
+        "value": {
+          "plugins": ["prettier-plugin-tailwindcss"]
+        }
+      }
+    ],
     "tsconfig.json": [
       {
         "value": {

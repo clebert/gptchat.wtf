@@ -77,8 +77,10 @@ export function NewMessageView(): JSX.Element {
 
           completionsSnapshot.actions.send({
             apiKey,
-            model: gptModelMachine.get().state === `isGpt4` ? `gpt-4` : `gpt-3.5-turbo`,
-            messages: [message!, ...otherMessages],
+            body: {
+              model: gptModelMachine.get().state === `isGpt4` ? `gpt-4` : `gpt-3.5-turbo`,
+              messages: [message!, ...otherMessages],
+            },
           });
         }
       : undefined;
