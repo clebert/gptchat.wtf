@@ -27,7 +27,7 @@ export function CompletionsView(): JSX.Element {
   );
 
   React.useEffect(() => {
-    if (completionsSnapshot.state !== `isReceiving`) {
+    if (completionsSnapshot.state !== `isReceivingContent`) {
       return;
     }
 
@@ -59,7 +59,10 @@ export function CompletionsView(): JSX.Element {
   }, [completionsSnapshot]);
 
   React.useEffect(() => {
-    if (completionsSnapshot.state !== `isFinished` && completionsSnapshot.state !== `isFailed`) {
+    if (
+      completionsSnapshot.state !== `isContentFinished` &&
+      completionsSnapshot.state !== `isFailed`
+    ) {
       return;
     }
 
@@ -93,13 +96,13 @@ export function CompletionsView(): JSX.Element {
 
   const cancelCompletions = React.useMemo(
     () =>
-      completionsSnapshot.state === `isSending`
+      completionsSnapshot.state === `isSendingRequest`
         ? () => {
             completionsSnapshot.actions.initialize();
           }
-        : completionsSnapshot.state === `isReceiving`
+        : completionsSnapshot.state === `isReceivingContent`
         ? () => {
-            completionsSnapshot.actions.finish({
+            completionsSnapshot.actions.finishContent({
               reason: `stop`,
               content: completionsSnapshot.value.content,
             });
