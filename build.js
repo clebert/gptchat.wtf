@@ -1,23 +1,25 @@
-import autoprefixer from 'autoprefixer';
 import * as esbuild from 'esbuild';
-import {htmlPlugin} from 'esbuild-html-plugin';
-import stylePlugin from 'esbuild-style-plugin';
-import {rm} from 'node:fs/promises';
-import {createRequire} from 'node:module';
+import autoprefixer from 'autoprefixer';
+import { createRequire } from 'node:module';
+import { htmlPlugin } from 'esbuild-html-plugin';
 import process from 'node:process';
+import { rm } from 'node:fs/promises';
+import stylePlugin from 'esbuild-style-plugin';
 
 const require = createRequire(import.meta.url);
 const outdir = `dist`;
-const nodeEnv = process.env.NODE_ENV ?? `production`;
+const nodeEnv = process.env[`NODE_ENV`] ?? `production`;
 const dev = nodeEnv !== `production`;
 
 /** @type {import('esbuild').BuildOptions} */
-const options = {
+const buildOptions = {
   entryPoints: [
-    {out: `app`, in: `src/index.tsx`},
-    {out: `editor.worker`, in: require.resolve(`monaco-editor/esm/vs/editor/editor.worker`)},
+    { out: `app`, in: `src/main.tsx` },
+    { out: `editor.worker`, in: require.resolve(`monaco-editor/esm/vs/editor/editor.worker`) },
+
     ...[`css`, `html`, `json`, `ts`].map((language) => ({
       out: `${language}.worker`,
+
       in: require.resolve(
         `monaco-editor/esm/vs/language/${
           language === `ts` ? `typescript` : language
@@ -25,24 +27,21 @@ const options = {
       ),
     })),
   ],
+
   entryNames: `[dir]/[name]-[hash]`,
   bundle: true,
   minify: !dev,
   sourcemap: dev,
-  define: {'process.env.NODE_ENV': JSON.stringify(nodeEnv)},
   metafile: true,
   target: `es2022`,
   tsconfig: `tsconfig.base.json`,
   outdir,
   publicPath: `/static`,
-  loader: {'.ttf': `file`},
+  loader: { '.ttf': `file` },
+
   plugins: [
-    stylePlugin({
-      postcss: {
-        // eslint-disable-next-line import/no-commonjs
-        plugins: [require(`tailwindcss`), autoprefixer],
-      },
-    }),
+    stylePlugin({ postcss: { plugins: [require(`tailwindcss`), autoprefixer] } }),
+
     htmlPlugin({
       outfile: `index.html`,
       language: `en`,
@@ -76,6 +75,7 @@ const options = {
                 )
               ),
             ),
+
           setupMonacoEnvironment.toString(),
         )})();</script>`,
       ],
@@ -84,13 +84,13 @@ const options = {
 };
 
 if (process.argv.includes(`--watch`)) {
-  const ctx = await esbuild.context(options);
+  const ctx = await esbuild.context(buildOptions);
 
   await ctx.watch();
 } else {
-  await rm(outdir, {recursive: true, force: true});
+  await rm(outdir, { recursive: true, force: true });
 
-  await esbuild.build(options);
+  await esbuild.build(buildOptions);
 }
 
 function setupMonacoEnvironment() {
@@ -110,6 +110,7 @@ function setupMonacoEnvironment() {
 
       return `<editor>`;
     },
+
     createTrustedTypesPolicy() {
       return undefined;
     },

@@ -7,19 +7,19 @@ export default () => ({
       type: `file`,
       publicPath: `/*`,
       path: `dist/index.html`,
-      responseHeaders: {'cache-control': `no-store`},
+      responseHeaders: { 'cache-control': `no-store` },
     },
     {
       type: `file`,
       publicPath: `/apple-touch-icon.png`,
       path: `apple-touch-icon.png`,
-      responseHeaders: {'cache-control': `max-age=86400`}, // 24 hours
+      responseHeaders: { 'cache-control': `max-age=86400` }, // 24 hours
     },
     {
       type: `folder`,
       publicPath: `/static/*`,
       path: `dist`,
-      responseHeaders: {'cache-control': `max-age=157680000`}, // 5 years
+      responseHeaders: { 'cache-control': `max-age=157680000` }, // 5 years
     },
   ],
 });

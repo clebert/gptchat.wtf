@@ -2,12 +2,14 @@ jobs:
   CI:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
     - uses: actions/setup-node@v3
       with:
         node-version-file: .node-version
     - uses: bahmutov/npm-install@v1
-    - run: npm run ci
+    - run: bash ./ci.sh
     - env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_REGION: eu-central-1

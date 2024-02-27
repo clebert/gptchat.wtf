@@ -1,82 +1,48 @@
 {
   "name": "gptchat.wtf",
-  "version": "0.0.0",
   "private": true,
   "license": "MIT",
   "author": "Clemens Akens",
   "type": "module",
   "scripts": {
     "build": "node build.js",
-    "postbuild": "size-limit",
     "build:watch": "NODE_ENV=development node build.js --watch",
-    "ci": "run-p build compile:check format:check lint",
-    "compile:check": "tsc --pretty",
+    "compile:check": "tsc",
     "predeploy": "cdk bootstrap --app 'npx aws-simple synth' && cdk diff --app 'npx aws-simple synth' --no-asset-metadata",
     "deploy": "cdk deploy --app 'npx aws-simple synth' --no-asset-metadata",
     "postdeploy": "aws-simple upload --yes && aws-simple redeploy --yes",
+    "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "format:write": "prettier --write .",
     "lint": "eslint .",
     "start": "aws-simple start"
   },
   "dependencies": {
-    "chat-completions": "^5.0.0",
-    "lodash.debounce": "^4.0.8",
-    "monaco-editor": "^0.40.0",
+    "@heroicons/react": "^2.1.1",
+    "monaco-editor": "^0.46.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "state-guard": "^4.0.0",
-    "wtfkit": "^1.1.0",
-    "zod": "^3.21.4"
+    "state-guard": "^5.1.0",
+    "wtfkit": "^6.0.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@size-limit/preset-app": "^8.2.6",
-    "@types/express": "^4.17.17",
-    "@types/lodash.debounce": "^4.0.7",
-    "@types/node": "^20.4.2",
-    "@types/react": "^18.2.15",
-    "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.1.0",
-    "@typescript-eslint/parser": "^6.1.0",
-    "autoprefixer": "^10.4.14",
-    "aws-cdk": "^2.87.0",
-    "aws-simple": "^18.0.3",
-    "esbuild": "^0.18.13",
-    "esbuild-html-plugin": "^1.0.0",
-    "esbuild-style-plugin": "^1.6.2",
-    "eslint": "^8.45.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-markdown": "^3.0.0",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^3.0.0",
-    "prettier-plugin-tailwindcss": "^0.4.1",
-    "size-limit": "^8.2.6",
-    "tailwindcss": "^3.3.3",
-    "typescript": "^5.1.6"
-  },
-  "size-limit": [
-    {
-      "name": "brotli compression",
-      "path": "./dist/app-*.js",
-      "brotli": true
-    },
-    {
-      "name": "gzip compression",
-      "path": "./dist/app-*.js",
-      "gzip": true
-    },
-    {
-      "name": "no compression",
-      "path": "./dist/app-*.js",
-      "gzip": false
-    }
-  ],
-  "wallaby": {
-    "env": {
-      "params": {
-        "runner": "--experimental-vm-modules"
-      }
-    }
+    "@eslint/js": "^8.57.0",
+    "@types/node": "^20.11.20",
+    "@types/react": "^18.2.60",
+    "@types/react-dom": "^18.2.19",
+    "autoprefixer": "^10.4.17",
+    "aws-cdk": "^2.130.0",
+    "aws-simple": "^18.3.0",
+    "esbuild": "^0.20.1",
+    "esbuild-html-plugin": "^1.0.1",
+    "esbuild-style-plugin": "^1.6.3",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "globals": "^14.0.0",
+    "prettier": "^3.2.5",
+    "prettier-plugin-tailwindcss": "^0.5.11",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^7.1.0"
   }
 }

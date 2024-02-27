@@ -2,10 +2,12 @@
   "compilerOptions": {
     "checkJs": true,
     "noEmit": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true
   },
   "exclude": [
-    "dist"
+    "dist",
+    "switch-llm"
   ],
   "extends": [
     "./tsconfig.base.json"
